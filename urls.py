@@ -3,7 +3,8 @@ from django.conf.urls.defaults import *
 handler500 = 'djangotoolbox.errorviews.server_error'
 
 urlpatterns = patterns('',
-    ('^_ah/warmup$', 'djangoappengine.views.warmup'),
     ('^$', 'django.views.generic.simple.direct_to_template',
-     {'template': 'test.html'}),
+     {'template': 'index.html'}),
+    ('^getjson$', 'edu.nau.zabeta.api.get_json',
+     {'template': 'json.html'}),
 )
