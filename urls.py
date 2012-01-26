@@ -1,10 +1,10 @@
 from django.conf.urls.defaults import *
+from edu.nau.zabeta.dispatch import dispatch_api
 
 handler500 = 'djangotoolbox.errorviews.server_error'
 
 urlpatterns = patterns('',
-    ('^$', 'django.views.generic.simple.direct_to_template',
+    (r'^$', 'django.views.generic.simple.direct_to_template',
      {'template': 'index.html'}),
-    ('^getjson$', 'edu.nau.zabeta.api.get_json',
-     {'template': 'json.html'}),
+    (r'^api/(?P<method>.*)$', dispatch_api),
 )
