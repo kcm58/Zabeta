@@ -46,10 +46,7 @@ class index(webapp.RequestHandler):
         self.response.out.write(index)
         pass
 
-def main():
+if __name__ == "__main__":
     run_wsgi_app(webapp.WSGIApplication([('/', index),
                                          ('/api/.*', dispatch)],
                                         debug=True))
-    
-if __name__ == "__main__":
-    main()
