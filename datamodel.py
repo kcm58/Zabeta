@@ -8,11 +8,13 @@ class course(db.Model):
   number = db.IntegerProperty()
   subject = db.StringProperty()
   term = db.StringProperty()
+  #A faculty reference
+  instructor = db.ReferenceProperty()
   
 class assessment(db.Model):
   description = db.StringProperty()
   whenUtilized =  db.StringProperty()
-  outcomes = db.ListProperty(db.ReferenceProperty)
+  outcomes = db.ListProperty(db.ReferenceProperty())
   direct = db.BooleanProperty()
 
 class measure(db.Model):
