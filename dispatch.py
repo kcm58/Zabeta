@@ -18,6 +18,7 @@ class dispatch(webapp.RequestHandler):
         call_class=path[2]
         call_method=path[3]
         api = __import__("api.api")
+        #Make sure the class in this API call is public:
         if api.LIBS.get(call_class):
             #pull up the class out of ./lib
             libs=api.LIBS.keys()
@@ -26,10 +27,7 @@ class dispatch(webapp.RequestHandler):
             instance = api_call(self.request)
             if instance.getPublic().get(call_method):
                 #invoke the proper method based on the path
-                getattr(instance,call_method)()
-                 
-                #get the output from this method call:
-                ret=instance.getOutput()
+                ret=getattr(instance,call_method)()
             else:
                 ret={"error":"invalid method"}
         else:
