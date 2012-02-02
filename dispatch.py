@@ -1,17 +1,17 @@
-import json 
+import json
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 class dispatch(webapp.RequestHandler):
-    
+
     def get(self):
         self.dispatch()
         pass
-      
+
     def post(self):
         self.dispatch()
-        pass  
+        pass
 
     def dispatch(self):
         path=self.request.path.split("/")
@@ -31,16 +31,16 @@ class dispatch(webapp.RequestHandler):
             else:
                 ret={"error":"invalid method"}
         else:
-            ret={"error":"invalid class"}   
+            ret={"error":"invalid class"}
         #format output:
         json_obj = json.dumps(ret)
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json_obj)
 
 class index(webapp.RequestHandler):
-    
+
     def get(self):
-        index=open("index.html").read()
+        index=open("client/index.html").read()
         self.response.out.write(index)
         pass
 
