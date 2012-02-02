@@ -1,0 +1,11 @@
+div#logo img {
+  float: left;
+  margin-left: 2px;
+  margin-right: 4px;
+}
+div#logo h1 {
+  color: #b6b6b6;
+}
+div#logo h1 span.logo-alt-color {
+  color: black;
+}
