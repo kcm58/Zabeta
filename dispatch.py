@@ -4,6 +4,7 @@ import logging
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.api import oauth
 
 class dispatch(webapp.RequestHandler):
 
@@ -49,13 +50,21 @@ class index(webapp.RequestHandler):
 class cas(webapp.RequestHandler):
 
     def get(self):
-        CAS_SERVER  = "https://cas.nau.edu/"
-        SERVICE_URL = "http://localhost:8080/cas"
+        CAS_SERVER  = "https://cas.nau.edu"
+        SERVICE_URL = "http://localhost:8080/cas/"
         status, id, cookie = pycas.login(CAS_SERVER, SERVICE_URL)
-        self.response.out.write(str(status)+str(id)+str(cookie))
+        self.response.out.write("This DOES work<br />Status: "+str(status)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
+        
+class o_auth(webapp.RequestHandler):
+
+    def get(self):
+        self.response.out.write("This doesn't work yet!")
+            
+        
 
 if __name__ == "__main__":
     run_wsgi_app(webapp.WSGIApplication([('/', index),
-                                         ('/cas', cas),
+                                         ('/cas/', cas),
+                                         ('/oauth/', o_auth),
                                          ('/api/.*', dispatch)],
                                         debug=True))
