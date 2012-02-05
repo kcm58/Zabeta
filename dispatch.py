@@ -1,4 +1,6 @@
 import json
+import pycas
+import logging
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -44,7 +46,16 @@ class index(webapp.RequestHandler):
         self.response.out.write(index)
         pass
 
+class cas(webapp.RequestHandler):
+
+    def get(self):
+        CAS_SERVER  = "https://cas.nau.edu/"
+        SERVICE_URL = "http://localhost:8080/cas"
+        status, id, cookie = pycas.login(CAS_SERVER, SERVICE_URL)
+        self.response.out.write(str(status)+str(id)+str(cookie))
+
 if __name__ == "__main__":
     run_wsgi_app(webapp.WSGIApplication([('/', index),
+                                         ('/cas', cas),
                                          ('/api/.*', dispatch)],
                                         debug=True))

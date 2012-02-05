@@ -5,6 +5,22 @@ api_version: 1
 threadsafe: no
 
 handlers:
+- url: /img
+  static_dir: client/img
+
+- url: /css
+  static_dir: client/css
+  
+- url: /js
+  static_dir: client/js
+  
+- url: /lib
+  static_dir: client/lib
+
+- url: /favicon\.ico
+  static_files: client/img/favicon.ico
+  upload: client/img/favicon.ico
+
 - url: /.*
   script: dispatch.py
 
