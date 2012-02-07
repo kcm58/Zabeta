@@ -1,3 +1,6 @@
+import sys 
+sys.path.append("lib")
+
 import json
 import pycas
 import logging
@@ -8,7 +11,9 @@ import datamodel
 
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.api import memcache
+from google.appengine.api import memcache, oauth
+
+from mora.rest import RestHandler
 
 class session(webapp.RequestHandler):
     user_id=0
@@ -29,14 +34,15 @@ class session(webapp.RequestHandler):
                 #webapp.Request.cookies["cid"]
             else:
                 self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
-        else:
-            self.new_session("1")
 
+    #Create a new session id and link it to a user account using memcachd
+    #this should only be called after a sucessful login to prevent session fixation.
     def new_session(self, user_id):
         cookie=self.rand()
         #expires in two hours,  time in seconds. 
         memcache.add(cookie,user_id,7200)
-        self.response.headers.add_header("Set-Cookie", "cid="+cookie)
+        #HttpOnly will help defend against XSS.
+        self.response.headers.add_header("Set-Cookie", "cid="+cookie+"; HttpOnly")
 
     #generate a simple Cryptographic Nonce that is binary safe.
     def rand(self):
@@ -89,7 +95,7 @@ class cas(session):
 
     def get(self):
         CAS_SERVER  = "https://cas.nau.edu"
-        SERVICE_URL = "http://localhost:9999/cas/"
+        SERVICE_URL = "http://localhost:9999/cas"
         status, id, cookie = pycas.login(CAS_SERVER, SERVICE_URL)
         if id:
           u=db.GqlQuery("select * from user where cas_id=:1",id)
@@ -97,6 +103,7 @@ class cas(session):
           if len(user):
             user=user[0]
             self.response.out.write("User logged in:<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
+            #a session id should only be created on successful login to prevent session fixation. 
             self.new_session(user.key())
           else:
             self.response.out.write("user not found,  new account?<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
@@ -107,13 +114,22 @@ class cas(session):
 class o_auth(session):
 
     def get(self):
-        self.response.out.write("This doesn't work yet!")
-        
-        
+        try:
+            # Get the db.User that represents the user on whose behalf the
+            # consumer is making this request.
+            
+            user = oauth.get_current_user()
+            if user.user_id() == '0':
+                self.response.out.write("<br>Login Failed") 
+            else:
+                self.response.out.write("<br   >Success:"+str(user.user_id()))
+        except oauth.OAuthRequestError, e:
+           self.response.out.write("Login Failed")
+
 
 if __name__ == "__main__":    
     run_wsgi_app(webapp.WSGIApplication([('/', index),
-                                         ('/cas/', cas),
-                                         ('/oauth/', o_auth),
+                                         ('/cas', cas),
+                                         ('/oauth', o_auth),
                                          ('/api/.*', dispatch)],
                                         debug=True))
