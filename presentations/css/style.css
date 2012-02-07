@@ -1,3 +1,55 @@
+.slide {
+    display: block;
+
+    width: 900px;
+    height: 700px;
+
+    padding: 40px 60px;
+
+    border-radius: 10px;
+
+    background-color: none !important;
+
+    box-shadow: none;
+    border: none;
+
+    font-family: 'Open Sans', Arial, sans-serif;
+
+    color: rgb(102, 102, 102);
+    text-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+
+    font-size: 30px;
+    line-height: 36px;
+
+    letter-spacing: -1px;
+}
+
+.slide-background {
+    display: block;
+
+    width: 900px;
+    height: 700px;
+
+    padding: 40px 60px;
+
+    border-radius: 10px;
+
+    background-color: white;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+    border: 1px solid rgba(0, 0, 0, .3);
+
+    font-family: 'Open Sans', Arial, sans-serif;
+
+    color: rgb(102, 102, 102);
+    text-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+
+    font-size: 30px;
+    line-height: 36px;
+
+    letter-spacing: -1px;
+}
+
 div#title-slide div#logo {
   width: 272px;
   margin-left: auto;
@@ -53,8 +105,50 @@ div#palmer {
     -ms-transition:     opacity 1s;
     -o-transition:      opacity 1s;
     transition:         opacity 1s;
+  height: 400px !important;
 }
 
 .card:not(.active) {
     opacity: 0;
+}
+
+div.outer {
+  font-family: sans-serif;
+  border-top: 1px solid black;
+  width: 20%;
+  font-size: .5em;
+  float:right;
+  margin-top: 10%;
+}
+div.outer div {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  padding: 5px;
+}
+div.outer div.object {
+  font-weight: bold;
+  text-align: center;
+}
+div.outer div.attributes {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+div.outer div.version {
+  text-align: center;
+  color: #999;
+  padding: 0px;
+  border: none;
+}
+#big-blue-box{
+  position: absolute;
+  z-index: 9999;
+  border: 6px dashed black;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background: blue;
+  opacity: 0.5;
+  width: 53.2%;
+  height: 300px;
+  left: 23%;
 }
