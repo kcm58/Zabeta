@@ -9,3 +9,33 @@
     font-size:0.5em;
     height:1.4em;
 }
+
+.card {
+    width: 900px;
+    padding: 40px;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing:    border-box;
+    -ms-box-sizing:     border-box;
+    -o-box-sizing:      border-box;
+    box-sizing:         border-box;
+
+    font-family: 'PT Serif', georgia, serif;
+
+    font-size: 48px;
+    line-height: 1.5;
+}
+
+/* fade out inactive slides */
+
+.card {
+    -webkit-transition: opacity 1s;
+    -moz-transition:    opacity 1s;
+    -ms-transition:     opacity 1s;
+    -o-transition:      opacity 1s;
+    transition:         opacity 1s;
+}
+
+.card:not(.active) {
+    opacity: 0;
+}
