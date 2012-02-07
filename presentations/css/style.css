@@ -7,10 +7,20 @@ div#title-slide q {
   margin-top: 20px;
 }
 
+div#dorrey {
+  float:right;
+}
+div#dorrey img {
+  height: 261px;
+}
+div#palmer {
+  float:left;
+}
+
 .title{
     text-align:center;
-    font-size:1.7em;
-    margin-bottom:2em;
+    font-size:2.5em;
+    margin-bottom:1.5em;
 }
 
 .name{
