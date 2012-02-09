@@ -114,15 +114,15 @@ div#palmer {
 
 div.outer {
   font-family: sans-serif;
-  border-top: 1px solid black;
+  border-top: 2px solid black;
   width: 20%;
   font-size: .5em;
-  float:right;
+  float:left;
   margin-top: 10%;
 }
 div.outer div {
-  border-left: 1px solid black;
-  border-right: 1px solid black;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
   padding: 5px;
 }
 div.outer div.object {
@@ -130,8 +130,8 @@ div.outer div.object {
   text-align: center;
 }
 div.outer div.attributes {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
 }
 div.outer div.version {
   text-align: center;
@@ -142,13 +142,12 @@ div.outer div.version {
 #big-blue-box{
   position: absolute;
   z-index: 9999;
-  border: 6px dashed black;
+  border: 6px dashed blue;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
-  background: blue;
-  opacity: 0.4;
+  background: rgba(0, 0, 255, .1);
   width: 53.2%;
   height: 300px;
-  left: 23%;
+  left: 22.7%;
 }
