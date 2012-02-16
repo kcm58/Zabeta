@@ -36,6 +36,7 @@ function initUniPicker(){
 	}).success(function(){
 		$('#uni').change(function(){
 			var selected = $('#uni option:selected').val();
+			$.cookie('zaba_uni_id', selected, { expires: 21900});
 			window.location = '/authentication/'+selected;
 		});
 	});
