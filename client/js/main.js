@@ -36,7 +36,7 @@ function initUniPicker(){
 	}).success(function(){
 		$('#uni').change(function(){
 			var selected = $('#uni option:selected').val();
-			window.location = '/auth/'+selected;
+			window.location = '/authentication/'+selected;
 		});
 	});
 	
