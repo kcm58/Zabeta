@@ -15,6 +15,7 @@
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/zabeta.css">
+    
 </head>
 
 <body>
@@ -26,6 +27,15 @@
         <h1>Z<span class="logo-alt-color">abet</span>a</h1>
       </div>
     </header>
+    
+   <script id="uni-template" type="text/x-handlebars-template">
+	<select name="uni" id="uni">
+		{{#universities}}
+		<option value="{{uni_id}}">{{uni_name}}</option>
+		{{/universities}}
+	</select>
+  </script>
+    
     <div id="main" role="main">
 
     </div>
@@ -44,9 +54,6 @@
     <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
     <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
   <![endif]-->
-
-<a href="cas">CAS?</a><br />
-<a href="oauth">OAuth?</a>
 
 </body>
 </html>
