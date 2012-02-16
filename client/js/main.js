@@ -3,59 +3,42 @@
  */
 
 $(document).ready(function(){
-	loadBackbone();
-	//initUniPicker();
+	initRouter();
+	initUniPicker();
 });
 
-function loadBackbone(){
-	var Zabeta = Backbone.Controller.extend({
-		api_url: "/api/",
-		
+function initRouter(){
+	var Router = Backbone.Router.extend({
 		routes: {
-		"*universityChooser":
+			"course/:course_id":	"course",
+			"*data" : 				"default"
 		},
 		
-		defaultAction: function(universityChooser){
-			if(universityChooser){
-				var universityLoaderUrl = this.api_url+'University/list'
-				
-				this.loadData(universityLoaderUrl);
-			}
+		default: function(data){
+			console.log("Hash passed data: "+data);
 		},
-		loadData: function(pageUrl){
-			
+		
+		course: function(course_id){
+			console.log("You want to load the course with ID "+course_id);
 		}
 	});
 	
-	
+	var router = new Router;
+	Backbone.history.start();
 }
 
-/*function initUniPicker(){
-	
-	var UniPicker = Backbone.View.extend({
-		el: $('#main'),
-		
-		initialize: function(){
-			//getJSON
-			var json = {"universities":[{"uni_id":"1", "uni_name":"NAU"},{"uni_id":"2", "uni_name":"ASU"}]};
-			_.bindAll(this, 'render');
-			this.render(json);
-		},
-		
-		render: function(json){
-			loadUniPicker(json);
-		}
+function initUniPicker(){	
+	$.get('/api/University/list', function(json){
+		var src = $('#uni-template').html();
+		var tmpl = Handlebars.compile(src);
+		var html = tmpl(json);
+		$('#main').html(html);
+	}).success(function(){
+		$('#uni').change(function(){
+			var selected = $('#uni option:selected').val();
+			window.location = '/auth/'+selected;
+		});
 	});
 	
-	var uniPicker = new UniPicker();
-	 
-}
 
-function loadUniPicker(json){
-	//alert(json);
-	var src = $('#uni-template').html();
-	var tmpl = Handlebars.compile(src);
-	var html = tmpl(json);
-	$('#main').html(html);
-	
-}*/
+}

@@ -1,3 +1,12 @@
+body {
+	background-color: #ccc;	
+}
+
+#logo {
+	width:7em;
+	margin:auto;
+}
+
 div#logo img {
   float: left;
   margin-left: 2px;
@@ -8,4 +17,25 @@ div#logo h1 {
 }
 div#logo h1 span.logo-alt-color {
   color: black;
+}
+
+#container {
+	width: 80%;
+	height: 30em;
+	max-width: 800px;
+	margin: auto;
+	padding: 5px;	
+	margin-top: 10px;
+	background-color: #fff;
+	-moz-box-shadow: 10px 10px 5px #888;
+	-webkit-box-shadow: 10px 10px 5px #888;
+	box-shadow: 10px 10px 5px #888;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+#main {
+	text-align: center;	
+	font-size: 2em;
 }
