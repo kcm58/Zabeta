@@ -27,9 +27,6 @@ class session(webapp.RequestHandler):
     
     def __init__(self, model, request):
         super(session, self).__init__(model, request)
-        #debug,  create a new user
-        #u=datamodel.user(name="test",email="test@test.com",cas_id="rmb237")
-        #u.put()
         if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
             cookie=self.request.cookies["cid"]
             user_id=memcache.get(cookie)

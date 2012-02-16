@@ -1,19 +1,15 @@
 from mora.rest import RestHandler
 from mora import db
+from datamodel import University
 
 
-class MyUserModel(db.MoraModel):
- 
-    google_user = db.UserProperty()
- 
-    join_date = db.DateTimeProperty(auto_now_add=True)
     
 class moratest(RestHandler):
  
-    model = MyUserModel
+    model = University
  
     def show(self):
-      self.respond.out.write(self.model.to_json())
+      self.response.out.write(self.model.to_json())
  
     def update(self):
       self.model.from_json(self.params)

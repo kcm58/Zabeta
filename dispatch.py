@@ -1,56 +1,21 @@
+
 import sys 
+#Consolidate library files. 
 sys.path.append("lib")
 
 import json
-import pycas
-import logging
-import Cookie
-import os
-import binascii
+import session
+import apitest
 import datamodel
 
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache, oauth
+from mora.rest import RestDispatcher
+import webapp2 as webapp
 
-from mora.rest import RestHandler
 
-class session(webapp.RequestHandler):
-    user_id=0
-    
-    def __init__(self, name, bases):
-        super(session, self).__init__(name, bases)
-        #u=datamodel.user(name="test",email="test@test.com",cas_id="rmb237")
-        #u.put()
-        if "cid" in self.request.cookies:
-            cookie=self.request.cookies["cid"]
-            user_id=memcache.get(cookie)
-            #Is this session active?
-            if user_id:
-                self.user_id=user_id
-                #Reset the server-side timeout value for this session.
-                memcache.add(cookie,self.user_id,7200)
-                self.response.out.write("works:"+str(self.request.cookies["cid"]))
-                #webapp.Request.cookies["cid"]
-            else:
-                self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
-
-    #Create a new session id and link it to a user account using memcachd
-    #this should only be called after a sucessful login to prevent session fixation.
-    def new_session(self, user_id):
-        cookie=self.rand()
-        #expires in two hours,  time in seconds. 
-        memcache.add(cookie,user_id,7200)
-        #HttpOnly will help defend against XSS.
-        self.response.headers.add_header("Set-Cookie", "cid="+cookie+"; HttpOnly")
-
-    #generate a simple Cryptographic Nonce that is binary safe.
-    def rand(self):
-        r=os.urandom(24)
-        r=binascii.hexlify(r)
-        return r
-
-class dispatch(session):
+class dispatch(session.session):
 
     def get(self):
         self.dispatch()
@@ -84,52 +49,35 @@ class dispatch(session):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json_obj)
 
-class index(session):
+class index(session.session):
 
     def get(self):    
         index=open("client/index.html").read()
         self.response.out.write(index)
-        pass
 
-class cas(session):
+class populate(session.session):
 
-    def get(self):
-        CAS_SERVER  = "https://cas.nau.edu"
-        SERVICE_URL = "http://localhost:9999/cas"
-        status, id, cookie = pycas.login(CAS_SERVER, SERVICE_URL)
-        if id:
-          u=db.GqlQuery("select * from user where cas_id=:1",id)
-          user=u.fetch(1)
-          if len(user):
-            user=user[0]
-            self.response.out.write("User logged in:<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
-            #a session id should only be created on successful login to prevent session fixation. 
-            self.new_session(user.key())
-          else:
-            self.response.out.write("user not found,  new account?<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
-            #insert a new user:
-            #datamodel.user(name=user.name,email="",cas_id=id).put()
-            #ask the user for their email?
+    def get(self):    
+        #debug,  create a new user
+        u=datamodel.University(name="NAU",domain="nau.edu")
+        u.put()        
+        a=datamodel.Authentication(university=u.key(),cas_url="https://cas.nau.edu")
+        a.put()
+        r=datamodel.User(name="Mike",email="test@test.com",cas_id="rmb237")
+        r.put()
+        self.response.out.write("Ok!")
 
-class o_auth(session):
-
-    def get(self):
-        try:
-            # Get the db.User that represents the user on whose behalf the
-            # consumer is making this request.
-            
-            user = oauth.get_current_user()
-            if user.user_id() == '0':
-                self.response.out.write("<br>Login Failed") 
-            else:
-                self.response.out.write("<br   >Success:"+str(user.user_id()))
-        except oauth.OAuthRequestError, e:
-           self.response.out.write("Login Failed")
-
-
-if __name__ == "__main__":    
-    run_wsgi_app(webapp.WSGIApplication([('/', index),
-                                         ('/cas', cas),
-                                         ('/oauth', o_auth),
+if __name__ == "__main__":
+    RestDispatcher.setup('/mora', [apitest.moratest])
+ 
+    #app = webapp.WSGIApplication([('/', apitest.moratest),
+    # RestDispatcher.route()], debug = True)
+    t=RestDispatcher.route()
+    run_wsgi_app(webapp.WSGIApplication([t,
+                                         ('/', index),
+                                         ('/cas', session.cas),
+                                         ('/oauth', session.oauth),
+    #                                     ('/mora', apitest.moratest),
+                                         ('/populate', populate),
                                          ('/api/.*', dispatch)],
                                         debug=True))

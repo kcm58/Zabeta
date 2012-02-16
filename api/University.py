@@ -11,4 +11,4 @@ class University(api.api):
         for i in u_list:
             ret.append({"id":i.key().__str__() ,
                         "name":i.name})
-        return ret
+        return {"University":ret}
