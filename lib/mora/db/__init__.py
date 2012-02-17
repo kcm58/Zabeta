@@ -54,6 +54,7 @@
 import logging
 from google.appengine.ext import db
 from google.appengine.ext.db import polymodel
+from google.appengine.api import datastore
 
 # GAE supports a couple of versions of Python and the GAE environment.
 # We will try to use the latest modules and then use `ImportError`
