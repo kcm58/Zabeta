@@ -54,9 +54,19 @@ class index(session.session):
         index=open("client/index.html").read()
         self.response.out.write(index)
 
+#A temp class used to populate the db with development data. 
 class populate(session.session):
 
+    def clear(self,model):
+        query = model.all()
+        entries = query.fetch(1000)
+        db.delete(entries)
+
     def get(self):    
+        #Clear all
+        self.clear(datamodel.University)
+        self.clear(datamodel.Authentication)
+        self.clear(datamodel.User)
         #debug,  create a new user
         u=datamodel.University(name="NAU",domain="nau.edu")
         u.put()       
