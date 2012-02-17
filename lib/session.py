@@ -93,7 +93,11 @@ class auth(session):
             self.new_session(user)
             self.redirect("/")
           else:
-            self.response.out.write("user not found,  new account?<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
+            #
+            #user.name is not defined - line below causing "AttributeError: 'list' object has no attribute 'name'"
+            #
+            #self.response.out.write("user not found,  new account?<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
+            self.response.out.write("user not found, new account?<br />UID: "+str(id)+"<br />Cookie:"+str(cookie))
             #insert a new user:
             #datamodel.user(name=user.name,email="",cas_id=id).put()
             #ask the user for their email?

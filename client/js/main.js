@@ -4,7 +4,7 @@
 
 $(document).ready(function(){
 	initRouter();
-	initUniPicker();
+	checkAuth();
 });
 
 function initRouter(){
@@ -27,17 +27,33 @@ function initRouter(){
 	Backbone.history.start();
 }
 
+function checkAuth(){
+	$.get('/api/init/get', function(json){
+		if(!$.isEmptyObject(json)){
+			var src = $('#welcome-template').html();
+			var tmpl = Handlebars.compile(src);
+			$.extend(json, {uniname: $.cookie('zabeta_uni_name')});
+			var html = tmpl(json);
+			$('#main').html(html);
+		}else{
+			initUniPicker();
+		}
+	});
+}
+
 function initUniPicker(){	
 	$.get('/api/University/list', function(json){
 		var src = $('#uni-template').html();
 		var tmpl = Handlebars.compile(src);
+		$.extend(json, {heading: 'Please select an institution'});
 		var html = tmpl(json);
 		$('#main').html(html);
 	}).success(function(){
 		$('#uni').change(function(){
-			var selected = $('#uni option:selected').val();
-			$.cookie('zaba_uni_id', selected, { expires: 21900});
-			window.location = '/authentication/'+selected;
+			var selected = $('#uni option:selected');
+			$.cookie('zabeta_uni_id', selected.val(), { expires: 21900});
+			$.cookie('zabeta_uni_name', selected.text(), {expires: 21900});
+			window.location = '/authentication/'+selected.val();
 		});
 	});
 	

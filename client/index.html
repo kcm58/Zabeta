@@ -29,12 +29,18 @@
     </header>
     
    <script id="uni-template" type="text/x-handlebars-template">
+	<h4 style="margin:2px">{{heading}}</h4>
 	<select name="uni" id="uni">
 		<option disabled="disabled" selected>...</option>
 		{{#University}}
 		<option value="{{id}}">{{name}}</option>
 		{{/University}}
 	</select>
+  </script>
+  
+  <script id="welcome-template" type="text/x-handlebars-template" src="">
+	<h4 style="margin:2px">Welcome, {{name}}</h4>
+	Welcome to Zabeta for {{uniname}}	
   </script>
     
     <div id="main" role="main">
