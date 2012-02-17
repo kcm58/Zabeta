@@ -315,9 +315,9 @@ class ReferenceProperty(db.ReferenceProperty):
             raise KindError('Property has undefined class type %s' %
                             (self.reference_class))
 
-    if not ((isinstance(reference_class, type) and
-             issubclass(reference_class, Model)) or
-            reference_class is db._SELF_REFERENCE):
+    if not ((isinstance(self.reference_class, type) and
+             issubclass(self.reference_class, Model)) or
+            self.reference_class is db._SELF_REFERENCE):
         raise KindError('reference_class must be Model or _SELF_REFERENCE')
 
     if value is not None and not isinstance(value, self.reference_class):
