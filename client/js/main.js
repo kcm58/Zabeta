@@ -42,6 +42,12 @@ function checkAuth(){
 }
 
 function initUniPicker(){	
+	if($.cookie('zabeta_uni_id') != null){
+		$.cookie('zabeta_uni_id', $.cookie('zabeta_uni_id'), { expires: 21900});
+		$.cookie('zabeta_uni_name', $.cookie('zabeta_uni_name'), {expires: 21900});
+		window.location = 'authentication/'+$.cookie('zabeta_uni_id');
+		return
+	}
 	$.get('/api/University/list', function(json){
 		var src = $('#uni-template').html();
 		var tmpl = Handlebars.compile(src);
