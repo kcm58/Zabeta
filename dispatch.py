@@ -14,7 +14,6 @@ from google.appengine.api import memcache, oauth
 from mora.rest import RestDispatcher
 import webapp2 as webapp
 
-
 class dispatch(session.session):
 
     def get(self):
@@ -60,7 +59,7 @@ class populate(session.session):
     def get(self):    
         #debug,  create a new user
         u=datamodel.University(name="NAU",domain="nau.edu")
-        u.put()        
+        u.put()       
         a=datamodel.Authentication(university=u.key(),cas_url="https://cas.nau.edu")
         a.put()
         r=datamodel.User(name="Mike",email="test@test.com",cas_id="rmb237")
@@ -75,9 +74,10 @@ if __name__ == "__main__":
     t=RestDispatcher.route()
     run_wsgi_app(webapp.WSGIApplication([t,
                                          ('/', index),
-                                         ('/cas', session.cas),
-                                         ('/oauth', session.oauth),
+                                         ('/authentication/.*', session.auth),                                         
+                                         #('/cas', session.cas),
     #                                     ('/mora', apitest.moratest),
                                          ('/populate', populate),
-                                         ('/api/.*', dispatch)],
+                                         ('/api/.*', dispatch)
+                                         ],
                                         debug=True))

@@ -63,37 +63,45 @@ class session(webapp.RequestHandler):
         r=binascii.hexlify(r)
         return r
 
-#This is used to create a session.
-#First the user is authenticated using cas, 
-#then then they are mapped to a user
-#this mapping is stored using memcachd
-class cas(session):
+class auth(session):
 
     def get(self):
-        CAS_SERVER  = "https://cas.nau.edu"
-        SERVICE_URL = "http://localhost:9999/cas"
-        status, id, cookie = pycas.login(CAS_SERVER, SERVICE_URL)
+        uni_key=self.request.path.split("/")[-1]
+        l=db.GqlQuery("select * from Authentication where university=KEY(:1) limit 1",uni_key)
+        l=l.fetch(1)[0]
+        if l.cas_url:
+            self.cas(l.cas_url,uni_key)
+        elif l.oauth_url:
+            self.oauth(l.oauth_url,l.oauth_client_id,l.oauth_client_id)
+
+    #This is used to create a session.
+    #First the user is authenticated using cas, 
+    #then then they are mapped to a user
+    #this mapping is stored using memcachd
+    def cas(self,cas_url,university_key):
+        SERVICE_URL = "http://localhost:9999/authentication/"+university_key
+        status, id, cookie = pycas.login(cas_url, SERVICE_URL)
         if id:
-          u=db.GqlQuery("select * from user where cas_id=:1",id)
+          u=db.GqlQuery("select * from User where cas_id=:1",id)
           user=u.fetch(1)
           if len(user):
             user=user[0]
-            self.response.out.write("User logged in:<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
+            #self.response.out.write("User logged in:<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
             #a session id should only be created on successful login to prevent session fixation. 
             self.new_session(user.key())
+            self.redirect("/")
           else:
             self.response.out.write("user not found,  new account?<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
             #insert a new user:
             #datamodel.user(name=user.name,email="",cas_id=id).put()
             #ask the user for their email?
 
-#This is used to create a session.
-#First the user is authenticated using oauth, 
-#then then they are mapped to a user
-#this mapping is stored using memcachd
-class oauth(session):
+    #This is used to create a session.
+    #First the user is authenticated using oauth, 
+    #then then they are mapped to a user
+    #this mapping is stored using memcachd
     #adapated from http://code.google.com/p/google-api-python-client/source/browse/samples/appengine/main.py
-    def get(self):
+    def oauth(self,oauth_url,oauth_client_id,oauth_client_secret):
         http = httplib2.Http(memcache)
         service = build("plus", "v1", http=http)
         decorator = oauth2decorator_from_clientsecrets(OAUTH_CLIENT_SECRETS,OAUTH_PROVIDER)      

@@ -1,5 +1,5 @@
 from google.appengine.ext import db
-from mora import db
+#from mora import db
   
 #Assign course_instance as a child of the proper course.
 #class course_instance(db.Model):
@@ -44,18 +44,18 @@ from mora import db
 #class CourseImprovementDocument(measure):
 #  description = db.StringProperty()
 
-class University(db.MoraModel):
+class University(db.Model):
   name = db.StringProperty(indexed=True)
   domain = db.StringProperty()
  
-class Authentication(db.MoraModel):
+class Authentication(db.Model):
   university = db.ReferenceProperty(University,indexed=True)
   oauth_url = db.StringProperty()
   oauth_client_id = db.StringProperty()
   oauth_client_secret = db.StringProperty()
   cas_url = db.StringProperty()
 
-class User(db.MoraModel):
+class User(db.Model):
   name = db.StringProperty()
   email = db.EmailProperty()
   oauth_id = db.StringProperty()
