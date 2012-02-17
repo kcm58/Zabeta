@@ -9,6 +9,6 @@ class University(api.api):
         u=db.GqlQuery("select * from University")
         u_list=u.fetch(2048)
         for i in u_list:
-            ret.append({"id":i.key().__str__() ,
+            ret.append({"id":str(i.key()),
                         "name":i.name})
         return {"University":ret}

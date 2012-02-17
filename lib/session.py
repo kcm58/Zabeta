@@ -23,37 +23,39 @@ OAUTH_PROVIDER = "https://www.googleapis.com/auth/plus.me"
 #This is a base class that insures the user is authenticated
 #before allowing them to access the rest of the class.
 class session(webapp.RequestHandler):
-    user_id=0
+    user={}
     
-    def __init__(self, model, request):
-        super(session, self).__init__(model, request)
+    def __init__(self, request, response):
+        super(session, self).__init__(request, response)
         if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
             cookie=self.request.cookies["cid"]
-            user_id=memcache.get(cookie)
+            user=memcache.get(cookie)
             #Is this session active?
-            if user_id:
-                self.user_id=user_id
+            if user:
+                self.user=user
                 #Reset the server-side timeout value for this session.
-                memcache.add(cookie,self.user_id,7200)
-                self.response.out.write("works:"+str(self.request.cookies["cid"]))
+                memcache.add(cookie,self.user,7200)
                 #webapp.Request.cookies["cid"]
             #else:
             #    self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
 
     #Create a new session id and link it to a user account using memcachd
     #this should only be called after a sucessful login to prevent session fixation.
-    def new_session(self, user_id):
+    def new_session(self, user):
         cookie=self.rand()
+        sess={"email":user.email,
+              "name":user.name,
+              "id":str(user.key())}        
         #expires in two hours,  time in seconds. 
-        memcache.add(cookie,user_id,7200)
+        memcache.add(cookie,sess,7200)
         #HttpOnly will help defend against XSS.
-        self.response.headers.add_header("Set-Cookie", "cid="+cookie+"; HttpOnly")
+        self.response.headers.add_header("Set-Cookie", "cid="+cookie+"; path=/; HttpOnly")
 
     def destroy_session(self, user_id):
         #overwrite session id->user id mapping
         memcache.add(cookie,"",1)
         #null the cookie value
-        self.response.headers.add_header("Set-Cookie", "cid=; HttpOnly")
+        self.response.headers.add_header("Set-Cookie", "cid=; path=/; HttpOnly")
 
     #generate a simple Cryptographic Nonce that is binary safe.
     def rand(self):
@@ -88,20 +90,21 @@ class auth(session):
             user=user[0]
             #self.response.out.write("User logged in:<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
             #a session id should only be created on successful login to prevent session fixation. 
-            self.new_session(user.key())
+            self.new_session(user)
             self.redirect("/")
           else:
             self.response.out.write("user not found,  new account?<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
             #insert a new user:
             #datamodel.user(name=user.name,email="",cas_id=id).put()
             #ask the user for their email?
+        
 
     #This is used to create a session.
     #First the user is authenticated using oauth, 
     #then then they are mapped to a user
     #this mapping is stored using memcachd
     #adapated from http://code.google.com/p/google-api-python-client/source/browse/samples/appengine/main.py
-    def oauth(self,oauth_url,oauth_client_id,oauth_client_secret):
+    def oauth(self,oauth_url,oauth_client_id,oauth_client_secret):  
         http = httplib2.Http(memcache)
         service = build("plus", "v1", http=http)
         decorator = oauth2decorator_from_clientsecrets(OAUTH_CLIENT_SECRETS,OAUTH_PROVIDER)      
@@ -115,6 +118,6 @@ class auth(session):
                     user=user[0]
                     self.response.out.write("User logged in:<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
                     #a session id should only be created on successful login to prevent session fixation. 
-                    self.new_session(user.key())            
+                    self.new_session(user)            
         except AccessTokenRefreshError:
             self.redirect('/')

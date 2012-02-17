@@ -35,7 +35,7 @@ class dispatch(session.session):
             libs=api.LIBS.keys()
             mod = __import__('api.'+call_class,fromlist=libs)
             api_call=getattr(mod,call_class)
-            instance = api_call(self.request)
+            instance = api_call(self.request,self.response)
             if instance.getPublic().get(call_method):
                 #invoke the proper method based on the path
                 ret=getattr(instance,call_method)()
