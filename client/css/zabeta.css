@@ -1,16 +1,15 @@
 body {
-	background-color: #ccc;	
+	background-color: #ccc;
 }
 
-#logo {
-	width:7em;
-	margin:auto;
+div#logo {
+  position: absolute;
+  top:0;
+  left:0;
 }
-
 div#logo img {
   float: left;
-  margin-left: 2px;
-  margin-right: 4px;
+  margin:8px;
 }
 div#logo h1 {
   color: #b6b6b6;
@@ -19,23 +18,103 @@ div#logo h1 span.logo-alt-color {
   color: black;
 }
 
-#container {
-	width: 80%;
-	height: 30em;
-	max-width: 800px;
-	margin: auto;
-	padding: 5px;	
-	margin-top: 10px;
-	background-color: #fff;
-	-moz-box-shadow: 10px 10px 5px #888;
-	-webkit-box-shadow: 10px 10px 5px #888;
-	box-shadow: 10px 10px 5px #888;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 8px;
+div#toolbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 48px;
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  border-width: 0 0 4px 0;
+  -webkit-border-image: url("../img/border.png") 0 0 4 0 stretch stretch;
 }
 
-#main {
-	text-align: center;	
-	font-size: 2em;
+div#account {
+  position: absolute;
+  display: table;
+  right: 12px;
+  height: 48px;
+  width: 250px;
+}
+div#account img.photo {
+  display: table-cell;
+  vertical-align: middle;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border: 2px solid gray;
+}
+div#account div.title {
+  display: table-cell;
+  vertical-align: middle;
+  color: #888;
+  font-weight: bold;
+  z-index: 3;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+div#account div.divider {
+  margin-top: 6px;
+  margin-bottom: 12px;
+  margin-right: 8px;
+  height: 30px;
+  width: 1px;
+  background: gray;
+}
+div#account div.signout {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2em;
+  background: white;
+}
+
+h2 {
+  margin: 0 0 15px;
+  padding: 1em 0 0;
+  font-size: 21px;
+  line-height: 24px;
+  color: #666;
+}
+
+table#task-list {
+  width: 100%;
+}
+table#task-list thead a {
+  color: black;
+  text-decoration: none;
+}
+table#task-list > thead > tr {
+border-bottom-width: 2px;
+}
+table#task-list th {
+  text-align: left;
+}
+table#task-list .text {
+  width: 45%;
+}
+table#task-list td {
+  height: auto;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+table#task-list th {
+  border-bottom-width: 2px;
+  font-weight: bold;
+  vertical-align: top;
+}
+table#task-list > tbody > tr {
+border-bottom-width: 1px;
+}
+table#task-list tr {
+  border-bottom-style: solid;
+  border-bottom-color: #DDD;
+  overflow: auto;
 }

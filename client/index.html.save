@@ -15,14 +15,40 @@
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/zabeta.css">
-
+    
 </head>
 
 <body>
-  <div id="toolbar">
-  </div>
 
   <div id="container">
+    <header>
+      <div id="logo">
+        <img src="img/animals-zebra-32x32.png" alt="Zebra" />
+        <h1>Z<span class="logo-alt-color">abet</span>a</h1>
+      </div>
+    </header>
+    
+   <script id="uni-template" type="text/x-handlebars-template">
+	<h4 style="margin:2px">{{heading}}</h4>
+	<select name="uni" id="uni">
+		<option disabled="disabled" selected>...</option>
+		{{#University}}
+		<option value="{{id}}">{{name}}</option>
+		{{/University}}
+	</select>
+  </script>
+  
+  <script id="welcome-template" type="text/x-handlebars-template" src="">
+	<h4 style="margin:2px">Welcome, {{name}}</h4>
+	Welcome to Zabeta for {{uniname}}	
+  </script>
+    
+    <div id="main" role="main">
+		Please wait...
+    </div>
+    <footer>
+
+    </footer>
   </div>
 
   <script src="lib/jquery-1.7.1.min.js"></script>
@@ -37,43 +63,5 @@
     <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
   <![endif]-->
 
-
-  <script id="toolbar-tmpl" type="text/x-handlebars-template">
-    <div id="logo">
-        <img src="img/animals-zebra-32x32.png" alt="Zebra" />
-        <div style="display: table-cell; vertical-align: middle; height: 48px; clear:none">Z<span class="logo-alt-color">abet</span>a for {{uni_name}}</div>
-      </div>
-
-      <div id="account">
-        <img class="photo" src="{{usr_logo}}" />
-        <div class="title">{{name}}</div>
-        <div class="divider"></div>
-        <div class="signout">Sign out</div>
-      </div>
-  </script>
-
-  <script id="list-tmpl" type="text/x-handlebars-template">
-    <h2>{{list_title}}</h2>
-    <table id="task-list" class="">
-      <thead>
-        <tr>
-          {{#list_header}}
-          <th>
-            <a href="">{{heading}}</a>
-          </th>
-          {{/list_header}}
-        </tr>
-      </thead>
-      <tbody>
-        {{#list_row}}
-        <tr>
-          {{#list_row_item}}
-          <td>{{list_row_item_data}}</td>
-          {{/list_row_item}}
-        </tr>
-        {{/list_row}}
-      </tbody>
-    </table>
-  </script>
 </body>
 </html>
