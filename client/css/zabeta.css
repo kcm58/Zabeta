@@ -1,5 +1,5 @@
 body {
-	background-color: #ccc;
+	background-color: #white;
 }
 
 div#logo {
@@ -18,6 +18,15 @@ div#logo h1 span.logo-alt-color {
   color: black;
 }
 
+div#toolbar-bg{
+	background-color: #ccc;
+	position:absolute;
+	width:100%;
+	top: 0;
+	left: 0;
+	height:100%;
+}
+
 div#toolbar {
   position: absolute;
   left: 0;
@@ -25,6 +34,10 @@ div#toolbar {
   top: 0;
   height: 48px;
   background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  background: -moz-gradient((linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  background: -o-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  background: -ms-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  background: gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
   border-width: 0 0 4px 0;
   -webkit-border-image: url("../img/border.png") 0 0 4 0 stretch stretch;
 }
@@ -86,6 +99,7 @@ h2 {
 
 table#task-list {
   width: 100%;
+  height: auto;
 }
 table#task-list thead a {
   color: black;

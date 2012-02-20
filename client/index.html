@@ -19,7 +19,9 @@
 </head>
 
 <body>
-  <div id="toolbar">
+  <div id="toolbar-bg">
+	 <div id="toolbar">
+	 </div>
   </div>
 
   <div id="container">
@@ -53,6 +55,7 @@
   </script>
 
   <script id="list-tmpl" type="text/x-handlebars-template">
+	<a href="#tasks" onclick="addAnotherTask()">Add another task</a>
     <h2>{{list_title}}</h2>
     <table id="task-list" class="">
       <thead>
@@ -74,6 +77,28 @@
         {{/list_row}}
       </tbody>
     </table>
+  </script>
+  
+  <script id="uni-tmpl" type="text/x-handlebars-template">
+	<div style="text-align:center">
+		<h2 style="margin:2px">{{heading}}</h2>
+		<select name="uni" id="uni" style="font-size:2em;">
+			<option disabled="disabled" selected>...</option>
+			{{#University}}
+			<option value="{{id}}">{{name}}</option>
+			{{/University}}
+		</select>
+	</div>
+  </script>
+  
+  <script id="form-tmpl" type="text/x-handlebars-template">
+<a href="#form" onclick="addAnotherInput()">Add another form element</a>
+	<form id="{{id}}" name="{{name}}">
+	  {{#fields}}
+		{{label}}{{{label_line_break}}}
+		<{{element}} type="{{type}}" name="{{name}}" size="{{size}}" class="{{class}}" id="{{id}}" onclick="{{onclick}}" value="{{value}}" />{{{closing_tag}}}{{{line_split}}}
+	  {{/fields}}
+	</form>
   </script>
 </body>
 </html>
