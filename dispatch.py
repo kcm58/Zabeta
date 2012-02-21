@@ -5,7 +5,7 @@ sys.path.append("lib")
 
 import json
 import session
-import apitest
+import moraapi
 import datamodel
 
 from google.appengine.ext import webapp, db
@@ -88,7 +88,7 @@ class populate(session.session):
         self.response.out.write("Ok!")
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/mora', [apitest.moratest])
+    RestDispatcher.setup('/mora', [moraapi.moratest])
  
     #app = webapp.WSGIApplication([('/', apitest.moratest),
     # RestDispatcher.route()], debug = True)
