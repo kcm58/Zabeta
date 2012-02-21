@@ -5,9 +5,9 @@ sys.path.append("lib")
 
 import json
 import session
-import moraapi
 import datamodel
 
+from api import moraapi
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache, oauth
@@ -25,9 +25,12 @@ class dispatch(session.session):
         pass
 
     def dispatch(self):
+        call_arg=False
         path=self.request.path.split("/")
         call_class=path[2]
         call_method=path[3]
+        if len(path)>4:
+          call_arg=path[4]
         api = __import__("api.api")
         #Make sure the class in this API call is public:
         if api.LIBS.get(call_class):
@@ -38,13 +41,29 @@ class dispatch(session.session):
             instance = api_call(self.request,self.response)
             if instance.getPublic().get(call_method):
                 #invoke the proper method based on the path
-                ret=getattr(instance,call_method)()
+                if call_arg:
+                    ret=getattr(instance,call_method)(call_arg)
+                else:
+                    ret=getattr(instance,call_method)()
+                #We allow the user to return a GQL query and we'll convert it to json for them.
+                if type(ret) is db.GqlQuery:
+                    #1024 is always the max return size
+                    u_list=ret.fetch(1024)
+                    ret=[]
+                    #iterate over each element returned by the select.
+                    for u in u_list:
+                        element={}
+                        #iterate over each parameter specified in the select
+                        for key in u._all_properties:
+                            element[key]=getattr(u,key)
+                        ret.append(element)
             else:
                 ret={"error":"invalid method"}
         else:
             ret={"error":"invalid class"}
         #format output:    
-        json_obj = json.dumps(ret)
+        #call_class is needed for namespace
+        json_obj = json.dumps({call_class:ret})
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json_obj)
 
@@ -88,17 +107,16 @@ class populate(session.session):
         self.response.out.write("Ok!")
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/mora', [moraapi.moratest])
-    RestDispatcher.setup('/course', [moraapi.course])
- 
-    #app = webapp.WSGIApplication([('/', apitest.moratest),
-    # RestDispatcher.route()], debug = True)
-    t=RestDispatcher.route()
-    run_wsgi_app(webapp.WSGIApplication([t,
+    RestDispatcher.setup('/api/mora/corse', [moraapi.course])
+    c=RestDispatcher.route()
+    RestDispatcher.setup('/api/mora/courseOffering', [moraapi.courseOffering])
+    co=RestDispatcher.route()
+
+    run_wsgi_app(webapp.WSGIApplication([c,
+                                         co,
                                          ('/', index),
                                          ('/authentication/.*', session.auth),                                         
-                                         #('/cas', session.cas),
-    #                                     ('/mora', apitest.moratest),
+                                         #('/api/mora/.*', moraapi.moratest),
                                          ('/populate', populate),
                                          ('/api/.*', dispatch)
                                          ],

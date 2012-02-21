@@ -5,10 +5,4 @@ class University(api.api):
     public={"list":True}
 
     def list(self):
-        ret=[]
-        u=db.GqlQuery("select * from University")
-        u_list=u.fetch(2048)
-        for i in u_list:
-            ret.append({"id":str(i.key()),
-                        "name":i.name})
-        return {"University":ret}
+        return db.GqlQuery("select * from University")
