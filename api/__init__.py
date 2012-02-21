@@ -2,4 +2,5 @@
 #Dicts have an 0(1) lookup
 LIBS={"init":True,
       "University":True,
-      "objective":True}
+      "objective":True,
+      "Course":True}

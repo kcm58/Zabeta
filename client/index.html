@@ -24,6 +24,7 @@
 	 </div>
   </div>
 
+
   <div id="container">
   	<div id="menu">
   		<h2>Menu</h2>
@@ -47,9 +48,10 @@
 
 
   <script id="toolbar-tmpl" type="text/x-handlebars-template">
+	{{#init}}
     <div id="logo">
         <img src="img/animals-zebra-32x32.png" alt="Zebra" />
-        <div style="display: table-cell; vertical-align: middle; height: 48px; clear:none">Z<span class="logo-alt-color">abet</span>a for {{uni_name}}</div>
+        <div style="display: table-cell; vertical-align: middle; height: 48px; clear:none; width:300px">Z<span class="logo-alt-color">abet</span>a for {{uni_name}}</div>
       </div>
 
       <div id="account">
@@ -58,6 +60,7 @@
         <div class="divider"></div>
         <div class="signout">Sign out</div>
       </div>
+	{{/init}}}
   </script>
 
   <script id="list-tmpl" type="text/x-handlebars-template">
@@ -85,7 +88,7 @@
     </table>
   </script>
   
-  <script id="menu-tmpl">
+  <script id="menu-tmpl" type="text/x-handlebars-template">
   	{{#items}}
   	<a href="#{{hash}}">{{name}}</a><div id="{{hash}}-sub" class="submenu"></div><br />
   	{{/items}}
@@ -93,9 +96,9 @@
   
   <script id="submenu-tmpl" type="text/x-handlebars-template">
 	<ul>
-		{{#courses}}
+		{{#Course}}
 		<li><a href="#course/{{id}}">{{subject}} {{number}}</li>
-		{{/courses}}
+		{{/Course}}
 	</ul>
   </script>
   

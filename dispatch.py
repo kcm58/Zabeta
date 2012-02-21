@@ -107,7 +107,7 @@ class populate(session.session):
         self.response.out.write("Ok!")
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/api/mora/corse', [moraapi.course])
+    RestDispatcher.setup('/api/mora/course', [moraapi.course])
     c=RestDispatcher.route()
     RestDispatcher.setup('/api/mora/courseOffering', [moraapi.courseOffering])
     co=RestDispatcher.route()

@@ -1,5 +1,5 @@
 body {
-	background-color: #white;
+	background-color: white;
 }
 
 div#logo {
@@ -34,10 +34,6 @@ div#toolbar {
   top: 0;
   height: 48px;
   background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
-  background: -moz-gradient((linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
-  background: -o-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
-  background: -ms-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
-  background: gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
   border-width: 0 0 4px 0;
   -webkit-border-image: url("../img/border.png") 0 0 4 0 stretch stretch;
 }
@@ -51,7 +47,7 @@ div#account {
 }
 div#account img.photo {
   display: table-cell;
-  vertical-align: middle;
+  vertical-align: baseline;
   margin-top: 8px;
   margin-bottom: 8px;
   border: 2px solid gray;
