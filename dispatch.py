@@ -43,7 +43,7 @@ class dispatch(session.session):
                 ret={"error":"invalid method"}
         else:
             ret={"error":"invalid class"}
-        #format output:
+        #format output:    
         json_obj = json.dumps(ret)
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json_obj)
@@ -67,13 +67,24 @@ class populate(session.session):
         self.clear(datamodel.University)
         self.clear(datamodel.Authentication)
         self.clear(datamodel.User)
+        self.clear(datamodel.Course)
         #debug,  create a new user
         u=datamodel.University(name="NAU",domain="nau.edu")
         u.put()       
         a=datamodel.Authentication(university=u.key(),cas_url="https://cas.nau.edu")
         a.put()
-        r=datamodel.User(name="Mike",email="test@test.com",cas_id="rmb237")
-        r.put()
+        # one user for each group member and advisor
+        users = list([datamodel.User(name="Mike",email="test@test.com",cas_id="rmb237"),
+                 datamodel.User(name="Jonah",email="test2@test.com",cas_id="jwh83"),
+                 datamodel.User(name="Eddie",email="test3@test.com",cas_id="eh88"),
+                 datamodel.User(name="Kyoko",email="test4@test.com",cas_id="kcm58"),
+                 datamodel.User(name="Owain",email="test5@test.com",cas_id="olm3"),
+                 datamodel.User(name="Eck",email="test6@test.com",cas_id="edo"),
+                 datamodel.User(name="James",email="test7@test.com",cas_id="jdp85")])
+        for r in users:
+            r.put()
+        c=datamodel.Course(program="NAU",numer="386",subject="CS",comment="This course is helpful.....")
+        c.put()
         self.response.out.write("Ok!")
 
 if __name__ == "__main__":
