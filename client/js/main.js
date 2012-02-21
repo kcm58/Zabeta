@@ -186,9 +186,22 @@ function loadForm(){
 			        	"closing_tag": "</textarea>",
 			        	"line_split": "<br /><br />"
 			        	},
+			        	{"label": "Choose",
+			        	"label_line_break": "<br />",
+			        	"select": "True",
+			        	"name": "Choose",
+			        	"options": [
+        	                       {"value": "1",
+        	                       "name": "Choice 1"},
+        	                       {"value": "2",
+        	                       "name": "Choice 2"}	
+        	                       ],
+			        	"line_split": "<br /><br />"
+			        	},
 			        	{"element": "input",
 			        	"type": "button",
-			        	"value": "Button!"
+			        	"value": "Button!",
+			        	"line_split": "<br /><br />"
 			        	}
 			           ]};
 	updateForm();

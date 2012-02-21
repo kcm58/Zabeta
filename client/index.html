@@ -96,7 +96,16 @@
 	<form id="{{id}}" name="{{name}}">
 	  {{#fields}}
 		{{label}}{{{label_line_break}}}
-		<{{element}} type="{{type}}" name="{{name}}" size="{{size}}" class="{{class}}" id="{{id}}" onclick="{{onclick}}" value="{{value}}" />{{{closing_tag}}}{{{line_split}}}
+		{{#if select}}
+			<select name="{{name}}" class="{{class}}" id="{{id}}">
+				{{#options}}
+				<option value="{{value}}">{{name}}</option>}}
+				{{/options}}
+			</select>
+		{{else}}
+			<{{element}} type="{{type}}" name="{{name}}" size="{{size}}" class="{{class}}" id="{{id}}" onclick="{{onclick}}" value="{{value}}" />{{{closing_tag}}}	
+		{{/if}}
+		{{{line_split}}}	
 	  {{/fields}}
 	</form>
   </script>
