@@ -79,7 +79,7 @@ div#account div.signout {
   vertical-align: middle;
 }
 
-#container {
+div#container {
   position: absolute;
   top: 50px;
   left: 0;
@@ -87,6 +87,18 @@ div#account div.signout {
   bottom: 0;
   padding: 2em;
   background: white;
+}
+
+div#menu{
+  width: 15%;
+  border-right:1px solid gray;
+  float:left;	
+  height: 100%;
+  margin-right:15px;
+}
+
+div#content{
+  width: 85%;	
 }
 
 h2 {
@@ -98,7 +110,7 @@ h2 {
 }
 
 table#task-list {
-  width: 100%;
+  width: 80%;
   height: auto;
 }
 table#task-list thead a {

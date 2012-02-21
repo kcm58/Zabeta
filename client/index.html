@@ -25,6 +25,12 @@
   </div>
 
   <div id="container">
+  	<div id="menu">
+  		<h2>Menu</h2>
+  		<div id="menu-content"></div>
+  	</div>
+  	<div id="content">
+  	</div>
   </div>
 
   <script src="lib/jquery-1.7.1.min.js"></script>
@@ -77,6 +83,20 @@
         {{/list_row}}
       </tbody>
     </table>
+  </script>
+  
+  <script id="menu-tmpl">
+  	{{#items}}
+  	<a href="#{{hash}}">{{name}}</a><div id="{{hash}}-sub" class="submenu"></div><br />
+  	{{/items}}
+  </script>
+  
+  <script id="submenu-tmpl" type="text/x-handlebars-template">
+	<ul>
+		{{#courses}}
+		<li><a href="#course/{{id}}">{{subject}} {{number}}</li>
+		{{/courses}}
+	</ul>
   </script>
   
   <script id="uni-tmpl" type="text/x-handlebars-template">

@@ -83,12 +83,13 @@ class populate(session.session):
                  datamodel.User(name="James",email="test7@test.com",cas_id="jdp85")])
         for r in users:
             r.put()
-        c=datamodel.Course(program="NAU",numer="386",subject="CS",comment="This course is helpful.....")
+        c=datamodel.Course(program="NAU",number=386,subject="CS",comment="This course is helpful.....",description="A cool course where you learn cool things")
         c.put()
         self.response.out.write("Ok!")
 
 if __name__ == "__main__":
     RestDispatcher.setup('/mora', [moraapi.moratest])
+    RestDispatcher.setup('/course', [moraapi.course])
  
     #app = webapp.WSGIApplication([('/', apitest.moratest),
     # RestDispatcher.route()], debug = True)

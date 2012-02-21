@@ -35,24 +35,29 @@ class Minutes(db.MoraModel):
     description = db.StringProperty()
     program = db.StringProperty()
     
+class Semester(db.MoraModel):
+    begin_date = db.DateTimeProperty()
+    end_Date = db.DateTimeProperty()
+    name = db.StringProperty
+    
 class Course(db.MoraModel):
     comment = db.StringProperty()
     subject = db.StringProperty()
     number = db.IntegerProperty()
-    outcomes = db.StringProperty()
+    outcomes = db.StringListProperty()
     program = db.StringProperty()
+    name = db.StringProperty()
+    description = db.StringProperty()
     
 class Course_Offering(db.MoraModel):
-    term = db.StringProperty()
-    year = db.IntegerProperty()
+    semester = db.ReferenceProperty(Semester,indexed=True)
     instructor = db.ReferenceProperty(User,indexed=True)
-    avg_grade = db.IntegerProperty()
-    dfw_rate = db.IntegerProperty()
     student_count = db.IntegerProperty()
     cid = db.StringProperty()
     abet_status = db.IntegerProperty()
     section = db.IntegerProperty()
     course = db.StringProperty()
+    final_grades = db.StringListProperty()
     
 class Notification_Schedule(db.MoraModel):
     course_offering = db.StringProperty()
@@ -159,6 +164,8 @@ class CID(db.MoraModel):
     assessment_data_comments = db.ListProperty(db.Key)
     course_improvement = db.StringProperty()
     improvement_suggestions = db.ReferenceProperty(Course_Improvement_Suggestions,indexed=True)
+    
+    
     
     
     

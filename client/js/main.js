@@ -14,20 +14,26 @@ $(document).ready(function(){
 
 function initRouter(){
 	var Router = Backbone.Router.extend({
-		routes: {
+		routes: {		
+			"course":				"courseList",
 			"course/:course_id":	"course",
 			"tasks": 				"loadTasks",
 			"form":					"loadForm",
-			"*data" : 				"default"
+			"*data": 				"default"
 		},
 
 		default: function(data){
 			console.log("Hash passed data: "+data);
-			loadDefault();
 		},
 
 		course: function(course_id){
-			console.log("You want to load the course with ID "+course_id);
+			if(course_id == ""){
+				console.log("You want to load the course with ID "+course_id);
+			}
+		},
+		
+		courseList: function(){
+			loadCourseList($('#course-sub'));
 		},
 		
 		loadTasks: function(){
@@ -49,6 +55,7 @@ function checkAuth(){
 			initUniPicker();
 		}else{
 			loadToolbar();
+			loadMenu();
 		}
 	});
 }
@@ -65,7 +72,7 @@ function initUniPicker(){
 		var tmpl = Handlebars.compile(src);
 		$.extend(json, {heading: 'Please select an institution'});
 		var html = tmpl(json);
-		$('#container').html(html);
+		$('#content').html(html);
 	}).success(function(){
 		$('#uni').change(function(){
 			var selected = $('#uni option:selected');
@@ -90,8 +97,34 @@ function loadToolbar() {
 	});
 }
 
-function loadDefault(){
-	$('#container').html('<a href="#tasks">Tasks</a><br /><a href="#form">Form</a>');
+function loadMenu(){
+	var src = $('#menu-tmpl').html();
+	var tmpl = Handlebars.compile(src);
+	menuJson = {
+			"items":
+				[{
+					"hash":	"tasks",
+					"name":	"Tasks"
+				},
+				{
+					"hash":	"form",
+					"name":	"Form"
+				},
+				{
+					"hash": "course",
+					"name":	"Course"
+				}]
+	}
+	$('#menu-content').html(tmpl(menuJson));
+}
+
+function loadCourseList(element){
+	$.get('mora/course', function(json){
+		var src = $('#submenu-tmpl');
+		var tmpl = Handlebars.compile(src);
+		element.html(tmpl(json));
+
+	});
 }
 
 function loadTasksList() {
@@ -132,7 +165,7 @@ function addAnotherTask(){
 function updateList(){
 	var source = $("#list-tmpl").html();
 	var template = Handlebars.compile(source);
-	$('#container').html(template(taskListJson));
+	$('#content').html(template(taskListJson));
 }
 
 /* Temp proof-of-concept fn */
@@ -223,5 +256,5 @@ function addAnotherInput(){
 function updateForm(){
 	var source = $('#form-tmpl').html();
 	var template = Handlebars.compile(source);
-	$('#container').html(template(formJson));
+	$('#content').html(template(formJson));
 }
