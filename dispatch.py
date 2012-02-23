@@ -56,7 +56,17 @@ class dispatch(session.session):
                         element={}
                         #iterate over each parameter specified in the select
                         for key in u._all_properties:
-                            element[key]=getattr(u,key)
+                            if True:
+                                try:
+                                    var=getattr(u,key)
+                                except:
+                                    pass
+                                if type(var) is datetime.datetime:
+                                    element[key]=var.isoformat("T") + "+00:00"
+                                else:
+                                    element[key]=var
+                            #except:
+                            #    pass
                         ret.append(element)
             else:
                 ret={"error":"invalid method"}

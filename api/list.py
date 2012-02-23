@@ -1,8 +1,9 @@
 import api
 from google.appengine.ext import db
+from datamodel import University
 
-class University(api.api):
+class list(api.api):
     public={"list":True}
 
     def list(self):
-        return db.GqlQuery("select * from University")
+        return University.gql("")
