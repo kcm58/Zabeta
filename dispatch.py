@@ -84,14 +84,16 @@ class populate(session.session):
     def get(self):    
         #Clear all
         self.clear(datamodel.University)
-        self.clear(datamodel.Authentication)
+        self.clear(datamodel.AuthenticationRecord)
         self.clear(datamodel.User)
+        self.clear(datamodel.Program)
         self.clear(datamodel.Course)
         #debug,  create a new user
-        u=datamodel.University(name="NAU",domain="nau.edu")
+        
+        u=datamodel.University(name="NAU",domain="nau.edu",path="NAU")
         u.put()       
-        a=datamodel.Authentication(university=u.key(),cas_url="https://cas.nau.edu")
-        a.put()
+        #a=datamodel.AuthenticationMethod(university=u.key(),cas_url="https://cas.nau.edu")
+        #a.put()
         # one user for each group member and advisor
         users = list([datamodel.User(name="Mike",email="test@test.com",cas_id="rmb237"),
                  datamodel.User(name="Jonah",email="test2@test.com",cas_id="jwh83"),
@@ -100,9 +102,12 @@ class populate(session.session):
                  datamodel.User(name="Owain",email="test5@test.com",cas_id="olm3"),
                  datamodel.User(name="Eck",email="test6@test.com",cas_id="edo"),
                  datamodel.User(name="James",email="test7@test.com",cas_id="jdp85")])
+        
+        p=datamodel.Program(University=u,name="CS")
+        p.put()
         for r in users:
             r.put()
-        c=datamodel.Course(program="NAU",number=386,subject="CS",comment="This course is helpful.....",description="A cool course where you learn cool things")
+        c=datamodel.Course(program=p,name="Embedded Systems",description="A cool course taught by Dr Palmer next semester",catalog="CS 499")
         c.put()
         self.response.out.write("Ok!")
 

@@ -18,7 +18,7 @@ class course(RestHandler):
       
 class courseOffering(RestHandler):
       
-      model = Course_Offering
+      model = CourseOffering
       
       def show(self):
           self.response.out.write(self.model.to_json())
