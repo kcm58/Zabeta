@@ -97,12 +97,20 @@ div#content{
   width: 85%;	
 }
 
+.submenu ul{
+	margin-top:8px;	
+}
+
 h2 {
   margin: 0 0 15px;
   padding: 1em 0 0;
   font-size: 21px;
   line-height: 24px;
   color: #666;
+}
+
+.label{
+	font-weight:bold;	
 }
 
 table#task-list {

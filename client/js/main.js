@@ -28,9 +28,7 @@ function initRouter(){
 		},
 
 		course: function(course_id){
-			if(course_id == ""){
-				console.log("You want to load the course with ID "+course_id);
-			}
+			loadCourseData(course_id);
 		},
 		
 		courseList: function(){
@@ -55,7 +53,7 @@ function initRouter(){
 
 function checkAuth(){
 	$.get('/api/init/get', function(json){
-		if($.isEmptyObject(json)){
+		if($.isEmptyObject(json['init'])){
 			initUniPicker();
 		}else{
 			loadToolbar();
@@ -85,6 +83,8 @@ function initUniPicker(){
 			window.location = '/authentication/'+selected.val();
 		});
 	});
+	$('#content').html('Please go to your special Zabeta URL for your institution');
+
 }
 
 function loadToolbar() {
@@ -176,84 +176,46 @@ function updateList(){
 
 /* Temp proof-of-concept fn */
 function loadForm(){
-	formJson = {
-			"id": "test_form",
-			"name": "test_form",
-			"fields": [
-			           {"label": "Name",
-			        	"element": "input",
-			        	"type": "text",
-			        	"name": "name",
-			        	"line_split": "<br /><br />",
-			        	"label_line_break": "<br />"
-			        	},
-			        	{"label": "password",
-			        	"element": "input",
-			        	"type": "password",
-			        	"name": "password",
-			        	"line_split": "<br /><br />",
-			        	"label_line_break": "<br />"
-			        	},
-			        	{"label": "Checkbox one",
-			        	"element": "input",
-			        	"type": "checkbox",
-			        	"name": "cb1"
-			        	},
-			        	{"label": "Checkbox two",
-			        	"element": "input",
-			        	"type": "checkbox",
-			        	"name": "cb2",
-			        	"line_split": "<br /><br />"
-			        	},
-			        	{"label": "Yes",
-			        	"element": "input",
-			        	"type": "radio",
-			        	"name": "yesno",
-			        	"value": "1"
-			        	},
-			        	{"label": "No",
-			        	"element": "input",
-			        	"type": "radio",
-			        	"name": "yesno",
-			        	"value": "0",
-			        	"line_split": "<br /><br />"
-			        	},
-			        	{"label": "Notes",
-			        	"element": "textarea",
-			        	"name": "notes",
-			        	"label_line_break": "<br />",
-			        	"closing_tag": "</textarea>",
-			        	"line_split": "<br /><br />"
-			        	},
-			        	{"label": "Choose",
-			        	"label_line_break": "<br />",
-			        	"select": "True",
-			        	"name": "Choose",
-			        	"options": [
-        	                       {"value": "1",
-        	                       "name": "Choice 1"},
-        	                       {"value": "2",
-        	                       "name": "Choice 2"}	
-        	                       ],
-			        	"line_split": "<br /><br />"
-			        	},
-			        	{"element": "input",
-			        	"type": "button",
-			        	"value": "Button!",
-			        	"line_split": "<br /><br />"
-			        	}
-			           ]};
+	formJson = { "fields" : [ { "name" : "description",
+        "properties" : [ { "property" : "rows",
+            "value" : "5"
+          },
+          { "property" : "cols",
+            "value" : "10"
+          }
+        ],
+      "textarea" : true,
+      "type" : "textarea"
+    },
+    { "name" : "name",
+      "type" : "text"
+    },
+    { "list" : true,
+      "name" : "occupation",
+      "options" : [ { "text" : "Scientist",
+            "value" : "Scientist_id"
+          },
+          { "text" : "Engineer",
+            "value" : "Engineer_id"
+          },
+          { "text" : "Philosopher",
+            "value" : "Philosopher_id"
+          }
+        ],
+      "properties" : [ { "property" : "class",
+            "value" : "whatever"
+          } ],
+      "type" : "list"
+    }
+  ] };
 	updateForm();
 }
 
 /* Temp proof-of-concept fn */
 function addAnotherInput(){
-	formJson.fields.push({"label": "Another Input",
-    	"element": "input",
+	formJson.fields.push({
     	"type": "text",
-    	"name": "another_input",
-    	"line_split": "<br /><br />",
-    	"label_line_break": "<br />"
+    	"name": "another_input"
     	});
 	updateForm();
 }
@@ -265,4 +227,10 @@ function updateForm(){
 	$('#content').html(template(formJson));
 }
 
-
+function loadCourseData(course_id){
+	$.getJSON('/api/mora/'+course_id, function(json){
+		var source=$('#course-tmpl').html();
+		var template = Handlebars.compile(source);
+		$('#content').html(template(json));
+	});
+}

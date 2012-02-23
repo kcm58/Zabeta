@@ -97,7 +97,7 @@
   <script id="submenu-tmpl" type="text/x-handlebars-template">
 	<ul>
 		{{#Course}}
-		<li><a href="#course/{{id}}">{{subject}} {{number}}</li>
+		<li id="{{id}}" class="course"><a href="#course/{{id}}">{{subject}} {{number}}</li>
 		{{/Course}}
 	</ul>
   </script>
@@ -115,22 +115,46 @@
   </script>
   
   <script id="form-tmpl" type="text/x-handlebars-template">
-<a href="#form" onclick="addAnotherInput()">Add another form element</a>
-	<form id="{{id}}" name="{{name}}">
-	  {{#fields}}
-		{{label}}{{{label_line_break}}}
-		{{#if select}}
-			<select name="{{name}}" class="{{class}}" id="{{id}}">
-				{{#options}}
-				<option value="{{value}}">{{name}}</option>}}
-				{{/options}}
-			</select>
+	<a href="#form" onclick="addAnotherInput()">Add another form element</a>
+	<form id="{{name}}" name="{{name}}">
+	{{#each fields}}
+		<p class="label">{{name}}</p>
+		{{#if textarea}}
+		<textarea name="{{name}}" id="{{name}}"
+		{{#properties}}
+			{{property}}="{{value}}" 
+		{{/properties}}
+		></textarea>
 		{{else}}
-			<{{element}} type="{{type}}" name="{{name}}" size="{{size}}" class="{{class}}" id="{{id}}" onclick="{{onclick}}" value="{{value}}" />{{{closing_tag}}}	
+		{{#if list}}
+		<select name="{{name}}" id="{{name}}"
+		{{#properties}}
+			{{property}}="{{value}}" 
+		{{/properties}}
+		>
+		{{#options}}
+			<option value="{{value}}">{{text}}</option>
+		{{/options}}</select>
+		{{else}}
+		<input type="{{type}}" name="{{name}}" id="{{name}}" 
+		{{#properties}}
+			{{property}}="{{value}} 
+		{{/properties}}
+		/>
 		{{/if}}
-		{{{line_split}}}	
-	  {{/fields}}
+		{{/if}}
+	{{/each}}
+	<br /><br />
+	<input type="submit" value="submit" onclick="submitform()" />
 	</form>
+  </script>
+  
+  <script id="course-tmpl" type="text/x-handlebars-template">
+	<h2>{{subject}} {{number}}</h2>
+	<p class="label">Description:</p>
+	<span>{{description}}</span>
+	<p class="label">Comments:</p>
+	<span>{{comment}}</span>
   </script>
 </body>
 </html>
