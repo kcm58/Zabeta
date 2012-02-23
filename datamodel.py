@@ -65,7 +65,7 @@ class Semester(db.MoraModel):
     begin_date = db.DateTimeProperty()
     end_date = db.DateTimeProperty()
     name = db.StringProperty()
-    university = db.ReferenceProperty(University,indexed=True)
+    university = db.ReferenceProperty(University)
     
 class CourseOffering(Version):
     semester = db.ReferenceProperty(Semester)
