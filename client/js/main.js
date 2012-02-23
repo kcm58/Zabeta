@@ -69,7 +69,7 @@ function initUniPicker(){
 		window.location = 'authentication/'+$.cookie('zabeta_uni_id');
 		return
 	}
-	$.get('/api/University/list', function(json){
+	$.get('/api/list/list', function(json){
 		var src = $('#uni-tmpl').html();
 		var tmpl = Handlebars.compile(src);
 		$.extend(json, {heading: 'Please select an institution'});
