@@ -148,13 +148,9 @@ class populate(session.session):
         self.response.out.write("Ok!")
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/api/mora/course', [moraapi.course])
-    c=RestDispatcher.route()
-    RestDispatcher.setup('/api/mora/courseOffering', [moraapi.courseOffering])
-    co=RestDispatcher.route()
+    RestDispatcher.setup('/api/mora', [moraapi.course,moraapi.courseOffering,moraapi.outcome])
 
-    run_wsgi_app(webapp.WSGIApplication([c,
-                                         co,
+    run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),
                                          ('/authentication/.*', session.auth),                                         
                                          #('/api/mora/.*', moraapi.moratest),
