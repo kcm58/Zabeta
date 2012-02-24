@@ -70,6 +70,7 @@ function initUniPicker(){
 		return
 	}
 	$.get('/api/list/list', function(json){
+		console.log(json);
 		var src = $('#uni-tmpl').html();
 		var tmpl = Handlebars.compile(src);
 		$.extend(json, {heading: 'Please select an institution'});
@@ -126,7 +127,8 @@ function loadMenu(){
 }
 
 function loadCourseList(){
-	$.get('api/Course/list', function(json){
+	$.getJSON('api/Course/list', function(json){
+		console.log(json);
 		var src = $('#submenu-tmpl').html();
 		var tmpl = Handlebars.compile(src);
 		$('#course-sub').html(tmpl(json));

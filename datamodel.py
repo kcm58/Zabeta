@@ -29,6 +29,7 @@ class Form(Version):
 class User(db.MoraModel):
     name = db.StringProperty()
     email = db.EmailProperty()
+    cas_id = db.StringProperty() #needs to be reverse reference 
     
 class University(Version):
     name = db.StringProperty()
@@ -36,7 +37,7 @@ class University(Version):
     semesters = db.StringProperty() #needs to be reverse reference
     path = db.StringProperty()
     programs = db.StringProperty() #needs to be reverse reference
-        
+    
 class Program(Version):
     university = db.ReferenceProperty(University,indexed=True)
     name = db.StringProperty()

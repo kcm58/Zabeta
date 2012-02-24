@@ -64,7 +64,7 @@ class dispatch(session.session):
                                 if type(var) is datetime.datetime:
                                     element[key]=var.isoformat("T") + "+00:00"
                                 else:
-                                    element[key]=var
+                                    element[key]=str(var)
                             #except:
                             #    pass
                         ret.append(element)
@@ -108,8 +108,8 @@ class populate(session.session):
         
         u=datamodel.University(name="NAU",domain="nau.edu",path="NAU")
         u.put()       
-        #a=datamodel.AuthenticationMethod(university=u.key(),cas_url="https://cas.nau.edu")
-        #a.put()
+        a=datamodel.AuthenticationMethod(university=u.key(),cas_url="https://cas.nau.edu")
+        a.put()
         # one user for each group member and advisor
         
         p=datamodel.Program(University=u,name="CS")
@@ -158,7 +158,7 @@ class populate(session.session):
         self.response.out.write("Ok!")
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/api/mora', [moraapi.course,moraapi.courseOffering,moraapi.outcome])
+    RestDispatcher.setup('/api/mora', [moraapi.course,moraapi.courseOffering,moraapi.outcome,moraapi.User])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),

@@ -2,12 +2,14 @@ import httplib2
 import os
 import pycas
 import binascii
+import datamodel
 
 from apiclient.discovery import build
 from oauth2client.appengine import oauth2decorator_from_clientsecrets
 from oauth2client.client import AccessTokenRefreshError
 from google.appengine.api import memcache
 from google.appengine.ext import webapp, db
+
 
 OAUTH_CLIENT_SECRETS = """{
   "web": {
@@ -69,7 +71,8 @@ class auth(session):
 
     def get(self):
         uni_key=self.request.path.split("/")[-1]
-        l=db.GqlQuery("select * from Authentication where university=KEY(:1) limit 1",uni_key)
+        #l=datamodel.University.gql("where __key__=KEY(:1) limit 1",uni_key)
+        l=db.GqlQuery("select * from AuthenticationMethod where university=KEY(:1) limit 1",uni_key)
         l=l.fetch(1)[0]
         if l.cas_url:
             self.cas(l.cas_url,uni_key)
@@ -116,7 +119,7 @@ class auth(session):
             http = decorator.http()
             user = service.people().get(userId='me').execute(http)
             if user:
-                u=db.GqlQuery("select * from user where oauth_id=:1",user)
+                u=db.GqlQuery("select * from User where oauth_id=:1",user)
                 user=u.fetch(1)
                 if len(user):
                     user=user[0]

@@ -97,7 +97,7 @@
   <script id="submenu-tmpl" type="text/x-handlebars-template">
 	<ul>
 		{{#Course}}
-		<li id="{{id}}" class="course"><a href="#course/{{id}}">{{subject}} {{number}}</li>
+		<li id="{{id}}" class="course"><a href="#course/{{id}}">{{catalog}}</li>
 		{{/Course}}
 	</ul>
   </script>
@@ -107,9 +107,9 @@
 		<h2 style="margin:2px">{{heading}}</h2>
 		<select name="uni" id="uni" style="font-size:2em;">
 			<option disabled="disabled" selected>...</option>
-			{{#University}}
+			{{#list}}
 			<option value="{{id}}">{{name}}</option>
-			{{/University}}
+			{{/list}}
 		</select>
 	</div>
   </script>
@@ -150,11 +150,9 @@
   </script>
   
   <script id="course-tmpl" type="text/x-handlebars-template">
-	<h2>{{subject}} {{number}}</h2>
+	<h2>{{name}} - ({{catalog}}}</h2>
 	<p class="label">Description:</p>
 	<span>{{description}}</span>
-	<p class="label">Comments:</p>
-	<span>{{comment}}</span>
   </script>
 </body>
 </html>
