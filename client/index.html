@@ -48,7 +48,7 @@
 
 
   <script id="toolbar-tmpl" type="text/x-handlebars-template">
-	{{#init}}
+	{{#state}}
     <div id="logo">
         <img src="img/animals-zebra-32x32.png" alt="Zebra" />
         <div style="display: table-cell; vertical-align: middle; height: 48px; clear:none; width:300px">Z<span class="logo-alt-color">abet</span>a for {{uni_name}}</div>
@@ -60,7 +60,7 @@
         <div class="divider"></div>
         <div class="signout">Sign out</div>
       </div>
-	{{/init}}}
+	{{/state}}}
   </script>
 
   <script id="list-tmpl" type="text/x-handlebars-template">
@@ -107,9 +107,9 @@
 		<h2 style="margin:2px">{{heading}}</h2>
 		<select name="uni" id="uni" style="font-size:2em;">
 			<option disabled="disabled" selected>...</option>
-			{{#list}}
+			{{#University}}
 			<option value="{{id}}">{{name}}</option>
-			{{/list}}
+			{{/University}}
 		</select>
 	</div>
   </script>
@@ -126,7 +126,7 @@
 		{{/properties}}
 		></textarea>
 		{{else}}
-		{{#if list}}
+		{{#if University}}
 		<select name="{{name}}" id="{{name}}"
 		{{#properties}}
 			{{property}}="{{value}}" 

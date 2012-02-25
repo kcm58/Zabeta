@@ -52,8 +52,8 @@ function initRouter(){
 }
 
 function checkAuth(){
-	$.get('/api/init/get', function(json){
-		if($.isEmptyObject(json['init'])){
+	$.get('/api/state/get', function(json){
+		if($.isEmptyObject(json['state'])){
 			initUniPicker();
 		}else{
 			loadToolbar();
@@ -69,7 +69,7 @@ function initUniPicker(){
 		window.location = 'authentication/'+$.cookie('zabeta_uni_id');
 		return
 	}
-	$.get('/api/list/list', function(json){
+	$.get('/api/list/University', function(json){
 		console.log(json);
 		var src = $('#uni-tmpl').html();
 		var tmpl = Handlebars.compile(src);
@@ -89,11 +89,11 @@ function initUniPicker(){
 }
 
 function loadToolbar() {
-	$.get('/api/init/get', function(json){
-		if(!$.isEmptyObject(json['init'])){
+	$.get('/api/state/get', function(json){
+		if(!$.isEmptyObject(json['state'])){
 			var src = $('#toolbar-tmpl').html();
 			var tmpl = Handlebars.compile(src);
-			$.extend(json['init'], {usr_logo: 'img/face.png', uni_name:$.cookie('zabeta_uni_name')});
+			$.extend(json['state'], {usr_logo: 'img/face.png', uni_name:$.cookie('zabeta_uni_name')});
 			var html = tmpl(json);
 			$('#toolbar').html(html);
 		}else{
@@ -127,7 +127,7 @@ function loadMenu(){
 }
 
 function loadCourseList(){
-	$.getJSON('api/Course/list', function(json){
+	$.getJSON('api/list/Course', function(json){
 		console.log(json);
 		var src = $('#submenu-tmpl').html();
 		var tmpl = Handlebars.compile(src);
@@ -230,7 +230,7 @@ function updateForm(){
 }
 
 function loadCourseData(course_id){
-	$.getJSON('/api/mora/'+course_id, function(json){
+	$.getJSON('/api/crud/'+course_id, function(json){
 		var source=$('#course-tmpl').html();
 		var template = Handlebars.compile(source);
 		$('#content').html(template(json));

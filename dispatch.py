@@ -8,7 +8,7 @@ import session
 import datamodel
 import datetime
 
-from api import moraapi
+from api import crud
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache, oauth
@@ -74,7 +74,12 @@ class dispatch(session.session):
             ret={"error":"invalid class"}
         #format output:    
         #call_class is needed for namespace
-        json_obj = json.dumps({call_class:ret})
+        if call_class=="list":     
+            #A special case so that the list returns the proper namespace
+            #for the collection it is returning. 
+            json_obj = json.dumps({call_method:ret})
+        else:
+            json_obj = json.dumps({call_class:ret})
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json_obj)
 
@@ -89,10 +94,10 @@ class populate(session.session):
 
     def clear(self,model):
         query = model.all()
-        entries = query.fetch(1000)
+        entries = query.fetch(1024)
         db.delete(entries)
 
-    def get(self):    
+    def get(self):
         #Clear all
         self.clear(datamodel.University)
         self.clear(datamodel.AuthenticationRecord)
@@ -106,7 +111,7 @@ class populate(session.session):
         self.clear(datamodel.Instrument)
         #debug,  create a new user
         
-        u=datamodel.University(name="NAU",domain="nau.edu",path="NAU")
+        u=datamodel.University(name="NAU",domain="nau.edu",path="nau")
         u.put()       
         a=datamodel.AuthenticationMethod(university=u.key(),cas_url="https://cas.nau.edu")
         a.put()
@@ -158,12 +163,13 @@ class populate(session.session):
         self.response.out.write("Ok!")
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/api/mora', [moraapi.course,moraapi.courseOffering,moraapi.outcome,moraapi.User])
+    RestDispatcher.setup('/api/mora', [crud.course,crud.courseOffering,crud.outcome,crud.User])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),
-                                         ('/authentication/.*', session.auth),                                         
-                                         #('/api/mora/.*', moraapi.moratest),
+                                         ('/authentication/.*', session.auth),
+                                         ('/a/.*', session.path_handler),                                       
+                                         #('/api/mora/.*', crud.moratest),
                                          ('/populate', populate),
                                          ('/api/.*', dispatch)
                                          ],

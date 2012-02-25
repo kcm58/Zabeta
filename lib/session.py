@@ -30,13 +30,13 @@ class session(webapp.RequestHandler):
     def __init__(self, request, response):
         super(session, self).__init__(request, response)
         if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
-            cookie=self.request.cookies["cid"]
-            user=memcache.get(cookie)
+            self.cookie=self.request.cookies["cid"]
+            user=memcache.get(self.cookie)
             #Is this session active?
             if user:
                 self.user=user
                 #Reset the server-side timeout value for this session.
-                memcache.add(cookie,self.user,7200)
+                memcache.add(self.cookie,self.user,7200)
                 #webapp.Request.cookies["cid"]
             #else:
             #    self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
@@ -53,9 +53,9 @@ class session(webapp.RequestHandler):
         #HttpOnly will help defend against XSS.
         self.response.headers.add_header("Set-Cookie", "cid="+cookie+"; path=/; HttpOnly")
 
-    def destroy_session(self, user_id):
+    def destroy_session(self):
         #overwrite session id->user id mapping
-        memcache.add(cookie,"",1)
+        memcache.add(self.cookie,"",1)
         #null the cookie value
         self.response.headers.add_header("Set-Cookie", "cid=; path=/; HttpOnly")
 
@@ -67,12 +67,19 @@ class session(webapp.RequestHandler):
         r=binascii.hexlify(r)
         return r
 
+class path_handler(webapp.RequestHandler):
+
+    def get(self):
+        uni_path=self.request.path.split("/")[-1].lower()
+        l=datamodel.University.gql("where path=:1 limit 1",uni_path)
+        uni_id=str(l.fetch(1)[0].key()) 
+        self.redirect("/authentication/"+uni_id)
+
 class auth(session):
 
     def get(self):
         uni_key=self.request.path.split("/")[-1]
-        #l=datamodel.University.gql("where __key__=KEY(:1) limit 1",uni_key)
-        l=db.GqlQuery("select * from AuthenticationMethod where university=KEY(:1) limit 1",uni_key)
+        l=datamodel.AuthenticationMethod.gql("where university=KEY(:1) limit 1",uni_key)
         l=l.fetch(1)[0]
         if l.cas_url:
             self.cas(l.cas_url,uni_key)
