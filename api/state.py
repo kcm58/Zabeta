@@ -10,3 +10,4 @@ class state(api.api):
 
     def logout(self):
         self.destroy_session()
+        return "success"
