@@ -155,7 +155,7 @@ class RestDispatcher(webapp.RequestHandler):
     @classmethod
     def connect(cls, rest_handler):
         model = rest_handler.model
-        cls.rest_handlers[model.__name__] = rest_handler
+        cls.rest_handlers[model.class_name()] = rest_handler
 
         verbs = {}
         # When we connect RestHandler subclasses to this class we also
@@ -239,9 +239,11 @@ class RestDispatcher(webapp.RequestHandler):
         except db.BadKeyError:
             raise DispatchError(404, "ResourceNotFound")
 
+        model_name = model.class_name()
+
         # We then can use the model to create an appropriate handler.
-        if model.kind() in self.rest_handlers:
-            rest_handler = self.rest_handlers[model.kind()](model, self.request, self.response)
+        if model_name in self.rest_handlers:
+            rest_handler = self.rest_handlers[model_name](model, self.request, self.response)
             rest_handler.setup()
         else:
             raise DispatchError(404, "ResourceNotFound")

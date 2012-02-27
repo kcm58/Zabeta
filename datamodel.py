@@ -20,6 +20,8 @@ class Version(db.MoraPolyModel):
     commit_program = db.ReferenceProperty(None,indexed=True)#reference to the Program
     commit_object = db.ReferenceProperty(Object) 
     commit_commment = db.StringProperty()
+    #This must be in all collections for access control.
+    university = db.ReferenceProperty(None,indexed=True)
     
 class Form(Version):
     form_name = db.StringProperty()
@@ -29,7 +31,6 @@ class Form(Version):
 class User(db.MoraModel):
     name = db.StringProperty()
     email = db.EmailProperty()
-    cas_id = db.StringProperty() #needs to be reverse reference 
     
 class University(Version):
     name = db.StringProperty()
@@ -39,7 +40,6 @@ class University(Version):
     programs = db.StringProperty() #needs to be reverse reference
     
 class Program(Version):
-    university = db.ReferenceProperty(University,indexed=True)
     name = db.StringProperty()
 
 class Task(Version):
@@ -50,7 +50,7 @@ class Task(Version):
     fulfilled = db.IntegerProperty()
     attachment_names = db.StringListProperty()
     attachment_blob_ids = db.StringListProperty()
-    response = db.StringProperty() #JSON String
+    response = db.StringProperty() #Form resposne
  
 class Course(Version):
     program = db.ReferenceProperty(Program,indexed=True)
@@ -100,7 +100,7 @@ class Objective(Version):
     index = db.IntegerProperty()
     outcomes = db.ListProperty(db.Key)
     name = db.StringProperty()
-    
+
 class Minutes(Version):
     description = db.StringProperty()
     program = db.ReferenceProperty(Program)
@@ -116,9 +116,6 @@ class AuthenticationRecord(db.MoraModel):
     oauth_id = db.StringProperty()
     cas_id = db.StringProperty()
     university = db.ReferenceProperty(University,indexed=True)
-    programs = db.ReferenceProperty(Program,indexed=True)
+    programs = db.ListProperty(db.Key)#Progam refernce
     privileges = db.ListProperty(int)
     user = db.ReferenceProperty(User,indexed=True)
-    
-    
-    

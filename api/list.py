@@ -15,6 +15,7 @@ class list(api.api):
             "Minutes":True,}
 
     def University(self):
+        #"where university=:1",self.university
         return datamodel.University.gql("")
 
     def Program(self):
@@ -41,5 +42,6 @@ class list(api.api):
     def Objective(self):
         return datamodel.Objective.gql("")
 
-    def Minutes(self):
-        return datamodel.Minutes.gql("")
+    def Minutes(self,program):
+        return datamodel.Objective.gql("").filter('program =', program)
+

@@ -62,16 +62,23 @@ class populate(session.session):
         o.put()
         #need assessments?
           
-        users = list([datamodel.User(name="Mike",email="test@test.com",cas_id="rmb237"),
-                 datamodel.User(name="Jonah",email="test2@test.com",cas_id="jwh83"),
-                 datamodel.User(name="Eddie",email="test3@test.com",cas_id="eh88"),
-                 datamodel.User(name="Kyoko",email="test4@test.com",cas_id="kcm58"),
-                 datamodel.User(name="Owain",email="test5@test.com",cas_id="olm3"),
-                 datamodel.User(name="Eck",email="test6@test.com",cas_id="edo"),
-                 datamodel.User(name="James",email="test7@test.com",cas_id="jdp85")])
-        
-        
-        for r in users:
+        users = [(datamodel.User(name="Mike",email="test@test.com"),"rmb237"),
+                 (datamodel.User(name="Jonah",email="test2@test.com"),"jwh83"),
+                 (datamodel.User(name="Eddie",email="test3@test.com"),"eh88"),
+                 (datamodel.User(name="Kyoko",email="test4@test.com"),"kcm58"),
+                 (datamodel.User(name="Owain",email="test5@test.com"),"olm3"),
+                 (datamodel.User(name="Eck",email="test6@test.com"),"edo"),
+                 (datamodel.User(name="James",email="test7@test.com"),"jdp85")]
+
+        for r,id in users:
             r.put()
+            #create an authentication record for each user. 
+            ar=datamodel.AuthenticationRecord(university=u.key(),
+                                           cas_id=id,
+                                           user=r.key(),
+                                           programs=[p.key()],
+                                           privileges=[1])
+            ar.put()
+            
         c.put()
         self.response.out.write("Ok!")

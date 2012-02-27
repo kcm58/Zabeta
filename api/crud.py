@@ -22,11 +22,23 @@ class Task(RestHandler):
         self.response.out.write(self.model.to_json())
     
     def update(self):
-        self.model.from_son(self.params)   
-       
-                   
+        self.model.from_son(self.params)
+
+    @rest_create("response")
+    def response_new(self):
+        #Populate the response
+        self.model.response=self.params
+
+class AssessmentTask(Task):
+  
+    model = AssessmentTask
+    
+class CourseTask(Task):
+  
+    model = CourseTask 
+    
 class course(RestHandler):
-      
+
       model = Course
       
       def show(self):

@@ -43,11 +43,19 @@ class session(webapp.RequestHandler):
 
     #Create a new session id and link it to a user account using memcachd
     #this should only be called after a sucessful login to prevent session fixation.
-    def new_session(self, user):
+    def new_session(self, auth):
+        user=auth.user
         cookie=self.rand()
+        programs=[]
+        #must be a string id
+        for p in auth.programs:
+            programs.append(str(p))
         sess={"email":user.email,
               "name":user.name,
-              "id":str(user.key())}        
+              "id":str(user.key()),
+              "university":str(auth.university),
+              "programs":programs,
+              "privileges":auth.privileges}        
         #expires in two hours,  time in seconds. 
         memcache.add(cookie,sess,7200)
         #HttpOnly will help defend against XSS.
@@ -94,13 +102,12 @@ class auth(session):
         SERVICE_URL = "http://localhost:9999/authentication/"+university_key
         status, id, cookie = pycas.login(cas_url, SERVICE_URL)
         if id:
-          u=db.GqlQuery("select * from User where cas_id=:1",id)
-          user=u.fetch(1)
-          if len(user):
-            user=user[0]
+          ar=db.GqlQuery("select * from AuthenticationRecord where cas_id=:1",id)
+          auth=ar.fetch(1)
+          if len(auth):
             #self.response.out.write("User logged in:<br />Name: "+str(user.name)+"<br/>UID: "+str(id)+"<br />Cookie:"+str(cookie))
             #a session id should only be created on successful login to prevent session fixation. 
-            self.new_session(user)
+            self.new_session(auth[0])
             self.redirect("/")
           else:
             #
