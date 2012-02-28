@@ -90,29 +90,13 @@ class index(webapp.RequestHandler):
         self.response.out.write(index)
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-    try:
-        RestDispatcher.setup('/api/mora', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User])
-
-        run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
-                                             ('/', index),
-                                             ('/authentication/.*', session.auth),
-                                             ('/a/.*', session.path_handler),                                     
-                                             #('/api/mora/.*', crud.moratest),
-                                             ('/populate', populate.populate),
-                                             ('/schedule', schedule.schedule),
-                                             ('/api/.*', dispatch)
-                                             ],
-                                            debug=True))
-    except SystemExit:
-=======
-   # try:
-    RestDispatcher.setup('/api/mora', [crud.course,crud.courseOffering,crud.outcome,crud.User])
+    #try:
+    RestDispatcher.setup('/api/mora', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),
                                          ('/authentication/.*', session.auth),
-                                         ('/a/.*', session.path_handler),                                       
+                                         ('/a/.*', session.path_handler),                                     
                                          #('/api/mora/.*', crud.moratest),
                                          ('/populate', populate.populate),
                                          ('/schedule', schedule.schedule),
@@ -120,7 +104,4 @@ if __name__ == "__main__":
                                          ],
                                         debug=True))
     #except SystemExit:
->>>>>>> 24d6990afb1d65ad1ee7f564661cd78f51bf4d54
-        #Sometimes we need a premature exit.
-    #    pass
-      
+    #  pass
