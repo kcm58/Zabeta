@@ -452,7 +452,10 @@ class ModelMixin(object):
                 continue
             if p in available_properties:
                 p_kind = self.properties()[p]
-                result[p] = p_kind.as_json(self)
+                try:
+                    result[p] = p_kind.as_json(self)
+                except:
+                    result[p] = None
         return result
 
     # Since overriding `as_json` is pretty common and calling super

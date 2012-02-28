@@ -4,7 +4,7 @@ from datamodel import *
 
 
 
-class outcome(RestHandler):
+class Outcome(RestHandler):
 
       model = Outcome
       
@@ -37,7 +37,7 @@ class CourseTask(Task):
   
     model = CourseTask 
     
-class course(RestHandler):
+class Course(RestHandler):
 
       model = Course
       
@@ -48,7 +48,7 @@ class course(RestHandler):
           self.model.from_son(self.params)
 
       
-class courseOffering(RestHandler):
+class CourseOffering(RestHandler):
       
       model = CourseOffering
       

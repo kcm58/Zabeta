@@ -91,12 +91,12 @@ class index(webapp.RequestHandler):
 
 if __name__ == "__main__":
     try:
-        RestDispatcher.setup('/api/mora', [crud.course,crud.courseOffering,crud.outcome,crud.User])
-    
+        RestDispatcher.setup('/api/mora', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User])
+
         run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                              ('/', index),
                                              ('/authentication/.*', session.auth),
-                                             ('/a/.*', session.path_handler),                                       
+                                             ('/a/.*', session.path_handler),                                     
                                              #('/api/mora/.*', crud.moratest),
                                              ('/populate', populate.populate),
                                              ('/schedule', schedule.schedule),

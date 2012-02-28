@@ -4,6 +4,7 @@ import pycas
 import binascii
 import datamodel
 import sys
+import pickle
 
 from apiclient.discovery import build
 from oauth2client.appengine import oauth2decorator_from_clientsecrets
@@ -36,12 +37,15 @@ class session(webapp.RequestHandler):
         if not self.always_allowed:
             if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
                 self.cookie=self.request.cookies["cid"]
-                user=memcache.get(self.cookie)
+                #Dont use memcache for anything else.
+                #otherwise an attacker could read or delete an arbitrary value.
+                user_mem=memcache.get(self.cookie)
                 #Is this session active?
-                if user:
-                    self.user=user
+                if len(user_mem):
+                    self.user=pickle.loads(user_mem)
                     #Reset the server-side timeout value for this session.
-                    memcache.add(self.cookie,self.user,7200)
+                    #return as fast as possible because this will affect all load times. 
+                    memcache.set(self.cookie,user_mem,7200)
                     #webapp.Request.cookies["cid"]
                 else:
                     #session expired
@@ -52,7 +56,7 @@ class session(webapp.RequestHandler):
                 #Not allowed                  
                 sys.exit("Not allowed")
     #Create a new session id and link it to a user account using memcachd
-    #this should only be called after a sucessful login to prevent session fixation.
+    #this should only be called after a successful login to prevent session fixation.
     def new_session(self, auth):
         user=auth.user
         cookie=self.rand()
@@ -65,15 +69,16 @@ class session(webapp.RequestHandler):
               "id":str(user.key()),
               "university":str(auth.university),
               "programs":programs,
-              "privileges":auth.privileges}        
+              "privileges":auth.privileges}  
+        sess_mem=pickle.dumps(sess)      
         #expires in two hours,  time in seconds. 
-        memcache.add(cookie,sess,7200)
+        memcache.set(cookie,sess_mem,7200)
         #HttpOnly will help defend against XSS.
         self.response.headers.add_header("Set-Cookie", "cid="+cookie+"; path=/; HttpOnly")
 
     def destroy_session(self):
         #overwrite session id->user id mapping
-        memcache.add(self.cookie,"",1)
+        memcache.delete(self.cookie)
         #null the cookie value
         self.response.headers.add_header("Set-Cookie", "cid=; path=/; HttpOnly")
 
