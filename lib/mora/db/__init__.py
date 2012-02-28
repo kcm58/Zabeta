@@ -151,7 +151,10 @@ class IntegerProperty(db.IntegerProperty):
   def as_json(self, model_instance, value=None):
     if value is None:
       value = self.get_value_for_datastore(model_instance)
-    return long(value)
+    try:
+      return long(value)
+    except:
+      return None
 
 
 class FloatProperty(db.FloatProperty):
@@ -452,7 +455,11 @@ class ModelMixin(object):
                 continue
             if p in available_properties:
                 p_kind = self.properties()[p]
-                result[p] = p_kind.as_json(self)
+                try:
+                    result[p] = p_kind.as_json(self)
+                except AttributeError:
+                    result[p] = None
+                    
         return result
 
     # Since overriding `as_json` is pretty common and calling super

@@ -9,7 +9,7 @@ var formJson;
 
 $(document).ready(function(){
 	initRouter();
-	checkAuth();
+	initPage();
 	
 });
 
@@ -51,44 +51,8 @@ function initRouter(){
 	Backbone.history.start();
 }
 
-function checkAuth(){
-	$.get('/api/state/get', function(json){
-		if($.isEmptyObject(json['state'])){
-			initUniPicker();
-		}else{
-			loadToolbar();
-			loadMenu();
-		}
-	});
-}
 
-function initUniPicker(){
-	if($.cookie('zabeta_uni_id') != null){
-		$.cookie('zabeta_uni_id', $.cookie('zabeta_uni_id'), { expires: 21900});
-		$.cookie('zabeta_uni_name', $.cookie('zabeta_uni_name'), {expires: 21900});
-		window.location = 'authentication/'+$.cookie('zabeta_uni_id');
-		return
-	}
-	$.get('/api/list/University', function(json){
-		console.log(json);
-		var src = $('#uni-tmpl').html();
-		var tmpl = Handlebars.compile(src);
-		$.extend(json, {heading: 'Please select an institution'});
-		var html = tmpl(json);
-		$('#content').html(html);
-	}).success(function(){
-		$('#uni').change(function(){
-			var selected = $('#uni option:selected');
-			$.cookie('zabeta_uni_id', selected.val(), { expires: 21900});
-			$.cookie('zabeta_uni_name', selected.text(), {expires: 21900});
-			window.location = '/authentication/'+selected.val();
-		});
-	});
-	$('#content').html('Please go to your special Zabeta URL for your institution');
-
-}
-
-function loadToolbar() {
+function initPage() {
 	$.get('/api/state/get', function(json){
 		if(!$.isEmptyObject(json['state'])){
 			var src = $('#toolbar-tmpl').html();
@@ -96,10 +60,10 @@ function loadToolbar() {
 			$.extend(json['state'], {usr_logo: 'img/face.png', uni_name:$.cookie('zabeta_uni_name')});
 			var html = tmpl(json);
 			$('#toolbar').html(html);
-		}else{
-			initUniPicker();
+			loadMenu();
 		}
-	});
+	})
+	.error(function(){$('#content').html('I am a Google login button');});
 }
 
 function loadMenu(){
@@ -128,7 +92,6 @@ function loadMenu(){
 
 function loadCourseList(){
 	$.getJSON('api/list/Course', function(json){
-		console.log(json);
 		var src = $('#submenu-tmpl').html();
 		var tmpl = Handlebars.compile(src);
 		$('#course-sub').html(tmpl(json));
@@ -230,7 +193,8 @@ function updateForm(){
 }
 
 function loadCourseData(course_id){
-	$.getJSON('/api/crud/'+course_id, function(json){
+	$.getJSON('/api/mora/'+course_id, function(json){
+		console.log(json);
 		var source=$('#course-tmpl').html();
 		var template = Handlebars.compile(source);
 		$('#content').html(template(json));

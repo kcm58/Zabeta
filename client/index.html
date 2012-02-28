@@ -58,7 +58,7 @@
         <img class="photo" src="{{usr_logo}}" />
         <div class="title">{{name}}</div>
         <div class="divider"></div>
-        <div class="signout">Sign out</div>
+        <div class="signout"><a href="api/state/logout">Sign out</a></div>
       </div>
 	{{/state}}}
   </script>
@@ -101,19 +101,7 @@
 		{{/Course}}
 	</ul>
   </script>
-  
-  <script id="uni-tmpl" type="text/x-handlebars-template">
-	<div style="text-align:center">
-		<h2 style="margin:2px">{{heading}}</h2>
-		<select name="uni" id="uni" style="font-size:2em;">
-			<option disabled="disabled" selected>...</option>
-			{{#University}}
-			<option value="{{id}}">{{name}}</option>
-			{{/University}}
-		</select>
-	</div>
-  </script>
-  
+    
   <script id="form-tmpl" type="text/x-handlebars-template">
 	<a href="#form" onclick="addAnotherInput()">Add another form element</a>
 	<form id="{{name}}" name="{{name}}">
@@ -150,7 +138,7 @@
   </script>
   
   <script id="course-tmpl" type="text/x-handlebars-template">
-	<h2>{{name}} - ({{catalog}}}</h2>
+	<h2>{{name}} - ({{catalog}}})</h2>
 	<p class="label">Description:</p>
 	<span>{{description}}</span>
   </script>
