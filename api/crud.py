@@ -27,7 +27,7 @@ class Task(RestHandler):
     @rest_create("response")
     def response_new(self):
         #Populate the response
-        self.model.response="test123"
+        self.model.response="test"
 
 class AssessmentTask(Task):
   

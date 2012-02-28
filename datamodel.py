@@ -31,6 +31,7 @@ class Form(Version):
 class User(db.MoraModel):
     name = db.StringProperty()
     email = db.EmailProperty()
+    tasks = db.ListProperty(db.Key)
     
 class University(Version):
     name = db.StringProperty()

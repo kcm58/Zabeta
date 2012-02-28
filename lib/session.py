@@ -41,7 +41,7 @@ class session(webapp.RequestHandler):
                 #otherwise an attacker could read or delete an arbitrary value.
                 user_mem=memcache.get(self.cookie)
                 #Is this session active?
-                if len(user_mem):
+                if user_mem is not None and len(user_mem):
                     self.user=pickle.loads(user_mem)
                     #Reset the server-side timeout value for this session.
                     #return as fast as possible because this will affect all load times. 
@@ -67,9 +67,10 @@ class session(webapp.RequestHandler):
         sess={"email":user.email,
               "name":user.name,
               "id":str(user.key()),
-              "university":str(auth.university),
+              "university":str(auth.university.key()),
               "programs":programs,
-              "privileges":auth.privileges}  
+              "privileges":auth.privileges,
+              "tasks":user.tasks}  
         sess_mem=pickle.dumps(sess)      
         #expires in two hours,  time in seconds. 
         memcache.set(cookie,sess_mem,7200)
