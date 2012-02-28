@@ -1,0 +1,22 @@
+<a href="#tasks" onclick="addAnotherTask()">Add another task</a>
+<h2>{{list_title}}</h2>
+<table id="task-list" class="">
+  <thead>
+    <tr>
+      {{#list_header}}
+      <th>
+        <a href="">{{heading}}</a>
+      </th>
+      {{/list_header}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#list_row}}
+    <tr>
+      {{#list_row_item}}
+      <td>{{list_row_item_data}}</td>
+      {{/list_row_item}}
+    </tr>
+    {{/list_row}}
+  </tbody>
+</table>

@@ -55,11 +55,14 @@ function initRouter(){
 function initPage() {
 	$.get('/api/state/get', function(json){
 		if(!$.isEmptyObject(json['state'])){
-			var src = $('#toolbar-tmpl').html();
-			var tmpl = Handlebars.compile(src);
+			//var src = $('#toolbar-tmpl').html();
+			//var tmpl = Handlebars.compile(src);
 			$.extend(json['state'], {usr_logo: 'img/face.png', uni_name:$.cookie('zabeta_uni_name')});
-			var html = tmpl(json);
-			$('#toolbar').html(html);
+			//var html = tmpl(json);
+			//$('#toolbar').html(html);
+			T.render('toolbar', function(t) {
+				 $('#toolbar').html( t(json) );
+			});
 			loadMenu();
 		}
 	})
@@ -67,8 +70,8 @@ function initPage() {
 }
 
 function loadMenu(){
-	var src = $('#menu-tmpl').html();
-	var tmpl = Handlebars.compile(src);
+	//var src = $('#menu-tmpl').html();
+	//var tmpl = Handlebars.compile(src);
 	menuJson = {
 			"items":
 				[{
@@ -84,7 +87,10 @@ function loadMenu(){
 					"name":	"Course"
 				}]
 	}
-	$('#menu-content').html(tmpl(menuJson));
+	//$('#menu-content').html(tmpl(menuJson));
+	T.render('menu', function(t) {
+		 $('#menu-content').html( t(menuJson) );
+	});
 	if(window.location.hash.indexOf('course') != -1){
 		loadCourseList();
 	}
@@ -92,9 +98,12 @@ function loadMenu(){
 
 function loadCourseList(){
 	$.getJSON('api/list/Course', function(json){
-		var src = $('#submenu-tmpl').html();
-		var tmpl = Handlebars.compile(src);
-		$('#course-sub').html(tmpl(json));
+		//var src = $('#submenu-tmpl').html();
+		//var tmpl = Handlebars.compile(src);
+		//$('#course-sub').html(tmpl(json));
+		T.render('submenu', function(t) {
+			 $('#course-sub').html( t(json) );
+		});
 	});
 }
 
@@ -134,9 +143,12 @@ function addAnotherTask(){
 
 /* Temp proof-of-concept fn */
 function updateList(){
-	var source = $("#list-tmpl").html();
-	var template = Handlebars.compile(source);
-	$('#content').html(template(taskListJson));
+	//var source = $("#list-tmpl").html();
+	//var template = Handlebars.compile(source);
+	//$('#content').html(template(taskListJson));
+	T.render('list', function(t) {
+		 $('#content').html( t(taskListJson) );
+	});
 }
 
 /* Temp proof-of-concept fn */
@@ -187,16 +199,21 @@ function addAnotherInput(){
 
 /* Temp proof-of-concept fn */
 function updateForm(){
-	var source = $('#form-tmpl').html();
-	var template = Handlebars.compile(source);
-	$('#content').html(template(formJson));
+	//var source = $('#form-tmpl').html();
+	//var template = Handlebars.compile(source);
+	//$('#content').html(template(formJson));
+	T.render('form', function(t) {
+		 $('#content').html( t(formJson) );
+	});
 }
 
 function loadCourseData(course_id){
 	$.getJSON('/api/mora/'+course_id, function(json){
-		console.log(json);
-		var source=$('#course-tmpl').html();
-		var template = Handlebars.compile(source);
-		$('#content').html(template(json));
+		//var source=$('#course-tmpl').html();
+		//var template = Handlebars.compile(source);
+		//$('#content').html(template(json));
+		T.render('course', function(t) {
+			 $('#content').html( t(json) );
+		});
 	});
 }

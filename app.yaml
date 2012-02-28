@@ -16,6 +16,9 @@ handlers:
   
 - url: /lib
   static_dir: client/lib
+  
+- url: /templates
+  static_dir: client/templates
 
 - url: /favicon\.ico
   static_files: client/img/favicon.ico

@@ -38,6 +38,11 @@ div#toolbar {
   -webkit-border-image: url("../img/border.png") 0 0 4 0 stretch stretch;
 }
 
+.signout a{
+	text-decoration:none;
+	color:#888;
+}
+
 div#account {
   position: absolute;
   display: table;

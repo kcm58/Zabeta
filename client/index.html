@@ -40,107 +40,12 @@
   <script src="lib/handlebars-1.0.0.beta.6.js"></script>
   <script src="lib/jquery.cookie.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/handlebars.external.js"></script>
 
   <!--[if lt IE 7 ]>
     <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
     <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
   <![endif]-->
-
-
-  <script id="toolbar-tmpl" type="text/x-handlebars-template">
-	{{#state}}
-    <div id="logo">
-        <img src="img/animals-zebra-32x32.png" alt="Zebra" />
-        <div style="display: table-cell; vertical-align: middle; height: 48px; clear:none; width:300px">Z<span class="logo-alt-color">abet</span>a for {{uni_name}}</div>
-      </div>
-
-      <div id="account">
-        <img class="photo" src="{{usr_logo}}" />
-        <div class="title">{{name}}</div>
-        <div class="divider"></div>
-        <div class="signout"><a href="api/state/logout">Sign out</a></div>
-      </div>
-	{{/state}}}
-  </script>
-
-  <script id="list-tmpl" type="text/x-handlebars-template">
-	<a href="#tasks" onclick="addAnotherTask()">Add another task</a>
-    <h2>{{list_title}}</h2>
-    <table id="task-list" class="">
-      <thead>
-        <tr>
-          {{#list_header}}
-          <th>
-            <a href="">{{heading}}</a>
-          </th>
-          {{/list_header}}
-        </tr>
-      </thead>
-      <tbody>
-        {{#list_row}}
-        <tr>
-          {{#list_row_item}}
-          <td>{{list_row_item_data}}</td>
-          {{/list_row_item}}
-        </tr>
-        {{/list_row}}
-      </tbody>
-    </table>
-  </script>
-  
-  <script id="menu-tmpl" type="text/x-handlebars-template">
-  	{{#items}}
-  	<a href="#{{hash}}">{{name}}</a><div id="{{hash}}-sub" class="submenu"></div><br />
-  	{{/items}}
-  </script>
-  
-  <script id="submenu-tmpl" type="text/x-handlebars-template">
-	<ul>
-		{{#Course}}
-		<li id="{{id}}" class="course"><a href="#course/{{id}}">{{catalog}}</li>
-		{{/Course}}
-	</ul>
-  </script>
-    
-  <script id="form-tmpl" type="text/x-handlebars-template">
-	<a href="#form" onclick="addAnotherInput()">Add another form element</a>
-	<form id="{{name}}" name="{{name}}">
-	{{#each fields}}
-		<p class="label">{{name}}</p>
-		{{#if textarea}}
-		<textarea name="{{name}}" id="{{name}}"
-		{{#properties}}
-			{{property}}="{{value}}" 
-		{{/properties}}
-		></textarea>
-		{{else}}
-		{{#if University}}
-		<select name="{{name}}" id="{{name}}"
-		{{#properties}}
-			{{property}}="{{value}}" 
-		{{/properties}}
-		>
-		{{#options}}
-			<option value="{{value}}">{{text}}</option>
-		{{/options}}</select>
-		{{else}}
-		<input type="{{type}}" name="{{name}}" id="{{name}}" 
-		{{#properties}}
-			{{property}}="{{value}} 
-		{{/properties}}
-		/>
-		{{/if}}
-		{{/if}}
-	{{/each}}
-	<br /><br />
-	<input type="submit" value="submit" onclick="submitform()" />
-	</form>
-  </script>
-  
-  <script id="course-tmpl" type="text/x-handlebars-template">
-	<h2>{{name}} - ({{catalog}}})</h2>
-	<p class="label">Description:</p>
-	<span>{{description}}</span>
-  </script>
+      
 </body>
 </html>
