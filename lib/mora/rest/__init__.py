@@ -40,6 +40,7 @@ import logging
 import sys
 import inspect
 from mora import db
+import session
 
 # GAE supports a couple of versions of Python and the GAE environment.
 # We will try to use the latest modules and then use `ImportError`
@@ -130,7 +131,8 @@ class DispatchError(Exception):
 
 # The `RestDispatcher` is a request handler that gets passed to
 # webapp.  We then spawn our custom RestHandlers from here.
-class RestDispatcher(webapp.RequestHandler):
+#Michael Brooks - RestDispatcher impalments sesison instead of a RequestHandler
+class RestDispatcher(session.session):
 
     base_path = ""
     rest_handlers = {}

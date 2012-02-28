@@ -15,15 +15,14 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from mora.rest import RestDispatcher
 import webapp2 as webapp
 
+#Extend session so that we can enforce access control
 class dispatch(session.session):
 
     def get(self):
         self.dispatch()
-        pass
 
     def post(self):
         self.dispatch()
-        pass
 
     def dispatch(self):
         call_arg=False
@@ -83,22 +82,28 @@ class dispatch(session.session):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json_obj)
 
-class index(session.session):
+#A static page doesn't need to extend session
+class index(webapp.RequestHandler):
 
     def get(self):    
         index=open("client/index.html").read()
         self.response.out.write(index)
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/api/mora', [crud.course,crud.courseOffering,crud.outcome,crud.User])
-
-    run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
-                                         ('/', index),
-                                         ('/authentication/.*', session.auth),
-                                         ('/a/.*', session.path_handler),                                       
-                                         #('/api/mora/.*', crud.moratest),
-                                         ('/populate', populate.populate),
-                                         ('/schedule', schedule.schedule),
-                                         ('/api/.*', dispatch)
-                                         ],
-                                        debug=True))
+    try:
+        RestDispatcher.setup('/api/mora', [crud.course,crud.courseOffering,crud.outcome,crud.User])
+    
+        run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
+                                             ('/', index),
+                                             ('/authentication/.*', session.auth),
+                                             ('/a/.*', session.path_handler),                                       
+                                             #('/api/mora/.*', crud.moratest),
+                                             ('/populate', populate.populate),
+                                             ('/schedule', schedule.schedule),
+                                             ('/api/.*', dispatch)
+                                             ],
+                                            debug=True))
+    except SystemExit:
+        #Sometimes we need a premature exit.
+        pass
+      

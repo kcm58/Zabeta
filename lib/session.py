@@ -3,6 +3,7 @@ import os
 import pycas
 import binascii
 import datamodel
+import sys
 
 from apiclient.discovery import build
 from oauth2client.appengine import oauth2decorator_from_clientsecrets
@@ -26,21 +27,30 @@ OAUTH_PROVIDER = "https://www.googleapis.com/auth/plus.me"
 #before allowing them to access the rest of the class.
 class session(webapp.RequestHandler):
     user={}
+    #Does this instance need authentication?
+    always_allowed=False
     
     def __init__(self, request, response):
         super(session, self).__init__(request, response)
-        if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
-            self.cookie=self.request.cookies["cid"]
-            user=memcache.get(self.cookie)
-            #Is this session active?
-            if user:
-                self.user=user
-                #Reset the server-side timeout value for this session.
-                memcache.add(self.cookie,self.user,7200)
-                #webapp.Request.cookies["cid"]
-            #else:
-            #    self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
-
+        #Check if this instance of session had disabled authentication
+        if not self.always_allowed:
+            if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
+                self.cookie=self.request.cookies["cid"]
+                user=memcache.get(self.cookie)
+                #Is this session active?
+                if user:
+                    self.user=user
+                    #Reset the server-side timeout value for this session.
+                    memcache.add(self.cookie,self.user,7200)
+                    #webapp.Request.cookies["cid"]
+                else:
+                    #session expired
+                    self.destroy_session()
+                    sys.exit("Session expired")
+                #   self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
+            else:
+                #Not allowed                  
+                sys.exit("Not allowed")
     #Create a new session id and link it to a user account using memcachd
     #this should only be called after a sucessful login to prevent session fixation.
     def new_session(self, auth):
@@ -84,16 +94,23 @@ class path_handler(webapp.RequestHandler):
         self.redirect("/authentication/"+uni_id)
 
 class auth(session):
+    #The user doesn't need a session to access this class
+    always_allowed=True
 
     def get(self):
         uni_key=self.request.path.split("/")[-1]
         l=datamodel.AuthenticationMethod.gql("where university=KEY(:1) limit 1",uni_key)
-        l=l.fetch(1)[0]
-        if l.cas_url:
-            self.cas(l.cas_url,uni_key)
-        elif l.oauth_url:
-            self.oauth(l.oauth_url,l.oauth_client_id,l.oauth_client_id)
-
+        l=l.fetch(1)
+        if len(l):
+            l=l[0]
+            if l.cas_url:
+                self.cas(l.cas_url,uni_key)
+            elif l.oauth_url:
+                self.oauth(l.oauth_url,l.oauth_client_id,l.oauth_client_id)
+        else:
+            #Looks like we don't have this university
+            self.redirect("/")
+            sys.exit()
     #This is used to create a session.
     #First the user is authenticated using cas, 
     #then then they are mapped to a user
@@ -110,6 +127,7 @@ class auth(session):
             self.new_session(auth[0])
             self.redirect("/")
           else:
+            #TODO:  Looks like we need to create a user account
             #
             #user.name is not defined - line below causing "AttributeError: 'list' object has no attribute 'name'"
             #
