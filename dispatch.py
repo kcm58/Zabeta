@@ -24,6 +24,21 @@ class dispatch(session.session):
     def post(self):
         self.dispatch()
 
+    def getElement(self,u):
+        element={}
+        #iterate over each parameter specified in the select
+        for key in u._all_properties:
+            if True:
+                try:
+                    var=getattr(u,key)
+                except:
+                    pass
+                if type(var) is datetime.datetime:
+                    element[key]=var.isoformat("T") + "+00:00"
+                else:
+                    element[key]=str(var)
+        return element
+
     def dispatch(self):
         call_arg=False
         path=self.request.path.split("/")
@@ -46,24 +61,21 @@ class dispatch(session.session):
                 else:
                     ret=getattr(instance,call_method)()
                 #We allow the user to return a GQL query and we'll convert it to json for them.
-                if type(ret) is db.GqlQuery:
+                t=type(ret)
+                if t is list:
+                    t=type(ret[0])
+                    #if type(ret[0]) is PolymorphicClass:
+                    ref_ret=[]
+                    for r in ret:
+                        ref_ret.append(self.getElement(r))
+                    ret=ref_ret
+                if t is db.GqlQuery:
                     #1024 is always the max return size
                     u_list=ret.fetch(1024)
                     ret=[]
                     #iterate over each element returned by the select.
                     for u in u_list:
-                        element={}
-                        #iterate over each parameter specified in the select
-                        for key in u._all_properties:
-                            if True:
-                                try:
-                                    var=getattr(u,key)
-                                except:
-                                    pass
-                                if type(var) is datetime.datetime:
-                                    element[key]=var.isoformat("T") + "+00:00"
-                                else:
-                                    element[key]=str(var)
+                        element=self.getElement(u)
                             #except:
                             #    pass
                         ret.append(element)
