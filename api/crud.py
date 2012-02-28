@@ -12,7 +12,7 @@ class Outcome(RestHandler):
           self.response.out.write(self.model.to_json())
           
       def update(self):
-          self.model.from_son(self.params)
+          self.model.from_json(self.params)
               
 class Task(RestHandler):
 
@@ -22,12 +22,12 @@ class Task(RestHandler):
         self.response.out.write(self.model.to_json())
     
     def update(self):
-        self.model.from_son(self.params)
+        self.model.from_json(self.params)
 
     @rest_create("response")
     def response_new(self):
         #Populate the response
-        self.model.response=self.params
+        self.model.response="test123"
 
 class AssessmentTask(Task):
   
@@ -45,7 +45,7 @@ class Course(RestHandler):
         self.response.out.write(self.model.to_json())
           
     def update(self):
-        self.model.from_son(self.params)
+        self.model.from_json(self.params)
 
       
 class CourseOffering(RestHandler):
@@ -56,7 +56,7 @@ class CourseOffering(RestHandler):
         self.response.out.write(self.model.to_json())
           
     def update(self):
-        self.model.from_son(self.params)
+        self.model.from_json(self.params)
           
 class User(RestHandler):
       
@@ -66,4 +66,4 @@ class User(RestHandler):
         self.response.out.write(self.model.to_json())
           
     def update(self):
-        self.model.from_son(self.params)
+        self.model.from_json(self.params)
