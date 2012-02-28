@@ -91,7 +91,7 @@ class index(webapp.RequestHandler):
 
 if __name__ == "__main__":
     #try:
-    RestDispatcher.setup('/api/mora', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User])
+    RestDispatcher.setup('/api/mora', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User,crud.University])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),

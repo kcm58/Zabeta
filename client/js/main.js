@@ -16,35 +16,18 @@ $(document).ready(function(){
 function initRouter(){
 	var Router = Backbone.Router.extend({
 		routes: {		
-			"course":				"courseList",
 			"course/:course_id":	"course",
-			"tasks": 				"loadTasks",
-			"form":					"loadForm",
 			"*data": 				"default"
 		},
 
 		default: function(data){
-			console.log("Hash passed data: "+data);
+			
 		},
 
 		course: function(course_id){
 			loadCourseData(course_id);
 		},
-		
-		courseList: function(){
-			$('#course-sub').html('');
-			loadCourseList();
-		},
-		
-		loadTasks: function(){
-			$('#course-sub').html('');
-			loadTasksList();
-		},
-		
-		loadForm: function(){
-			$('#course-sub').html('');
-			loadForm();
-		}
+			
 	});
 
 	var router = new Router;
@@ -55,39 +38,39 @@ function initRouter(){
 function initPage() {
 	$.get('/api/state/get', function(json){
 		if(!$.isEmptyObject(json['state'])){
-			//var src = $('#toolbar-tmpl').html();
-			//var tmpl = Handlebars.compile(src);
-			$.extend(json['state'], {usr_logo: 'img/face.png', uni_name:$.cookie('zabeta_uni_name')});
-			//var html = tmpl(json);
-			//$('#toolbar').html(html);
-			T.render('toolbar', function(t) {
-				 $('#toolbar').html( t(json) );
+			var uni_name;
+			$.getJSON('/api/mora/'+json['state']['university'], function(uni_json){
+				uni_name = uni_json['name'];
+				$.extend(json['state'], {usr_logo: 'img/face.png', uni_name:uni_name});
+				console.log(json);
+				T.render('toolbar', function(t) {
+					 $('#toolbar').html( t(json) );
+				});
+				loadMenu();
+				loadTasksList();
+				loadTermCourses();
 			});
-			loadMenu();
 		}
 	})
-	.error(function(){$('#content').html('I am a Google login button');});
+	.error(function(){$('#top').html('<img src="img/google-signin.png" alt="Sign in with Google" />');});
 }
 
 function loadMenu(){
-	//var src = $('#menu-tmpl').html();
-	//var tmpl = Handlebars.compile(src);
 	menuJson = {
 			"items":
 				[{
-					"hash":	"tasks",
-					"name":	"Tasks"
+					"hash":	"overview",
+					"name":	"Overview"
 				},
 				{
-					"hash":	"form",
-					"name":	"Form"
+					"hash":	"program",
+					"name":	"Program"
 				},
 				{
-					"hash": "course",
-					"name":	"Course"
+					"hash": "accredidation",
+					"name":	"Accredidation"
 				}]
 	}
-	//$('#menu-content').html(tmpl(menuJson));
 	T.render('menu', function(t) {
 		 $('#menu-content').html( t(menuJson) );
 	});
@@ -96,20 +79,9 @@ function loadMenu(){
 	}
 }
 
-function loadCourseList(){
-	$.getJSON('api/list/Course', function(json){
-		//var src = $('#submenu-tmpl').html();
-		//var tmpl = Handlebars.compile(src);
-		//$('#course-sub').html(tmpl(json));
-		T.render('submenu', function(t) {
-			 $('#course-sub').html( t(json) );
-		});
-	});
-}
-
 function loadTasksList() {
   taskListJson = {
-    "list_title": "Task List",
+    "list_title": "Tasks Assigned",
     "list_header": [
       {"heading":"Title"},
       {"heading":"Type"},
@@ -143,77 +115,30 @@ function addAnotherTask(){
 
 /* Temp proof-of-concept fn */
 function updateList(){
-	//var source = $("#list-tmpl").html();
-	//var template = Handlebars.compile(source);
-	//$('#content').html(template(taskListJson));
 	T.render('list', function(t) {
-		 $('#content').html( t(taskListJson) );
-	});
-}
-
-/* Temp proof-of-concept fn */
-function loadForm(){
-	formJson = { "fields" : [ { "name" : "description",
-        "properties" : [ { "property" : "rows",
-            "value" : "5"
-          },
-          { "property" : "cols",
-            "value" : "10"
-          }
-        ],
-      "textarea" : true,
-      "type" : "textarea"
-    },
-    { "name" : "name",
-      "type" : "text"
-    },
-    { "list" : true,
-      "name" : "occupation",
-      "options" : [ { "text" : "Scientist",
-            "value" : "Scientist_id"
-          },
-          { "text" : "Engineer",
-            "value" : "Engineer_id"
-          },
-          { "text" : "Philosopher",
-            "value" : "Philosopher_id"
-          }
-        ],
-      "properties" : [ { "property" : "class",
-            "value" : "whatever"
-          } ],
-      "type" : "list"
-    }
-  ] };
-	updateForm();
-}
-
-/* Temp proof-of-concept fn */
-function addAnotherInput(){
-	formJson.fields.push({
-    	"type": "text",
-    	"name": "another_input"
-    	});
-	updateForm();
-}
-
-/* Temp proof-of-concept fn */
-function updateForm(){
-	//var source = $('#form-tmpl').html();
-	//var template = Handlebars.compile(source);
-	//$('#content').html(template(formJson));
-	T.render('form', function(t) {
-		 $('#content').html( t(formJson) );
+		 $('#top').html( t(taskListJson) );
 	});
 }
 
 function loadCourseData(course_id){
 	$.getJSON('/api/mora/'+course_id, function(json){
-		//var source=$('#course-tmpl').html();
-		//var template = Handlebars.compile(source);
-		//$('#content').html(template(json));
 		T.render('course', function(t) {
-			 $('#content').html( t(json) );
+			 $('#top').html( t(json) );
 		});
+	});
+}
+
+function loadTermCourses(){
+	termcourseJson = {
+			"Semester":[
+			            {"name":"Semester Name"}
+			           ],
+			 "CourseOffering":[
+			                   {"name": "Automata Theory", "catalog": "CS 315"},
+			                   {"name": "Computer Science I ", "catalog": "CS 126"}
+			                  ]
+	}
+	T.render('term_class_list', function(t){
+		$('#bottom-left').html(t(termcourseJson));
 	});
 }

@@ -67,3 +67,10 @@ class User(RestHandler):
           
     def update(self):
         self.model.from_json(self.params)
+
+class University(RestHandler):
+      
+    model = University
+      
+    def show(self):
+        self.response.out.write(self.model.to_json())
