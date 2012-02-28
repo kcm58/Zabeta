@@ -90,20 +90,20 @@ class index(webapp.RequestHandler):
         self.response.out.write(index)
 
 if __name__ == "__main__":
-    try:
-        RestDispatcher.setup('/api/mora', [crud.course,crud.courseOffering,crud.outcome,crud.User])
-    
-        run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
-                                             ('/', index),
-                                             ('/authentication/.*', session.auth),
-                                             ('/a/.*', session.path_handler),                                       
-                                             #('/api/mora/.*', crud.moratest),
-                                             ('/populate', populate.populate),
-                                             ('/schedule', schedule.schedule),
-                                             ('/api/.*', dispatch)
-                                             ],
-                                            debug=True))
-    except SystemExit:
+   # try:
+    RestDispatcher.setup('/api/mora', [crud.course,crud.courseOffering,crud.outcome,crud.User])
+
+    run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
+                                         ('/', index),
+                                         ('/authentication/.*', session.auth),
+                                         ('/a/.*', session.path_handler),                                       
+                                         #('/api/mora/.*', crud.moratest),
+                                         ('/populate', populate.populate),
+                                         ('/schedule', schedule.schedule),
+                                         ('/api/.*', dispatch)
+                                         ],
+                                        debug=True))
+    #except SystemExit:
         #Sometimes we need a premature exit.
-        pass
+    #    pass
       
