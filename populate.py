@@ -68,30 +68,6 @@ class populate(webapp.RequestHandler):
         co3.put()
         co4.put()
         co5.put()
-            
-        ct1=datamodel.CourseTask(delegates=[i1.key(),i2.key(),i3.key(),i4.key(),i5.key()],name="Collect student evals for CS315",begin_date=datetime.datetime(2011,12,1),end_date=datetime.datetime(2011,12,15),fulfilled=0)
-        ct2=datamodel.CourseTask(delegates=[i1.key(),i2.key(),i3.key(),i4.key(),i5.key()],name="Collect student evals for CS421",begin_date=datetime.datetime(2011,12,1),end_date=datetime.datetime(2011,12,15),fulfilled=0)
-        ct3=datamodel.CourseTask(delegates=[i1.key(),i2.key(),i3.key(),i4.key(),i5.key()],name="Collect student evals for CS249",begin_date=datetime.datetime(2011,12,1),end_date=datetime.datetime(2011,12,15),fulfilled=0)
-        ct4=datamodel.CourseTask(delegates=[i1.key(),i2.key(),i3.key(),i4.key(),i5.key()],name="Collect student evals for CS396",begin_date=datetime.datetime(2012,1,15),end_date=datetime.datetime(2012,5,15),fulfilled=0)
-        ct5=datamodel.CourseTask(delegates=[i1.key(),i2.key(),i3.key(),i4.key(),i5.key()],name="Collect student evals for CS200",begin_date=datetime.datetime(2011,12,1),end_date=datetime.datetime(2011,12,15),fulfilled=0)
-        
-        ct1.put()
-        ct2.put()
-        ct3.put()
-        ct4.put()
-        ct5.put()
-        
-        i1.tasks=[ct1.key(),ct2.key(),ct3.key(),ct4.key(),ct5.key()]
-        i2.tasks=[ct1.key(),ct2.key(),ct3.key(),ct4.key(),ct5.key()]
-        i3.tasks=[ct1.key(),ct2.key(),ct3.key(),ct4.key(),ct5.key()]
-        i4.tasks=[ct1.key(),ct2.key(),ct3.key(),ct4.key(),ct5.key()]
-        i5.tasks=[ct1.key(),ct2.key(),ct3.key(),ct4.key(),ct5.key()]
-        
-        i1.put()
-        i2.put()
-        i3.put()
-        i4.put()
-        i5.put()
         
         
         #ct=datamodel.CourseTask(course=c1,rubric=t1)
@@ -125,7 +101,15 @@ class populate(webapp.RequestHandler):
                             where_from=wiki_form)
         o2_2.put()
         #need assessments?
-          
+        
+        #delegates=[i1.key(),i2.key(),i3.key(),i4.key(),i5.key()]
+        
+        course_tasks=[(datamodel.CourseTask(name="Collect student evals for CS315",begin_date=datetime.datetime(2011,12,1),end_date=datetime.datetime(2011,12,15),fulfilled=0),"315 Evals"),
+                      (datamodel.CourseTask(name="Collect student evals for CS421",begin_date=datetime.datetime(2011,12,1),end_date=datetime.datetime(2011,12,15),fulfilled=0),"421 Evals"),
+                      (datamodel.CourseTask(name="Collect student evals for CS249",begin_date=datetime.datetime(2011,12,1),end_date=datetime.datetime(2011,12,15),fulfilled=0),"249 Evals"),
+                      (datamodel.CourseTask(name="Collect student evals for CS396",begin_date=datetime.datetime(2012,1,15),end_date=datetime.datetime(2012,5,15),fulfilled=0),"396 Evals"),
+                      (datamodel.CourseTask(name="Collect student evals for CS200",begin_date=datetime.datetime(2011,12,1),end_date=datetime.datetime(2011,12,15),fulfilled=0),"200 Evals")]
+                       
         users = [(datamodel.User(name="Mike",email="test@test.com"),"rmb237"),
                  (datamodel.User(name="Jonah",email="test2@test.com"),"jwh83"),
                  (datamodel.User(name="Eddie",email="test3@test.com"),"eh88"),
@@ -133,9 +117,18 @@ class populate(webapp.RequestHandler):
                  (datamodel.User(name="Owain",email="test5@test.com"),"olm3"),
                  (datamodel.User(name="Eck",email="test6@test.com"),"edo"),
                  (datamodel.User(name="James",email="test7@test.com"),"jdp85")]
-
+        
+        ct_key_list=[]
+        usr_key_list=[]
+        
+        for ct,id in course_tasks:
+            ct.put()
+            ct_key_list.append(ct.key())
+       
         for r,id in users:
+            r.tasks=ct_key_list
             r.put()
+            usr_key_list.append(r.key())
             #create an authentication record for each user. 
             ar=datamodel.AuthenticationRecord(university=u.key(),
                                            cas_id=id,
@@ -144,5 +137,9 @@ class populate(webapp.RequestHandler):
                                            privileges=[1])
             ar.put()
             
+        for ct,id in course_tasks:
+            ct.delegates=ct_key_list
+            ct.put()
+                       
         #c.put()
         self.response.out.write("Ok!")
