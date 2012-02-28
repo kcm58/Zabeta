@@ -61,16 +61,19 @@ class session(webapp.RequestHandler):
         user=auth.user
         cookie=self.rand()
         programs=[]
+        tasks=[]
         #must be a string id
         for p in auth.programs:
             programs.append(str(p))
+        for t in user.tasks:
+            tasks.append(str(t))
         sess={"email":user.email,
               "name":user.name,
               "id":str(user.key()),
               "university":str(auth.university.key()),
               "programs":programs,
               "privileges":auth.privileges,
-              "tasks":user.tasks}  
+              "tasks":tasks}  
         sess_mem=pickle.dumps(sess)      
         #expires in two hours,  time in seconds. 
         memcache.set(cookie,sess_mem,7200)

@@ -18,4 +18,4 @@ class user(api.api):
         return datamodel.Task.get(self.user["tasks"])
 
     def getCurrentCourses(self):
-        return datamodel.CourseOffering.gql("where instructor=KEY(:1)",self.user["id"])
+        return datamodel.CourseOffering.gql("")#where instructor=KEY(:1),self.user["id"])
