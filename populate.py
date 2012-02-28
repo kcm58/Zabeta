@@ -1,10 +1,10 @@
 import session
 import datamodel
 import datetime
-from google.appengine.ext import db
+from google.appengine.ext import db,webapp
 
 #A temp class used to populate the db with development data. 
-class populate(session.session):
+class populate(webapp.RequestHandler):
 
     def clear(self,model):
         query = model.all()

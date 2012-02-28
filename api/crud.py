@@ -39,31 +39,31 @@ class CourseTask(Task):
     
 class Course(RestHandler):
 
-      model = Course
+    model = Course
       
-      def show(self):
-          self.response.out.write(self.model.to_json())
+    def show(self):
+        self.response.out.write(self.model.to_json())
           
-      def update(self):
-          self.model.from_son(self.params)
+    def update(self):
+        self.model.from_son(self.params)
 
       
 class CourseOffering(RestHandler):
       
-      model = CourseOffering
+    model = CourseOffering
       
-      def show(self):
-          self.response.out.write(self.model.to_json())
+    def show(self):
+        self.response.out.write(self.model.to_json())
           
-      def update(self):
-          self.model.from_son(self.params)
+    def update(self):
+        self.model.from_son(self.params)
           
 class User(RestHandler):
       
-      model = User
+    model = User
       
-      def show(self):
-          self.response.out.write(self.model.to_json())
+    def show(self):
+        self.response.out.write(self.model.to_json())
           
-      def update(self):
-          self.model.from_son(self.params)
+    def update(self):
+        self.model.from_son(self.params)
