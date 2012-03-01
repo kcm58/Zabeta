@@ -26,28 +26,35 @@ class populate(webapp.RequestHandler):
         self.clear(datamodel.Instrument)
         #debug, create a new user
         
-        u=datamodel.University(name="NAU",domain="nau.edu",path="nau")
+        u=datamodel.University(name="NAU",domain="nau.edu",login_path="nau",webpage="http://nau.edu")
         u.put()
         a=datamodel.AuthenticationMethod(university=u.key(),cas_url="https://cas.nau.edu")
         a.put()
                 
-        p=datamodel.Program(University=u,name="CS")
+        p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
+                            description="Computer Science program at NAU")
         p.put()
         
-        c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",catalog="CS 315")
+        c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",
+                            core_topics="fundamental principles of computability and different families of languages.",
+                            webpage="http://nau.edu/CEFNS/Engineering/Computer-Science/Welcome/",catalog="CS 315")
         c1.put()
-        c2=datamodel.Course(program=p,name="Principles of Languages",description="Abstract framework for understanding issues underlying all programming languages covering all four major paradigms.",catalog="CS 396")
+        c2=datamodel.Course(program=p,name="Principles of Languages",description="Abstract framework for understanding issues underlying all programming languages covering all four major paradigms.",
+                            core_topics="functional programming and underlying linguistic principles, constructs, and mechanisms associated with diverse programming paradigms",
+                            webpage="http://nau.edu/CEFNS/Engineering/Computer-Science/Welcome/",catalog="CS 396")
         c2.put()
       
         s=datamodel.Semester(name="FALL11",university=u.key())
         s.put()
 
-        ins=datamodel.Instrument(name="Important Task Form",where_from="Your boss",require_attachments=["Course Eval"])
+        ins=datamodel.Instrument(name="Important Task",assessment_form="Empty Assessment form",description="You need to complete this task...",
+                                 instructions="Your mission, should you choose to accept it...",require_attachments=["Course Eval"])
         ins.put()
         
         wiki_form="@name@;@description|textarea(5,10)@;@occupation|list(Scientist,Engineer,Philosopher)@"
         
         o2_1=datamodel.Outcome(name="Outcome 2.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
+                            index=1,
                             description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
                             rationale="Empty",
                             assessments="Empty",
@@ -60,6 +67,7 @@ class populate(webapp.RequestHandler):
         o2_1.put()
         
         o2_2=datamodel.Outcome(name="Outcome 2.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
+                            index=2,
                             description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
                             assessments="Empty",
                             last_evaluation=datetime.datetime(2011,6,10),
@@ -70,18 +78,25 @@ class populate(webapp.RequestHandler):
                             where_from=wiki_form)
         o2_2.put()
         
-        course_tasks=[(datamodel.CourseTask(name="Collect student evals for CS315",begin_date=datetime.datetime(2011,12,1),
-                                            end_date=datetime.datetime(2011,12,15),fulfilled=0),"315 Evals"),
-                      (datamodel.CourseTask(name="Collect student evals for CS396",begin_date=datetime.datetime(2011,12,1),
-                                            end_date=datetime.datetime(2011,12,15),fulfilled=0),"421 Evals")]
+        course_tasks=[(datamodel.CourseTask(name="CS 315 Evals",description="Collect student evals for CS 315",begin_date=datetime.datetime(2012,5,1),
+                                            end_date=datetime.datetime(2012,6,15),fulfilled=0),"315 Evals"),
+                      (datamodel.CourseTask(name="CS 396 Evals",description="Collect student evals for CS396",begin_date=datetime.datetime(2012,5,1),
+                                            end_date=datetime.datetime(2012,6,15),fulfilled=0),"396 Evals")]
                        
-        users = [(datamodel.User(full_name="Mike",email="test@test.com"),"rmb237"),
-                 (datamodel.User(full_name="Jonah",email="test2@test.com"),"jwh83"),
-                 (datamodel.User(full_name="Eddie",email="test3@test.com"),"eh88"),
-                 (datamodel.User(full_name="Kyoko",email="test4@test.com"),"kcm58"),
-                 (datamodel.User(full_name="Owain",email="test5@test.com"),"olm3"),
-                 (datamodel.User(full_name="Eck",email="test6@test.com"),"edo"),
-                 (datamodel.User(full_name="James",email="test7@test.com"),"jdp85")]
+        users = [(datamodel.User(full_name="Michael Brooks",email="test@test.com",employee_id="rmb237",display_name="Mike",
+                                 phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
+                 (datamodel.User(full_name="Jonah Hirsch",email="test2@test.com",employee_id="jeh83",display_name="Jonah",
+                                 phone_office="(928)555-5555",phone_personal="(928)666-6666"),"jwh83"),
+                 (datamodel.User(full_name="Eddie Hillenbrand",email="test3@test.com",employee_id="eh88",display_name="Eddie",
+                                 phone_office="(928)555-5555",phone_personal="(928)666-6666"),"eh88"),
+                 (datamodel.User(full_name="Kyoko Makino",email="test4@test.com",employee_id="kcm58",display_name="Kyoko",
+                                 phone_office="(928)555-5555",phone_personal="(928)666-6666"),"kcm58"),
+                 (datamodel.User(full_name="Owain Moss",email="test5@test.com",employee_id="olm3",display_name="Owain",
+                                 phone_office="(928)555-5555",phone_personal="(928)666-6666"),"olmm3"),
+                 (datamodel.User(full_name="Eck Doerry",email="test6@test.com",employee_id="edo",display_name="Eck",
+                                 phone_office="(928)555-5555",phone_personal="(928)666-6666"),"edo"),
+                 (datamodel.User(full_name="James Palmer",email="test7@test.com",employee_id="jdp85",display_name="James",
+                                 phone_office="(928)555-5555",phone_personal="(928)666-6666"),"jdp85")]
         
         ct_key_list=[]
         usr_key_list=[]
@@ -103,19 +118,26 @@ class populate(webapp.RequestHandler):
             ar.put()
         
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
-                                                        course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
+                                                    website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
+                                                    course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
                           (datamodel.CourseOffering(semester=s,instructor=users[1][0].key(),student_count=35,section=1,
-                                                        course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
+                                                    website="http://www.cefns.nau.edu/~edo/Classes/CS396_WWW/syllabus.html",
+                                                    course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
                           (datamodel.CourseOffering(semester=s,instructor=users[2][0].key(),student_count=35,section=2,
-                                                        course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
+                                                    website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
+                                                    course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
                           (datamodel.CourseOffering(semester=s,instructor=users[3][0].key(),student_count=35,section=2,
-                                                        course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
+                                                    website="http://www.cefns.nau.edu/~edo/Classes/CS396_WWW/syllabus.html",
+                                                    course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
                           (datamodel.CourseOffering(semester=s,instructor=users[4][0].key(),student_count=35,section=3,
-                                                        course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
+                                                    website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
+                                                    course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
                           (datamodel.CourseOffering(semester=s,instructor=users[5][0].key(),student_count=35,section=3,
-                                                        course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
+                                                    website="http://www.cefns.nau.edu/~edo/Classes/CS396_WWW/syllabus.html",
+                                                    course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
                           (datamodel.CourseOffering(semester=s,instructor=users[6][0].key(),student_count=35,section=4,
-                                                        course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status']))]
+                                                    website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
+                                                    course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status']))]
         
         for co in course_offerings:
             co.put()

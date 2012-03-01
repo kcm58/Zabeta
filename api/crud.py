@@ -1,22 +1,20 @@
 from mora.rest import RestHandler,rest_create
 from mora import db
-from datamodel import *
-
-
+import datamodel
 
 class Outcome(RestHandler):
 
-      model = Outcome
+      model = datamodel.Outcome
       
       def show(self):
           self.response.out.write(self.model.to_json())
           
       def update(self):
           self.model.from_json(self.params)
-              
+
 class Task(RestHandler):
 
-    model = Task
+    model = datamodel.Task
     
     def show(self):
         self.response.out.write(self.model.to_json())
@@ -27,19 +25,20 @@ class Task(RestHandler):
     @rest_create("response")
     def response_new(self):
         #Populate the response
-        self.model.response="test"
+        self.model.response=str(self.params)
+        self.model.save()
 
 class AssessmentTask(Task):
   
-    model = AssessmentTask
-    
+    model = datamodel.AssessmentTask
+
 class CourseTask(Task):
   
-    model = CourseTask 
-    
+    model = datamodel.CourseTask 
+
 class Course(RestHandler):
 
-    model = Course
+    model = datamodel.Course
       
     def show(self):
         self.response.out.write(self.model.to_json())
@@ -47,20 +46,19 @@ class Course(RestHandler):
     def update(self):
         self.model.from_json(self.params)
 
-      
 class CourseOffering(RestHandler):
       
-    model = CourseOffering
+    model = datamodel.CourseOffering
       
     def show(self):
         self.response.out.write(self.model.to_json())
           
     def update(self):
         self.model.from_json(self.params)
-          
+
 class User(RestHandler):
       
-    model = User
+    model = datamodel.User
       
     def show(self):
         self.response.out.write(self.model.to_json())
@@ -70,7 +68,7 @@ class User(RestHandler):
 
 class University(RestHandler):
       
-    model = University
+    model = datamodel.University
       
     def show(self):
         self.response.out.write(self.model.to_json())

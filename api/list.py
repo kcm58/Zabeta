@@ -12,7 +12,8 @@ class list(api.api):
             "Instrument":True,
             "Outcome":True,
             "Objective":True,
-            "Minutes":True,}
+            "Minutes":True,
+            "ScheduleLog":True}
 
     def University(self):
         #"where university=:1",self.university
@@ -43,5 +44,9 @@ class list(api.api):
         return datamodel.Objective.gql("")
 
     def Minutes(self,program):
-        return datamodel.Objective.gql("").filter('program =', program)
+        return datamodel.Minutes.gql("")
+
+    def ScheduleLog(self,program):
+        return datamodel.ScheduleLog.gql("")
+
 

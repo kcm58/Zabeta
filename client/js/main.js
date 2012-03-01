@@ -10,7 +10,6 @@ var formJson;
 $(document).ready(function(){
 	initRouter();
 	initPage();
-	
 });
 
 function initRouter(){
@@ -36,13 +35,12 @@ function initRouter(){
 
 
 function initPage() {
-	$.get('/api/state/get', function(json){
-		if(!$.isEmptyObject(json['state'])){
+	$.get('/api/user/get', function(json){
+		if(!$.isEmptyObject(json['user'])){
 			var uni_name;
-			$.getJSON('/api/mora/'+json['state']['university'], function(uni_json){
+			$.getJSON('/api/mora/'+json['user']['university'], function(uni_json){
 				uni_name = uni_json['name'];
-				$.extend(json['state'], {usr_logo: 'img/face.png', uni_name:uni_name});
-				console.log(json);
+				$.extend(json['user'], {usr_logo: 'img/face.png', uni_name:uni_name});
 				T.render('toolbar', function(t) {
 					 $('#toolbar').html( t(json) );
 				});
@@ -80,44 +78,28 @@ function loadMenu(){
 }
 
 function loadTasksList() {
-  taskListJson = {
-    "list_title": "Tasks Assigned",
-    "list_header": [
-      {"heading":"Title"},
-      {"heading":"Type"},
-      {"heading":"Priority"},
-      {"heading":"State"},
-      {"heading":"Responsible"},
-      {"heading":"Due by"}],
-    "list_row": [
-      {"list_row_item":[
-        {"list_row_item_data":"Senior Exit Survey"},
-        {"list_row_item_data":"Survey"},
-        {"list_row_item_data":"Top priority"},
-        {"list_row_item_data":"Incomplete"},
-        {"list_row_item_data":"Dr. G"},
-        {"list_row_item_data":"Today"}]}]
-  };
-  updateList();
-}
-
-/* Temp proof-of-concept fn */
-function addAnotherTask(){
-	taskListJson.list_row.push({"list_row_item":[
-        {"list_row_item_data":"Senior Exit Survey"},
-        {"list_row_item_data":"Survey"},
-        {"list_row_item_data":"Top priority"},
-        {"list_row_item_data":"Incomplete"},
-        {"list_row_item_data":"Dr. G"},
-        {"list_row_item_data":"Today"}]});
-	updateList();
-}
-
-/* Temp proof-of-concept fn */
-function updateList(){
-	T.render('list', function(t) {
-		 $('#top').html( t(taskListJson) );
+  $.getJSON('api/user/getTasks', function(json){
+    for(var key in json['user']){
+    	$('body').append('<div id="relativeTimeHandler" style="display:none"></div>');
+		var end_date = json['user'][key]['end_date'];
+		var endDateTicks = Date.parse(end_date);
+		$('#relativeTimeHandler').attr('datetime', end_date);
+		$('#relativeTimeHandler').html('');
+		var format;
+		if(new Date().getTime() > endDateTicks){
+			format = '%dd %DAYS ago';
+		}else{
+			format = 'in %dd %DAYS';
+		}
+		$('#relativeTimeHandler').relative({format:format, displayZeros:false, tick:0	});
+		var relative_date = $('#relativeTimeHandler').html();
+		$.extend(json['user'][key], {'relative_date': relative_date});
+		$('#relativeTimeHandler').remove();
+	}
+	T.render('task_list', function(t) {
+		 $('#top').html( t(json) );
 	});
+  });
 }
 
 function loadCourseData(course_id){
