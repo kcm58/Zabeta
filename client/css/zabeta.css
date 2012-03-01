@@ -103,9 +103,9 @@ body {
 }
 
 #content{
-  width: 100%;
+  width: 85%;
   height: 100%;
-  margin-left:15%;	
+  margin-left:15%;
 }
 
 #top{
@@ -117,13 +117,13 @@ body {
 
 #bottom-left, #bottom-right{
   height:50%;
-  width:41.9%;
+  width:45%;
 }
 
 #bottom-left{
 	float:left;
 	margin-left:-1.4%;
-	border-right:1px gray dashed;
+	border-right:1px gray solid;
 	padding-left:15px;
 }
 
@@ -132,7 +132,17 @@ body {
 }
 
 #bottom-right{
-	float:right;
+	position:relative;
+	left:50%;
+	bottom:47.5%;
+}
+
+#footer{
+	position:absolute;
+	bottom:0;
+	width:100%;
+	background-color:white;
+	border-top:1px solid black;
 }
 
 .submenu ul{
@@ -152,7 +162,7 @@ h2 {
 }
 
 table.list {
-  width: 80%;
+  width: 90%;
   height: auto;
 }
 table.list thead a {
