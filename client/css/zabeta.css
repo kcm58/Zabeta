@@ -50,7 +50,13 @@ body {
   display: table;
   right: 12px;
   height: 48px;
-  width: 250px;
+  width: 30%;
+}
+#account #program-chooser{
+	display: table-cell;
+	vertical-align: middle;
+	margin-top: 8px;
+	margin-bottom: 0;
 }
 #account img.photo {
   display: table-cell;

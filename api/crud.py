@@ -72,3 +72,10 @@ class University(RestHandler):
       
     def show(self):
         self.response.out.write(self.model.to_json())
+        
+class Program(RestHandler):
+      
+    model = datamodel.Program
+      
+    def show(self):
+        self.response.out.write(self.model.to_json())
