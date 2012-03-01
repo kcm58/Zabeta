@@ -10,6 +10,9 @@ from google.appengine.ext import db
 from mora import db
 
 class Object(db.MoraPolyModel):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     uid = db.StringProperty()
     
 class Version(db.MoraPolyModel):
@@ -21,28 +24,65 @@ class Version(db.MoraPolyModel):
     commit_object = db.ReferenceProperty(Object) 
     commit_commment = db.StringProperty()
     #This must be in all collections for access control.
-    university = db.ReferenceProperty(None,indexed=True)
+    #university = db.ReferenceProperty(None,indexed=True)
     
 class Form(Version):
     form_name = db.StringProperty()
-    where_from = db.StringProperty() #note: from is a keyword so use where_from
+    assessment_form = db.StringProperty() 
     require_attachments = db.StringListProperty()
-
-class User(db.MoraModel):
-    name = db.StringProperty()
-    email = db.EmailProperty()
-    tasks = db.ListProperty(db.Key)
+    description = db.StringProperty()
+    instructions = db.StringProperty()
     
+class ScheduleLog(db.MoraModel):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
+    timestamp = db.DateTimeProperty()
+    task = db.ReferenceProperty(None,indexed=True) #void pointer to a task
+    
+class User(db.MoraModel):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
+    full_name = db.StringProperty() #full name
+    display_name = db.StringProperty()
+    email = db.EmailProperty()
+    employee_id = db.StringProperty() #not end-user editible (admin only)
+    phone_office = db.StringProperty()
+    phone_personal = db.StringProperty()
+    office = db.StringProperty()
+    join_date = db.DateProperty()
+    depart_date = db.DateProperty()
+    thumbnail = db.StringProperty() #identifier of uploadable image
+    webpage = db.StringProperty()
+    tasks = db.ListProperty(db.Key) 
+      
 class University(Version):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     name = db.StringProperty()
     domain = db.StringProperty()
     semesters = db.StringProperty() #needs to be reverse reference
-    path = db.StringProperty()
+    login_path = db.StringProperty() #this is an unclear name
     programs = db.StringProperty() #needs to be reverse reference
+    thumbnail = db.StringProperty() #identifier of image file
+    web_page = db.StringProperty()
     
 class Program(Version):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     name = db.StringProperty()
-
+    university = db.ReferenceProperty(University,indexed=True)
+    start_date = db.DateProperty() #null/blank for current?
+    end_date = db.DateProperty() #null/blank for current?
+    mission = db.StringProperty()
+    description = db.StringProperty()
+    webpage = db.StringProperty() #url to website
+    thumbnail = db.StringProperty() #identifier of image file
+    docs = db.StringProperty() #identifier of docs array
+    
 class Task(Version):
     delegates = db.ListProperty(db.Key)
     name = db.StringProperty()
@@ -51,38 +91,62 @@ class Task(Version):
     fulfilled = db.IntegerProperty()
     attachment_names = db.StringListProperty()
     attachment_blob_ids = db.StringListProperty()
-    response = db.StringProperty() #Form resposne
+    response = db.StringProperty() #Form response
+    description = db.StringProperty()
  
 class Course(Version):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     program = db.ReferenceProperty(Program,indexed=True)
     name = db.StringProperty()
     description = db.StringProperty()
+    catalog_descr = db.StringProperty() #ask Dr D about this
     catalog = db.StringProperty()
-    
+    webpage = db.StringProperty()
+    core_topics = db.StringProperty()
+ 
+class Instrument(Form):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
+    empty = db.StringProperty()  
+      
 class CourseTask(Task):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     course = db.ReferenceProperty(Course,indexed=True)
-    rubric = db.ReferenceProperty(Task,indexed=True) 
+    rubric = db.ReferenceProperty(Instrument,indexed=True) 
     
 class Semester(db.MoraModel):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     begin_date = db.DateTimeProperty()
     end_date = db.DateTimeProperty()
     name = db.StringProperty()
     university = db.ReferenceProperty(University)
     
 class CourseOffering(Version):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     semester = db.ReferenceProperty(Semester)
     instructor = db.ReferenceProperty(User,indexed=True)
     student_count = db.IntegerProperty()
-    section = db.StringProperty()
+    section = db.IntegerProperty()
     course = db.ReferenceProperty(Course,indexed=True)
     final_grades = db.StringListProperty()
     tasks = db.StringListProperty() #needs to be reverse reference
-
-class Instrument(Form):
-    empty = db.StringProperty()   
+    syllabus = db.StringProperty() #identifier of pdf file
+    website = db.StringProperty()  
 
 class Outcome(Form):
-    description = db.StringProperty()
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
+    outcome_description = db.StringProperty()
     name = db.StringProperty()
     rationale = db.StringProperty()
     assessments = db.StringProperty() #needs to be reverse reference
@@ -91,11 +155,27 @@ class Outcome(Form):
     evaluation_duration = db.IntegerProperty() #needs to be intDays
     rationalize_course = db.ListProperty(db.Key)
     rationalize_instrument = db.ReferenceProperty(Instrument,indexed=True)
+    index = db.IntegerProperty()
+    
+class OutcomeSupport(Version):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
+    course = db.ReferenceProperty(Course,indexed=True)
+    instrument = db.ReferenceProperty(Instrument,indexed=True)
+    rationale = db.StringProperty()
+    goal = db.StringProperty()
     
 class AssessmentTask(Task):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     outcome = db.ReferenceProperty(Outcome,indexed=True)
     
 class Objective(Version):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     description = db.StringProperty()
     program = db.ReferenceProperty(Program,indexed=True)
     index = db.IntegerProperty()
@@ -103,10 +183,19 @@ class Objective(Version):
     name = db.StringProperty()
 
 class Minutes(Version):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     description = db.StringProperty()
     program = db.ReferenceProperty(Program)
+    docs = db.StringProperty() #identifier of docs array
+    date = db.DateTimeProperty()
+    content = db.StringProperty()
     
 class AuthenticationMethod(db.MoraModel):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     oauth_url = db.StringProperty()
     oauth_client_id = db.StringProperty()
     oauth_client_secret = db.StringProperty()
@@ -114,6 +203,9 @@ class AuthenticationMethod(db.MoraModel):
     university = db.ReferenceProperty(University,indexed=True)
     
 class AuthenticationRecord(db.MoraModel):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     oauth_id = db.StringProperty()
     cas_id = db.StringProperty()
     university = db.ReferenceProperty(University,indexed=True)

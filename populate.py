@@ -75,13 +75,13 @@ class populate(webapp.RequestHandler):
                       (datamodel.CourseTask(name="Collect student evals for CS396",begin_date=datetime.datetime(2011,12,1),
                                             end_date=datetime.datetime(2011,12,15),fulfilled=0),"421 Evals")]
                        
-        users = [(datamodel.User(name="Mike",email="test@test.com"),"rmb237"),
-                 (datamodel.User(name="Jonah",email="test2@test.com"),"jwh83"),
-                 (datamodel.User(name="Eddie",email="test3@test.com"),"eh88"),
-                 (datamodel.User(name="Kyoko",email="test4@test.com"),"kcm58"),
-                 (datamodel.User(name="Owain",email="test5@test.com"),"olm3"),
-                 (datamodel.User(name="Eck",email="test6@test.com"),"edo"),
-                 (datamodel.User(name="James",email="test7@test.com"),"jdp85")]
+        users = [(datamodel.User(full_name="Mike",email="test@test.com"),"rmb237"),
+                 (datamodel.User(full_name="Jonah",email="test2@test.com"),"jwh83"),
+                 (datamodel.User(full_name="Eddie",email="test3@test.com"),"eh88"),
+                 (datamodel.User(full_name="Kyoko",email="test4@test.com"),"kcm58"),
+                 (datamodel.User(full_name="Owain",email="test5@test.com"),"olm3"),
+                 (datamodel.User(full_name="Eck",email="test6@test.com"),"edo"),
+                 (datamodel.User(full_name="James",email="test7@test.com"),"jdp85")]
         
         ct_key_list=[]
         usr_key_list=[]
@@ -102,19 +102,19 @@ class populate(webapp.RequestHandler):
                                            privileges=[1])
             ar.put()
         
-        course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section="0001",
+        course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
                                                         course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[1][0].key(),student_count=35,section="0001",
+                          (datamodel.CourseOffering(semester=s,instructor=users[1][0].key(),student_count=35,section=1,
                                                         course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[2][0].key(),student_count=35,section="0002",
+                          (datamodel.CourseOffering(semester=s,instructor=users[2][0].key(),student_count=35,section=2,
                                                         course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[3][0].key(),student_count=35,section="0002",
+                          (datamodel.CourseOffering(semester=s,instructor=users[3][0].key(),student_count=35,section=2,
                                                         course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[4][0].key(),student_count=35,section="0003",
+                          (datamodel.CourseOffering(semester=s,instructor=users[4][0].key(),student_count=35,section=3,
                                                         course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[5][0].key(),student_count=35,section="0003",
+                          (datamodel.CourseOffering(semester=s,instructor=users[5][0].key(),student_count=35,section=3,
                                                         course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[6][0].key(),student_count=35,section="0004",
+                          (datamodel.CourseOffering(semester=s,instructor=users[6][0].key(),student_count=35,section=4,
                                                         course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status']))]
         
         for co in course_offerings:

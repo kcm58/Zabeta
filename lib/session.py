@@ -68,7 +68,7 @@ class session(webapp.RequestHandler):
         for t in user.tasks:
             tasks.append(str(t))
         sess={"email":user.email,
-              "name":user.name,
+              "full_name":user.full_name,
               "id":str(user.key()),
               "university":str(auth.university.key()),
               "programs":programs,
@@ -98,7 +98,7 @@ class path_handler(webapp.RequestHandler):
 
     def get(self):
         uni_path=self.request.path.split("/")[-1].lower()
-        l=datamodel.University.gql("where path=:1 limit 1",uni_path)
+        l=datamodel.University.gql("where login_path=:1 limit 1",uni_path)
         uni_id=str(l.fetch(1)[0].key()) 
         self.redirect("/authentication/"+uni_id)
 
