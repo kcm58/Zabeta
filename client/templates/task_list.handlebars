@@ -1,0 +1,37 @@
+<h2>Tasks Assigned</h2>
+<table class="list">
+  <thead>
+    <tr>
+      <th>
+        Title
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Priority
+      </th>
+      <th>
+        Completion
+      </th>
+      <th>
+        Responsible
+      </th>
+      <th>
+        Due
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#user}}
+    <tr>
+      <td style="cursor:pointer">{{name}}</td>
+      <td>None</td>
+      <td>None</td>
+      <td>{{fulfilled}}%</td>
+      <td>None</td>
+      <td>{{relative_date}}</td>
+    </tr>
+    {{/user}}
+  </tbody>
+</table>
