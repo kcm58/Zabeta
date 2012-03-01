@@ -31,10 +31,11 @@ class dispatch(session.session):
         for key in u._all_properties:
             if True:
                 try:
-                    var=getattr(u,key)
+                    var=getattr(u,"_"+key)
                 except:
                     pass
-                if type(var) is datetime.datetime:
+                t=type(var)
+                if t is datetime.datetime:
                     element[key]=var.isoformat("T") + "+00:00"
                 else:
                     element[key]=str(var)
