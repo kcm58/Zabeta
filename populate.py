@@ -31,7 +31,7 @@ class populate(webapp.RequestHandler):
         a=datamodel.AuthenticationMethod(university=u.key(),cas_url="https://cas.nau.edu")
         a.put()
                 
-        p=datamodel.Program(University=u,name="CS",start_date=datetime.datetime(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
+        p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
                             description="Computer Science program at NAU")
         p.put()
         
