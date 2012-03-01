@@ -2,10 +2,6 @@
  * main.js
  */
 
-/* Temporary proof-of-concept var */
-var taskListJson;
-var formJson;
-
 
 $(document).ready(function(){
 	initRouter();
@@ -38,7 +34,7 @@ function initPage() {
 	$.get('/api/user/get', function(json){
 		if(!$.isEmptyObject(json['user'])){
 			var uni_name;
-			$.getJSON('/api/mora/'+json['user']['university'], function(uni_json){
+			$.getJSON('/api/crud/'+json['user']['university'], function(uni_json){
 				uni_name = uni_json['name'];
 				$.extend(json['user'], {usr_logo: 'img/face.png', uni_name:uni_name});
 				T.render('toolbar', function(t) {
@@ -47,6 +43,7 @@ function initPage() {
 				loadMenu();
 				loadTasksList();
 				loadTermCourses();
+				loadProgramList();
 			});
 		}
 	})
@@ -103,7 +100,7 @@ function loadTasksList() {
 }
 
 function loadCourseData(course_id){
-	$.getJSON('/api/mora/'+course_id, function(json){
+	$.getJSON('/api/crud/'+course_id, function(json){
 		T.render('course', function(t) {
 			 $('#top').html( t(json) );
 		});
@@ -111,16 +108,28 @@ function loadCourseData(course_id){
 }
 
 function loadTermCourses(){
-	termcourseJson = {
-			"Semester":[
-			            {"name":"Semester Name"}
-			           ],
-			 "CourseOffering":[
-			                   {"name": "Automata Theory", "catalog": "CS 315"},
-			                   {"name": "Computer Science I ", "catalog": "CS 126"}
-			                  ]
-	}
+	var outputJSON = {};
+	$.getJSON('/api/list/Semester', function(json){
+		$.extend(outputJSON, {'semester_name': json['Semester'][0]['name']});
+	});
+	$.getJSON('/api/user/getCurrentCourses', function(json){
+		$.extend(outputJSON, json);
+	});
 	T.render('term_class_list', function(t){
-		$('#bottom-left').html(t(termcourseJson));
+		$('#bottom-left').html(t(outputJSON));
+	});
+}
+
+function loadProgramList(){
+	$.getJSON('api/user/get', function(json){
+		if(json['user']['programs'].length > 1){
+			$('#program-chooser').html('<select id=\"program-chooser-select\"></select>');
+			var programListJSON = {'programs': []};
+			for(i in json['user']['programs']){
+				$.getJSON('api/crud/'+json['user']['programs'][i], function(json){
+					$('#program-chooser-select').append('<option value="'+json['id']+'">'+json['name']+'</option>');
+				});
+			}	
+		}
 	});
 }
