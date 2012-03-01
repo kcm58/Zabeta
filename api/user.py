@@ -12,6 +12,7 @@ class user(api.api):
 
     def logout(self):
         self.destroy_session()
+        self.redirect("/")
         return "success"
 
     def getTasks(self):
