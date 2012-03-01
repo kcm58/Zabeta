@@ -39,6 +39,8 @@ class ScheduleLog(db.MoraModel):
     owner = db.ReferenceProperty(None,indexed=True) #void pointer to user
     timestamp = db.DateTimeProperty()
     task = db.ReferenceProperty(None,indexed=True) #void pointer to a task
+    user = db.ReferenceProperty(None,indexed=True)
+    email = db.EmailProperty()
     
 class User(db.MoraModel):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
