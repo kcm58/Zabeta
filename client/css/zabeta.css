@@ -50,7 +50,7 @@ body {
   display: table;
   right: 12px;
   height: 48px;
-  width: 30%;
+  width: 350px;
 }
 #account #program-chooser{
 	display: table-cell;
@@ -144,7 +144,7 @@ body {
 }
 
 #footer{
-	position:absolute;
+	position:fixed;
 	bottom:0;
 	width:100%;
 	background-color:white;

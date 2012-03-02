@@ -58,10 +58,12 @@ except ImportError:
 
 # Determine if we can write to the file system, and if we can use a local file
 # cache behing httplib2.
-if hasattr(os, 'tempnam'):
+
+##Commented out conditional because we can't write to the filesystem on AppEngine
+#if hasattr(os, 'tempnam'):
   # Put cache file in the director '.cache'.
-  CACHED_HTTP = httplib2.Http('.cache')
-else:
+#  CACHED_HTTP = httplib2.Http('.cache')
+#else:
   CACHED_HTTP = httplib2.Http()
 
 logger = logging.getLogger(__name__)
