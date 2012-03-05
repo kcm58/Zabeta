@@ -78,9 +78,9 @@ class populate(webapp.RequestHandler):
                             where_from=wiki_form)
         o2_2.put()
         
-        course_tasks=[(datamodel.CourseTask(name="CS 315 Evals",description="Collect student evals for CS 315",begin_date=datetime.datetime(2012,5,1),
+        course_tasks=[(datamodel.CourseTask(name="CS 315 Evals",description="Collect student evals for CS 315",begin_date=datetime.datetime(2012,1,1),
                                             end_date=datetime.datetime(2012,6,15),fulfilled=0),"315 Evals"),
-                      (datamodel.CourseTask(name="CS 396 Evals",description="Collect student evals for CS396",begin_date=datetime.datetime(2012,5,1),
+                      (datamodel.CourseTask(name="CS 396 Evals",description="Collect student evals for CS396",begin_date=datetime.datetime(2012,1,1),
                                             end_date=datetime.datetime(2012,6,15),fulfilled=0),"396 Evals")]
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="test@test.com",employee_id="rmb237",display_name="Mike",
