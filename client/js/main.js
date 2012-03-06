@@ -66,12 +66,13 @@ function loadMenu(){
 					"name":	"Accredidation"
 				}]
 	}
-	T.render('menu', function(t) {
-		 $('#menu-content').html( t(menuJson) );
+	var programID = $.cookie('program');
+	$.getJSON('/api/crud/'+programID, function(data){
+		$.extend(menuJson, data);
+		T.render('menu', function(t) {
+			 $('#menu-content').html( t(menuJson) );
+		});
 	});
-	if(window.location.hash.indexOf('course') != -1){
-		loadCourseList();
-	}
 }
 
 function loadTasksList() {
@@ -141,9 +142,6 @@ function loadProgramList(){
 			$('#program-chooser').html('');
 			var programsStore = {programs: []};
 			for(key in json['user']['programs']){
-				/*$.getJSON('api/crud/'+json['user']['programs'][key], function(json){
-					$('#program-chooser-select').append('<option value="'+json['id']+'">'+json['name']+'</option>');
-				});*/
 				$.ajax({
 					url: 'api/crud/'+json['user']['programs'][key],
 					dataType: 'json',
@@ -152,14 +150,30 @@ function loadProgramList(){
 						key = this.ajaxKey;
 						programsStore['programs'][key] = {programName: programjson['name'], programId: programjson['id']}
 						if(key == json['user']['programs'].length-1){
-							console.log(programsStore);
 							T.render('program_chooser', function(t){
 								$('#program-chooser').html(t(programsStore));
+								if($.cookie('program') == null){
+									$.cookie('program', $('#program-chooser-select option:selected').val(), {expires: 7});
+								}else{
+									$('#program-chooser-select').val($.cookie('program'));
+								}
+								$('#program-chooser-select').change(function(){
+									$.cookie('program', $('#program-chooser-select option:selected').val(), {expires: 7});
+									loadMenu();
+								});
 							});
 						}
 					}
 				});
 			}	
+		}else{
+			$.cookie('program', json['user']['programs'][0], {expires: 7});
 		}
 	});
+}
+
+function loadPrivList(){
+	//Faculty
+	//Chair
+	
 }
