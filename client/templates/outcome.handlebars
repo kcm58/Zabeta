@@ -1,18 +1,12 @@
-<h2>{{name}}</h2>
-<p class="label">Outcome description:</p>
-<span>{{outcome_description}}</span>
-<p class="label">Rationale:</p>
-<span>{{rationale}}</span>
-<p class="label">Assessments:</p>
-<span>{{assessments}}</span>
-<p class="label">Last evaluation:</p>
-<span>{{last_evaluation}}</span>
-<p class="label">Next evaluation:</p>
-<span>{{evaluation_next}}</span>
-<p class="label">Evaluation duration:</p>
-<span>{{evaluation_duration}}</span>
-<p class="label">Rationalized course:</p>
-<span>{{empty}}</span>
-<p class="label">Index:</p>
-<span>{{index}}</span>
-
+{{#user}}
+      <div id="name">
+        <div class="outcome description">{{outcome_description}}</div>
+        <div class="rationale">{{rationale}}</div>
+        <div class="assessments">{{assessments}}</div>
+        <div class="last evaluation">{{last_evaluation}}</div>
+        <div class="next evaluation">{{evaluation_next}}</div>
+        <div class="evaluation duration">{{evaluation_duration}}</div>
+        <div class="rationalized course">{{empty}}</div>
+        <div class="index">{{index}}</div>
+      </div>
+{{/user}}}

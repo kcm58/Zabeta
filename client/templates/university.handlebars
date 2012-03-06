@@ -1,15 +1,10 @@
-<h2>{{name}}</h2>
-
-<p class="label">Domain:</p>
-<span>{{domain}}</span>
-<p class="label">Semesters:</p>
-<span>{{semesters}}</span>
-<p class="label">Login path:</p>
-<span>{{login_path}}</span>
-<p class="label">Programs:</p>
-<span>{{programs}}</span>
-<p class="label">Thumbnail:</p>
-<span>{{thumbnail}}</span>
-<p class="label">Web page:</p>
-<span>{{web_page}}</span>
-
+{{#user}}
+      <div id="university">
+        <div class="domain">{{domain}}</div>
+        <div class="semesters">{{semesters}}</div>
+        <div class="login path">{{login_path}}</div>
+        <div class="programs">{{programs}}</div>
+        <div class="thumbnail">{{thumbnail}}</div>
+        <div class="webpage">{{web_page}}</div>
+      </div>
+{{/user}}}

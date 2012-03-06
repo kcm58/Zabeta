@@ -1,14 +1,10 @@
-<h2>{{Course Offering}}</h2>
-
-<p class="label">Student count:</p>
-<span>{{student_count}}</span>
-<p class="label">Section:</p>
-<span>{{section}}</span>
-<p class="label">Final grades:</p>
-<span>{{final_grades}}</span>
-<p class="label">Tasks:</p>
-<span>{{tasks}}</span>
-<p class="label">Syllabus:</p>
-<span>{{syllabus}}</span>
-<p class="label">Website</p>
-<span>{{website}}</span>
+{{#user}}
+      <div id="course offering">
+        <div class="student count">{{sudent_count}}</div>
+        <div class="section">{{section}}</div>
+        <div class="final grade">{{final_grades}}</div>
+        <div class="tasks">{{tasks}}</div>
+        <div class="syllabus">{{syllabus}}</div>
+        <div class="website">{{website}}</div>
+      </div>
+{{/user}}}

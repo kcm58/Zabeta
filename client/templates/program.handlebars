@@ -1,18 +1,11 @@
-<h2>{{name}}</h2>
-<p class="label">Start date:</p>
-<span>{{start_date}}</span>
-<p class="label">End date:</p>
-<span>{{end_date}}</span>
-<p class="label">Mission</p>
-<span>{{mission}}</span>
-<p class="label">Description:</p>
-<span>{{description}}</span>
-<p class="label">Web page:</p>
-<span>{{web_page}}</span>
-<p class="label">Thumbnail:</p>
-<span>{{thumbnail}}</span>
-<p class="label">Docs:</p>
-<span>{{docs}}</span>
-
-
-
+{{#user}}
+      <div id="name">
+        <div class="start date">{{start_date}}</div>
+        <div class="end date">{{end_date}}</div>
+        <div class="mission">{{mission}}</div>
+        <div class="description">{{description}}</div>
+        <div class="webpage">{{web_page}}</div>
+        <div class="thumbnail">{{thumbnail}}</div>
+        <div class="docs">{{docs}}</div>
+      </div>
+{{/user}}}
