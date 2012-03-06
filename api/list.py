@@ -13,7 +13,8 @@ class list(api.api):
             "Outcome":True,
             "Objective":True,
             "Minutes":True,
-            "ScheduleLog":True}
+            "ScheduleLog":True,
+            "Task":True}
 
     def University(self):
         #"where university=:1",self.university
@@ -24,6 +25,9 @@ class list(api.api):
 
     def CourseTask(self):
         return datamodel.CourseTask.gql("")
+
+    def Task(self):
+        return datamodel.Task.gql("")
 
     def Semester(self):
         return datamodel.Semester.gql("")
