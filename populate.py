@@ -32,8 +32,14 @@ class populate(webapp.RequestHandler):
         a.put()
                 
         p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
-                            description="Computer Science program at NAU")
+                            description="Computer Science")
         p.put()
+        p2=datamodel.Program(University=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
+                            description="Electrical Engineering")
+        p2.put()
+        p3=datamodel.Program(University=u,name="ME",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing mechanical engineers",
+                            description="Mechanical Engineering")
+        p3.put()
         
         c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",
                             core_topics="fundamental principles of computability and different families of languages.",
@@ -43,6 +49,14 @@ class populate(webapp.RequestHandler):
                             core_topics="functional programming and underlying linguistic principles, constructs, and mechanisms associated with diverse programming paradigms",
                             webpage="http://nau.edu/CEFNS/Engineering/Computer-Science/Welcome/",catalog="CS 396")
         c2.put()
+        c3=datamodel.Course(program=p2,name="EE 101",description="EE 101 Descrip",
+                            core_topics="EE 101 Topics",
+                            webpage="http://nau.edu/cefns/engineering/electrical/",catalog="EE 101")
+        c3.put()
+        c4=datamodel.Course(program=p3,name="ME 101",description="ME 101 Descrip",
+                            core_topics="ME 101 Topics",
+                            webpage="http://nau.edu/cefns/engineering/mechanical/",catalog="ME 101")
+        c4.put()
       
         s=datamodel.Semester(name="FALL11",university=u.key())
         s.put()
@@ -113,8 +127,8 @@ class populate(webapp.RequestHandler):
             ar=datamodel.AuthenticationRecord(university=u.key(),
                                            cas_id=id,
                                            user=r.key(),
-                                           programs=[p.key()],
-                                           privileges=[1])
+                                           programs=[p.key(),p2.key(),p3.key()],
+                                           privileges=[1,2,1])
             ar.put()
         
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
