@@ -5,6 +5,8 @@ import datamodel
 class list(api.api):
     public={"University":True,
             "Program":True,
+            "Task":True,
+            "AssessmentTask":True,
             "CourseTask":True,
             "Semester":True,
             "CourseOffering":True,
@@ -14,7 +16,7 @@ class list(api.api):
             "Objective":True,
             "Minutes":True,
             "ScheduleLog":True,
-            "Task":True}
+            }
 
     def University(self):
         #"where university=:1",self.university
@@ -28,6 +30,9 @@ class list(api.api):
 
     def Task(self):
         return datamodel.Task.gql("")
+
+    def AssessmentTask(self):
+        return datamodel.AssessmentTask.gql("")
 
     def Semester(self):
         return datamodel.Semester.gql("")
