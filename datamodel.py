@@ -167,7 +167,7 @@ class OutcomeSupport(Version):
     instrument = db.ReferenceProperty(Instrument,indexed=True)
     rationale = db.StringProperty()
     goal = db.StringProperty()
-    
+
 class AssessmentTask(Task):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program

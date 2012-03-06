@@ -128,7 +128,7 @@ class populate(webapp.RequestHandler):
                                            cas_id=id,
                                            user=r.key(),
                                            programs=[p.key(),p2.key(),p3.key()],
-                                           privileges=[1,1,1])
+                                           privileges=[1,2,1])
             ar.put()
         
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
