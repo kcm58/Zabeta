@@ -99,7 +99,7 @@ class populate(webapp.RequestHandler):
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="test@test.com",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
-                 (datamodel.User(full_name="Jonah Hirsch",email="test2@test.com",employee_id="jeh83",display_name="Jonah",
+                 (datamodel.User(full_name="Jonah Hirsch",email="test2@test.com",employee_id="jwh83",display_name="Jonah",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"jwh83"),
                  (datamodel.User(full_name="Eddie Hillenbrand",email="test3@test.com",employee_id="eh88",display_name="Eddie",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"eh88"),
@@ -128,7 +128,7 @@ class populate(webapp.RequestHandler):
                                            cas_id=id,
                                            user=r.key(),
                                            programs=[p.key(),p2.key(),p3.key()],
-                                           privileges=[1,1,1])
+                                           privileges=[1,2,1])
             ar.put()
         
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
