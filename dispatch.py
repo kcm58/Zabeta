@@ -8,6 +8,7 @@ import session
 import datetime
 import populate
 import schedule
+import file
 
 from api import crud
 from google.appengine.ext import  db
@@ -30,10 +31,11 @@ class dispatch(session.session):
         for key in u._all_properties:
             if True:
                 try:
-                    var=getattr(u,key)
+                    var=getattr(u,"_"+key)
                 except:
                     pass
-                if type(var) is datetime.datetime:
+                t=type(var)
+                if t is datetime.datetime:
                     element[key]=var.isoformat("T") + "+00:00"
                 else:
                     element[key]=str(var)
@@ -103,12 +105,16 @@ class index(webapp.RequestHandler):
 
 if __name__ == "__main__":
     #try:
-    RestDispatcher.setup('/api/crud', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User,crud.University])
+    RestDispatcher.setup('/api/crud', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User,crud.University,crud.Program])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),
                                          ('/authentication/.*', session.auth),
                                          ('/a/.*', session.path_handler),  
+                                         ('/file/upload/.*', file.UploadFile),
+                                         ('/file/download/.*', file.DownloadFile),            
+                                         #todo:  remove debug code!
+                                         ('/file/test', file.test),                              
                                          ('/populate', populate.populate),
                                          ('/schedule', schedule.schedule),
                                          ('/api/.*', dispatch)
