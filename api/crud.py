@@ -31,10 +31,34 @@ class Task(RestHandler):
 class AssessmentTask(Task):
   
     model = datamodel.AssessmentTask
+    
+    def show(self):
+        self.response.out.write(self.model.to_json())
+    
+    def update(self):
+        self.model.from_json(self.params)
 
-class CourseTask(Task):
+    @rest_create("response")
+    def response_new(self):
+        #Populate the response
+        self.model.response=str(self.params)
+        self.model.save()
+        
+class CourseTask(RestHandler):
   
     model = datamodel.CourseTask 
+    
+    def show(self):
+        self.response.out.write(self.model.to_json())
+    
+    def update(self):
+        self.model.from_json(self.params)
+
+    @rest_create("response")
+    def response_new(self):
+        #Populate the response
+        self.model.response=str(self.params)
+        self.model.save() 
 
 class Course(RestHandler):
 
