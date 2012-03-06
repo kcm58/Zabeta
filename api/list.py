@@ -16,6 +16,7 @@ class list(api.api):
             "Objective":True,
             "Minutes":True,
             "ScheduleLog":True,
+            "User":True,
             }
 
     def University(self):
@@ -58,4 +59,5 @@ class list(api.api):
     def ScheduleLog(self,program):
         return datamodel.ScheduleLog.gql("")
 
-
+    def User(self):
+        return datamodel.User.gql("")
