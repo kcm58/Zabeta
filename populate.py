@@ -2,6 +2,9 @@ import session
 import datamodel
 import datetime
 from google.appengine.ext import db,webapp
+import datetime
+import dateutil
+from dateutil.relativedelta import relativedelta
 
 
 #A temp class used to populate the db with development data.
@@ -78,10 +81,29 @@ class populate(webapp.RequestHandler):
                             where_from=wiki_form)
         o2_2.put()
         
+        deltas={}
+        deltas['day']=datetime.timedelta(days=1)
+        deltas['week']=datetime.timedelta(days=7)
+        deltas['month']=relativedelta(months=+1)
+        deltas['six months']=relativedelta(months=+6)
+        
+        test_date_six_months=(datetime.datetime.now())-deltas['six months']
+        test_date_month=(datetime.datetime.now())-deltas['month']
+        test_date_week=(datetime.datetime.now())-deltas['week']
+        test_date_day=(datetime.datetime.now())-deltas['day']
+        
         course_tasks=[(datamodel.CourseTask(name="CS 315 Evals",description="Collect student evals for CS 315",begin_date=datetime.datetime(2012,1,1),
                                             end_date=datetime.datetime(2012,6,15),fulfilled=0),"315 Evals"),
                       (datamodel.CourseTask(name="CS 396 Evals",description="Collect student evals for CS396",begin_date=datetime.datetime(2012,1,1),
-                                            end_date=datetime.datetime(2012,6,15),fulfilled=0),"396 Evals")]
+                                            end_date=datetime.datetime(2012,6,15),fulfilled=0),"396 Evals"),
+                      (datamodel.CourseTask(name="Test six months before",description="Collect student evals for CS396",begin_date=test_date_six_months,
+                                            end_date=test_date_six_months,fulfilled=0),"396 Evals"),
+                      (datamodel.CourseTask(name="Test one month before",description="Collect student evals for CS396",begin_date=test_date_month,
+                                            end_date=test_date_month,fulfilled=0),"396 Evals"),
+                      (datamodel.CourseTask(name="Test one week before",description="Collect student evals for CS396",begin_date=test_date_week,
+                                            end_date=test_date_week,fulfilled=0),"396 Evals"),
+                      (datamodel.CourseTask(name="Test one day before",description="Collect student evals for CS396",begin_date=test_date_day,
+                                            end_date=test_date_day,fulfilled=0),"396 Evals")]
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="test@test.com",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
@@ -143,7 +165,7 @@ class populate(webapp.RequestHandler):
             co.put()
         
         for ct,id in course_tasks:
-            ct.delegates=ct_key_list
+            ct.delegates=usr_key_list
             ct.put()
                        
         #c.put()
