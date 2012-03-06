@@ -1,8 +1,6 @@
-{{#Semester}}
-<h2>{{name}}</h2>
-{{/Semester}}
+<h2>{{semester_name}}</h2>
 <ul>
-{{#CourseOffering}}
-<li>{{name}} - ({{catalog}}})</li>
-{{/CourseOffering}}
+{{#user}}
+<li><a href="#course/{{id}}">{{name}} - ({{catalog}})</a></li>
+{{/user}}
 </li>

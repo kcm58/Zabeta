@@ -2,10 +2,6 @@
  * main.js
  */
 
-/* Temporary proof-of-concept var */
-var taskListJson;
-var formJson;
-
 
 $(document).ready(function(){
 	initRouter();
@@ -38,12 +34,13 @@ function initPage() {
 	$.get('/api/user/get', function(json){
 		if(!$.isEmptyObject(json['user'])){
 			var uni_name;
-			$.getJSON('/api/mora/'+json['user']['university'], function(uni_json){
+			$.getJSON('/api/crud/'+json['user']['university'], function(uni_json){
 				uni_name = uni_json['name'];
 				$.extend(json['user'], {usr_logo: 'img/face.png', uni_name:uni_name});
 				T.render('toolbar', function(t) {
 					 $('#toolbar').html( t(json) );
 				});
+				loadProgramList();
 				loadMenu();
 				loadTasksList();
 				loadTermCourses();
@@ -103,7 +100,7 @@ function loadTasksList() {
 }
 
 function loadCourseData(course_id){
-	$.getJSON('/api/mora/'+course_id, function(json){
+	$.getJSON('/api/crud/'+course_id, function(json){
 		T.render('course', function(t) {
 			 $('#top').html( t(json) );
 		});
@@ -111,16 +108,58 @@ function loadCourseData(course_id){
 }
 
 function loadTermCourses(){
-	termcourseJson = {
-			"Semester":[
-			            {"name":"Semester Name"}
-			           ],
-			 "CourseOffering":[
-			                   {"name": "Automata Theory", "catalog": "CS 315"},
-			                   {"name": "Computer Science I ", "catalog": "CS 126"}
-			                  ]
-	}
-	T.render('term_class_list', function(t){
-		$('#bottom-left').html(t(termcourseJson));
+	var outputJSON = {};
+	$.getJSON('/api/list/Semester', function(json){
+		$.extend(outputJSON, {'semester_name': json['Semester'][0]['name']});
+	});
+	$.getJSON('/api/user/getCurrentCourses', function(json){
+		var inAjax = false;
+		for(var key in json['user']){
+			var courseID = json['user'][key]['course'];
+			$.ajax({
+				url: 'api/crud/'+courseID,
+				dataType: 'json',
+				ajaxKey: key,
+				success: function(coursejson){
+					key = this.ajaxKey;
+					$.extend(json['user'][key], {name: coursejson['name'], catalog: coursejson['catalog']});
+					if(key == json['user'].length-1){
+						$.extend(outputJSON, json);
+						T.render('term_class_list', function(t){
+							$('#bottom-left').html(t(outputJSON));
+						});
+					}
+				}
+			});
+		}
+	});
+}
+
+function loadProgramList(){
+	$.getJSON('api/user/get', function(json){
+		if(json['user']['programs'].length > 1){
+			$('#program-chooser').html('');
+			var programsStore = {programs: []};
+			for(key in json['user']['programs']){
+				/*$.getJSON('api/crud/'+json['user']['programs'][key], function(json){
+					$('#program-chooser-select').append('<option value="'+json['id']+'">'+json['name']+'</option>');
+				});*/
+				$.ajax({
+					url: 'api/crud/'+json['user']['programs'][key],
+					dataType: 'json',
+					ajaxKey: key,
+					success: function(programjson){
+						key = this.ajaxKey;
+						programsStore['programs'][key] = {programName: programjson['name'], programId: programjson['id']}
+						if(key == json['user']['programs'].length-1){
+							console.log(programsStore);
+							T.render('program_chooser', function(t){
+								$('#program-chooser').html(t(programsStore));
+							});
+						}
+					}
+				});
+			}	
+		}
 	});
 }

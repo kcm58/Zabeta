@@ -193,6 +193,7 @@ class Minutes(Version):
     docs = db.StringProperty() #identifier of docs array
     date = db.DateTimeProperty()
     content = db.StringProperty()
+    attachment = db.StringProperty() # allow the user to upload a file.
     
 class AuthenticationMethod(db.MoraModel):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
