@@ -31,7 +31,10 @@ class dispatch(session.session):
         for key in u._all_properties:
             if True:
                 try:
-                    var=getattr(u,"_"+key)
+                    if key=="id":
+                        var=str(u.id)
+                    else:
+                        var=getattr(u,"_"+key)
                 except:
                     pass
                 t=type(var)
