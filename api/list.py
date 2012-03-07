@@ -2,6 +2,7 @@ import api
 from google.appengine.ext import db
 import datamodel
 import json
+import urllib2
 
 class list(api.api):
     public={"University":True,
@@ -64,8 +65,8 @@ class list(api.api):
     def User(self):
         return datamodel.User.gql("")
 
+    #Accepts a post body of json and returns the list of keys. 
     def Batch(self):
-        keys=json.loads(self.request.body)
+        j=urllib2.unquote(self.request.body)
+        keys=json.loads(j)
         return db.get(keys)
-          
-        #return datamodel.User.gql("")
