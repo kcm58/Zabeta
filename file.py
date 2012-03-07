@@ -1,13 +1,13 @@
 import datamodel
 import urllib
 
-from google.appengine.ext import blobstore,webapp
+from google.appengine.ext import blobstore,webapp,db
 from google.appengine.ext.webapp import blobstore_handlers
 
 class test(webapp.RequestHandler):
 
     def get(self):
-        upload_url = blobstore.create_upload_url('/file/upload/123')
+        upload_url = blobstore.create_upload_url('/file/upload/agxkZXZ-emFiZXRhLTJyCwsSBFVzZXIYjAIM')
         self.response.out.write('<html><body>')
         self.response.out.write('<form action="%s" method="POST" enctype="multipart/form-data">' % upload_url)
         self.response.out.write("""Upload File: <input type="file" name="file"><br> <input type="submit" name="submit" value="Submit"> </form></body></html>""")
@@ -19,7 +19,8 @@ class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
 
     def post(self):
         id=self.request.path.split("/")[-1]
-        collection=self.request.path.split("/")[-2]
+        model=db.get(id)      
+        collection=model.class_name()
         upload_files = self.get_uploads('file')
         blob_info = upload_files[0]
         key=blob_info._BlobInfo__key          
@@ -35,6 +36,9 @@ class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
         elif collection == "Minutes":
             datamodel.Minutes.attachment=key
             datamodel.Minutes.save()
+        elif collection == "User":
+            datamodel.User.thumbnail=key
+            datamodel.User.save()            
         #todo remove,  debug only
         self.redirect('/file/test')
 
