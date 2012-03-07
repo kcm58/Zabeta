@@ -40,6 +40,12 @@ class dispatch(session.session):
                 t=type(var)
                 if t is datetime.datetime:
                     element[key]=var.isoformat("T") + "+00:00"
+                elif t is list:
+                    if len(var) and type(var[0]) is db.Key:
+                        ids=[]
+                        for v in var:
+                            ids.append(str(v))
+                        element[key]=ids
                 else:
                     element[key]=str(var)
         return element

@@ -1,6 +1,7 @@
 import api
 from google.appengine.ext import db
 import datamodel
+import json
 
 class list(api.api):
     public={"University":True,
@@ -17,6 +18,7 @@ class list(api.api):
             "Minutes":True,
             "ScheduleLog":True,
             "User":True,
+            "Batch":True
             }
 
     def University(self):
@@ -61,3 +63,9 @@ class list(api.api):
 
     def User(self):
         return datamodel.User.gql("")
+
+    def Batch(self):
+        keys=json.loads(self.request.body)
+        return db.get(keys)
+          
+        #return datamodel.User.gql("")

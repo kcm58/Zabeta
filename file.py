@@ -36,7 +36,7 @@ class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
             model.syllabus=key
             model.save()
         elif collection == "Minutes":
-            model.attachment=key
+            model.attachment.append(key)
             model.save()
         elif collection == "User":
             model.thumbnail=key
