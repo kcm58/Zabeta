@@ -69,6 +69,14 @@ class session(webapp.RequestHandler):
             tasks.append(str(t))
         sess={"email":user.email,
               "full_name":user.full_name,
+              "display_name":user.display_name,
+              "employee_id":user.employee_id,
+              "phone_office":user.phone_office,
+              "phone_personal":user.phone_personal,
+              "phone_office":user.phone_office,
+              "office":user.office,
+              "full_name":user.full_name,
+              "thumbnail":user.thumbnail,
               "id":str(user.key()),
               "university":str(auth.university.key()),
               "programs":programs,
@@ -79,6 +87,11 @@ class session(webapp.RequestHandler):
         memcache.set(cookie,sess_mem,7200)
         #HttpOnly will help defend against XSS.
         self.response.headers.add_header("Set-Cookie", "cid="+cookie+"; path=/; HttpOnly")
+
+    def save_session(self):
+        sess_mem=pickle.dumps(self.user)      
+        #expires in two hours,  time in seconds. 
+        memcache.set(self.cookie,sess_mem,7200)      
 
     def destroy_session(self):
         #overwrite session id->user id mapping
