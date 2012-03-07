@@ -8,7 +8,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 class test(session.session):
 
     def get(self):
-        upload_url = blobstore.create_upload_url('/file/upload/agxkZXZ-emFiZXRhLTJyCwsSBFVzZXIYwAIM')
+        upload_url = blobstore.create_upload_url('/file/upload/'+self.user['id'])
         self.response.out.write('<html><body>')
         self.response.out.write('<form action="%s" method="POST" enctype="multipart/form-data">' % upload_url)
         self.response.out.write("""Upload File: <input type="file" name="file"><br> <input type="submit" name="submit" value="Submit"> </form></body></html>""")
