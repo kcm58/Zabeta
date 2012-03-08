@@ -41,6 +41,7 @@ function initRouter(){
 			"course/:course_id":	"course",
 			"users":				"users",
 			"programs":				"programs",
+			"tasks":				"tasks",
 			"*data": 				"default"
 		},
 
@@ -62,6 +63,11 @@ function initRouter(){
 		programs: function(){
 			clearPanes();
 			loadPrograms();
+		},
+		
+		tasks: function(){
+			clearPanes();
+			loadTaskPage();
 		}
 			
 	});
@@ -112,12 +118,14 @@ function loadProgramList(){
 					///////// 			 THANKS		 	 ////////
 					if($.jStorage.get('program') == null){
 						$.jStorage.set('program', $('#program-chooser-select option:selected').val());
+						$.cookie('program', $('#program-chooser-select option:selected').val(), { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
 					}else{
 						$('#program-chooser-select').val($.jStorage.get('program'));
 					}
 					$('#program-chooser-select').change(function(){
 						$.jStorage.set('program', $('#program-chooser-select option:selected').val());
+						$.cookie('program', $('#program-chooser-select option:selected').val(), { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
 						console.log($.jStorage.get('program'));
 						loadMenu();
@@ -128,6 +136,7 @@ function loadProgramList(){
 		});
 	}else{
 		$.jStorage.set('program', userdata['user']['programs'][0]);
+		$.cookie('program', userdata['user']['programs'][0], { expires: 7});
 		$.jStorage.setTTL('program', 604800000);
 		console.log($.jStorage.get('program'));
 		loadMenu();
@@ -188,33 +197,31 @@ function loadMenu(){
 	});
 }
 
-function loadDashboard() {
-  expandPanes();
-  $.getJSON('api/user/getTasks', function(json){
-    for(var key in json['user']){
-    	$('body').append('<div id="relativeTimeHandler" style="display:none"></div>');
-		var end_date = json['user'][key]['end_date'];
-		var endDateTicks = Date.parse(end_date);
-		$('#relativeTimeHandler').attr('datetime', end_date);
-		$('#relativeTimeHandler').html('');
-		$('#relativeTimeHandler').relative({format:'human', displayZeros:false, tick:0	});
-		var relative_date = $('#relativeTimeHandler').html();
-		$.extend(json['user'][key], {'relative_date': relative_date});
-		$('#relativeTimeHandler').remove();
-	}
-	T.render('task_list', function(t) {
-		 $('#top').html( t(json) );
-	});
-	loadTermCourses('#bottom-left');
-  });
-}
-
 function loadCourseData(course_id){
 	$.getJSON('/api/crud/'+course_id, function(json){
 		T.render('course', function(t) {
 			 $('#top').html( t(json) );
 		});
 	});
+}
+
+function loadTasks(element){
+  $.getJSON('api/user/getTasks', function(json){
+	    for(var key in json['user']){
+	    	$('body').append('<div id="relativeTimeHandler" style="display:none"></div>');
+			var end_date = json['user'][key]['end_date'];
+			var endDateTicks = Date.parse(end_date);
+			$('#relativeTimeHandler').attr('datetime', end_date);
+			$('#relativeTimeHandler').html('');
+			$('#relativeTimeHandler').relative({format:'human', displayZeros:false, tick:0	});
+			var relative_date = $('#relativeTimeHandler').html();
+			$.extend(json['user'][key], {'relative_date': relative_date});
+			$('#relativeTimeHandler').remove();
+		}
+		T.render('task_list', function(t) {
+			 $(element).html( t(json) );
+		});
+	  });
 }
 
 function loadTermCourses(element){
@@ -294,6 +301,17 @@ function loadPrograms(){
 	loadSemesters('#top');
 	loadUsers('#bottom-left');
 	loadTermCourses('#bottom-right');
+}
+
+function loadDashboard() {
+	expandPanes();
+	loadTasks('#top');
+	loadTermCourses('#bottom-left');
+}
+
+function loadTaskPage(){
+	collapsePanes();
+	loadTasks('#top');
 }
 
 //These are development functions that need to be replaced or expanded on
