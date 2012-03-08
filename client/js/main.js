@@ -119,15 +119,18 @@ function loadProgramList(){
 					$('#program-chooser-select').change(function(){
 						$.jStorage.set('program', $('#program-chooser-select option:selected').val());
 						$.jStorage.setTTL('program', 604800000);
+						console.log($.jStorage.get('program'));
 						loadMenu();
 					});
+					loadMenu();
 				});
-				loadMenu();
 			}
 		});
 	}else{
-		$.jStorage.set('program', json['user']['programs'][0]);
+		$.jStorage.set('program', userdata['user']['programs'][0]);
 		$.jStorage.setTTL('program', 604800000);
+		console.log($.jStorage.get('program'));
+		loadMenu();
 	}
 }
 
@@ -261,7 +264,12 @@ function clearPanes(){
 }
 
 function loadUsers(element){
+	console.log('hi)');
 	var userdata = $.jStorage.get('userdata');
+	if(userdata == null){
+		initPage();
+		userdata = $.jStorage.get('userdata');
+	}
 	if(element == '#top'){
 		collapsePanes();
 	}
