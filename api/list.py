@@ -26,7 +26,7 @@ class list(api.api):
         #"where university=:1",self.university
         return datamodel.University.gql("")
 
-    def Program(self):
+    def Program(self):      
         return datamodel.Program.gql("")
 
     def CourseTask(self):
@@ -65,7 +65,7 @@ class list(api.api):
     def User(self):
         return datamodel.User.gql("")
 
-    #Accepts a post body of json and returns the list of keys. 
+    #Accepts a post body of json and returns the list of keys.
     def Batch(self):
         j=urllib2.unquote(self.request.body)
         keys=json.loads(j)

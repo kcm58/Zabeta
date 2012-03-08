@@ -16,7 +16,7 @@ class user(api.api):
         return "success"
 
     def getTasks(self):
-        return datamodel.Task.get(self.user["tasks"])
+        return datamodel.Task.gql("where delegates=KEY(:1)",self.user["id"])#get(self.user["tasks"])
 
     def getCurrentCourses(self):
-        return datamodel.CourseOffering.gql("")#where instructor=KEY(:1),self.user["id"])
+        return datamodel.CourseOffering.gql("where instructor=KEY(:1)",self.user["id"])
