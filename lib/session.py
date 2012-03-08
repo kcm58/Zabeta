@@ -55,14 +55,17 @@ class session(webapp.RequestHandler):
                     self.program_priv=None
                     #lets populate the program that the user would like
                     #Of course we are making sure that they have access to this program
-                    for p in self.user['programs']:
-                        if p ==  self.request.cookies.multi['program']:
-                            self.program_id=self.user['programs'][dex]
-                            self.program_priv=self.user['privileges'][dex]                            
-                        dex+=1
-                    if  self.program_id is None:
-                        self.program_id=self.user['programs'][0]
-                        self.program_priv=self.user['privileges'][0]
+                    try:
+                        for p in self.user['programs']:
+                            if p ==  self.request.cookies.multi['program']:
+                                self.program_id=self.user['programs'][dex]
+                                self.program_priv=self.user['privileges'][dex]                            
+                            dex+=1
+                        if  self.program_id is None:
+                            self.program_id=self.user['programs'][0]
+                            self.program_priv=self.user['privileges'][0]
+                    except:
+                        pass
                 else:
                     #session expired
                     self.destroy_session()
