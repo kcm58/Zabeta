@@ -61,11 +61,11 @@ class session(webapp.RequestHandler):
                                 self.program_id=self.user['programs'][dex]
                                 self.program_priv=self.user['privileges'][dex]                            
                             dex+=1
-                        if  self.program_id is None:
-                            self.program_id=self.user['programs'][0]
-                            self.program_priv=self.user['privileges'][0]
-                    except:
-                        pass
+                    except KeyError:
+                        pass                            
+                    if  self.program_id is None:
+                        self.program_id=self.user['programs'][0]
+                        self.program_priv=self.user['privileges'][0]
                 else:
                     #session expired
                     self.destroy_session()
@@ -178,7 +178,6 @@ class auth(session):
             #insert a new user:
             #datamodel.user(name=user.name,email="",cas_id=id).put()
             #ask the user for their email?
-        
 
     #This is used to create a session.
     #First the user is authenticated using oauth, 

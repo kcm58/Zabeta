@@ -45,7 +45,14 @@ class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
             sess.save_session()
                       
         #todo remove,  debug only
-        self.redirect('/file/test')
+        self.redirect("/file/%d/success" % (blob_info.key().id(),))
+
+
+class AjaxSuccessHandler(session.session):
+  def get(self, file_id):
+    self.response.headers['Content-Type'] = 'text/plain'
+    self.response.out.write('%s/file/%s' % (self.request.host_url, file_id))
+
 
 class DownloadFile(blobstore_handlers.BlobstoreDownloadHandler):
 

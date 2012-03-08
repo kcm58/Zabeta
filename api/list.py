@@ -19,7 +19,8 @@ class list(api.api):
             "Minutes":True,
             "ScheduleLog":True,
             "User":True,
-            "Batch":True
+            "Batch":True,
+            "EmailLog":True,
             }
 
     def University(self):
@@ -64,7 +65,10 @@ class list(api.api):
 
     def User(self):
         return datamodel.User.gql("")
-
+    
+    def EmailLog(self):
+        return datamodel.EmailLog.gql("")
+    
     #Accepts a post body of json and returns the list of keys.
     def Batch(self):
         j=urllib2.unquote(self.request.body)
