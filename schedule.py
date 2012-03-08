@@ -32,6 +32,7 @@ class schedule(webapp.RequestHandler):
         return ret 
     
     def print_curr_task(self,task):
+        #self.response.out.write(task)
         task_str="""Task: %s <br /> Description: %s <br /> 
                     Delegates: %s <br /> 
                     Begin Date: %s <br /> 
@@ -114,13 +115,16 @@ class schedule(webapp.RequestHandler):
         if nag_before_dict['six months before']==1:
             start_window=(datetime.datetime.now().date())+deltas['six_months']
             end_window=(start_window+deltas['six_months']+deltas['day'])
-            #self.response.out.write(start_window)
-            #self.response.write("<br />")
-            #self.response.out.write(end_window)
-            #self.response.write("<br />")
+            self.response.out.write("Start window: ")
+            self.response.out.write(start_window)
+            self.response.write("<br />")
+            self.response.out.write("End window: ")
+            self.response.out.write(end_window)
+            self.response.write("<br />")
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                t_key=t.key()
                 task_str="""Task name: %s <br /> 
                             Task description %s <br /> 
                             Begin date: %s <br /> 
@@ -129,19 +133,7 @@ class schedule(webapp.RequestHandler):
                             Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
                 self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                for d in dele:
-                    self.response.out.write(d.email)
-                    self.response.write(" ")
-                    d_full_name=d.full_name
-                    d.email=d.email
-                    mail.send_mail(sender="test@zabeta.com",
-                                   to="%s %s"%(d.full_name,d.email),
-                                   subject="Test email",
-                                   body="""Dear %s:
-
-                                           This is a test email.
-
-                                           Please let me know if you got it.""" %d.full_name)
+                self.send_emails(dele,t_key)
                 self.response.write("one day <br />")
                 self.response.write("<br />")
                 
@@ -165,19 +157,7 @@ class schedule(webapp.RequestHandler):
                             Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
                 self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                for d in dele:
-                    self.response.out.write(d.email)
-                    self.response.write(" ")
-                    d_full_name=d.full_name
-                    d.email=d.email
-                    mail.send_mail(sender="test@zabeta.com",
-                                   to="%s %s"%(d.full_name,d.email),
-                                   subject="Test email",
-                                   body="""Dear %s:
-
-                                           This is a test email.
-
-                                           Please let me know if you got it.""" %d.full_name)
+                self.send_emails(dele,t_key)
                 self.response.write("one day <br />")
                 self.response.write("<br />")
                 
@@ -193,6 +173,7 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                t_key=t.key()
                 task_str="""Task name: %s <br /> 
                             Task description %s <br /> 
                             Begin date: %s <br /> 
@@ -201,19 +182,7 @@ class schedule(webapp.RequestHandler):
                             Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
                 self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                for d in dele:
-                    self.response.out.write(d.email)
-                    self.response.write(" ")
-                    d_full_name=d.full_name
-                    d.email=d.email
-                    mail.send_mail(sender="test@zabeta.com",
-                                   to="%s %s"%(d.full_name,d.email),
-                                   subject="Test email",
-                                   body="""Dear %s:
-
-                                           This is a test email.
-
-                                           Please let me know if you got it.""" %d.full_name)
+                self.send_emails(dele,t_key)
                 self.response.write("one day <br />")
                 self.response.write("<br />")
                 
@@ -229,6 +198,7 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                t_key=t.key()
                 task_str="""Task name: %s <br /> 
                             Task description %s <br /> 
                             Begin date: %s <br /> 
@@ -237,19 +207,7 @@ class schedule(webapp.RequestHandler):
                             Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
                 self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                for d in dele:
-                    self.response.out.write(d.email)
-                    self.response.write(" ")
-                    d_full_name=d.full_name
-                    d.email=d.email
-                    mail.send_mail(sender="test@zabeta.com",
-                                   to="%s %s"%(d.full_name,d.email),
-                                   subject="Test email",
-                                   body="""Dear %s:
-
-                                           This is a test email.
-
-                                           Please let me know if you got it.""" %d.full_name)
+                self.send_emails(dele,t_key)
                 self.response.write("one day <br />")
                 self.response.write("<br />")
                 
@@ -274,6 +232,7 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                t_key=t.key()
                 task_str="""Task name: %s <br /> 
                             Task description %s <br /> 
                             Begin date: %s <br /> 
@@ -282,19 +241,7 @@ class schedule(webapp.RequestHandler):
                             Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
                 self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                for d in dele:
-                    self.response.out.write(d.email)
-                    self.response.write(" ")
-                    d_full_name=d.full_name
-                    d.email=d.email
-                    mail.send_mail(sender="test@zabeta.com",
-                                   to="%s %s"%(d.full_name,d.email),
-                                   subject="Test email",
-                                   body="""Dear %s:
-
-                                           This is a test email.
-
-                                           Please let me know if you got it.""" %d.full_name)
+                self.send_emails(dele,t_key)
                 self.response.write("one day <br />")
                 self.response.write("<br />")
                 
@@ -310,6 +257,7 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                t_key=t.key()
                 task_str="""Task name: %s <br /> 
                             Task description %s <br /> 
                             Begin date: %s <br /> 
@@ -318,19 +266,7 @@ class schedule(webapp.RequestHandler):
                             Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
                 self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                for d in dele:
-                    self.response.out.write(d.email)
-                    self.response.write(" ")
-                    d_full_name=d.full_name
-                    d.email=d.email
-                    mail.send_mail(sender="test@zabeta.com",
-                                   to="%s %s"%(d.full_name,d.email),
-                                   subject="Test email",
-                                   body="""Dear %s:
-
-                                           This is a test email.
-
-                                           Please let me know if you got it.""" %d.full_name)
+                self.send_emails(dele,t_key)
                 self.response.write("one day <br />")
                 self.response.write("<br />")
                 
@@ -346,6 +282,7 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                t_key=t.key()
                 task_str="""Task name: %s <br /> 
                             Task description %s <br /> 
                             Begin date: %s <br /> 
@@ -354,19 +291,7 @@ class schedule(webapp.RequestHandler):
                             Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
                 self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                for d in dele:
-                    self.response.out.write(d.email)
-                    self.response.write(" ")
-                    d_full_name=d.full_name
-                    d.email=d.email
-                    mail.send_mail(sender="test@zabeta.com",
-                                   to="%s %s"%(d.full_name,d.email),
-                                   subject="Test email",
-                                   body="""Dear %s:
-
-                                           This is a test email.
-
-                                           Please let me know if you got it.""" %d.full_name)
+                self.send_emails(dele,t_key)
                 self.response.write("one day <br />")
                 self.response.write("<br />")
                 
@@ -382,6 +307,7 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                t_key=t.key()
                 task_str="""Task name: %s <br /> 
                             Task description %s <br /> 
                             Begin date: %s <br /> 
@@ -390,26 +316,29 @@ class schedule(webapp.RequestHandler):
                             Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
                 self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                for d in dele:
-                    self.response.out.write(d.email)
-                    self.response.write(" ")
-                    d_full_name=d.full_name
-                    d.email=d.email
-                    mail.send_mail(sender="test@zabeta.com",
-                                   to="%s %s"%(d.full_name,d.email),
-                                   subject="Test email",
-                                   body="""Dear %s:
-
-                                           This is a test email.
-
-                                           Please let me know if you got it.""" %d.full_name)
+                self.send_emails(dele,t_key)
                 self.response.write("one day <br />")
                 self.response.write("<br />")
+                
+    def send_emails(self,delegates,t_key):
+        for d in delegates:
+            self.response.out.write(d.email)
+            self.response.write(" ")
+            d_full_name=d.full_name
+            d.email=d.email
+            mail.send_mail(sender="test@zabeta.com",
+                            to="%s %s"%(d.full_name,d.email),
+                            subject="Test email",
+                            body="""Dear %s:
+                                    <a href="http://localhost:9999#%s/">Click here to view the task</a>"
+                                    This is a test email.
+
+                                    Please let me know if you got it.""" %(d.full_name,t_key))
 
         
         
         
-        
+      
         
        
         

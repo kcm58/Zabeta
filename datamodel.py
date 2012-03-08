@@ -53,7 +53,6 @@ class User(db.MoraModel):
       
 class University(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
-    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     name = db.StringProperty()
     domain = db.StringProperty()
     semesters = db.StringProperty() #needs to be reverse reference
@@ -98,18 +97,18 @@ class Course(Version):
     catalog = db.StringProperty()
     webpage = db.StringProperty()
     core_topics = db.StringProperty()
- 
+
 class Instrument(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
-    empty = db.StringProperty()  
-         
+    empty = db.StringProperty()
+
 class CourseTask(Task):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     course = db.ReferenceProperty(Course,indexed=True)
     rubric = db.ReferenceProperty(Instrument,indexed=True) 
-    
+
 class Semester(db.MoraModel):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
