@@ -76,8 +76,7 @@ class Program(Version):
     docs = db.StringProperty() #identifier of docs array
     nag_before = db.StringListProperty()
     nag_after = db.StringListProperty()
-    
-    
+
 class Task(Version):
     delegates = db.ListProperty(db.Key)
     name = db.StringProperty()
@@ -145,7 +144,7 @@ class Outcome(Form):
     rationalize_course = db.ListProperty(db.Key)
     rationalize_instrument = db.ReferenceProperty(Instrument,indexed=True)
     index = db.IntegerProperty()
-    
+
 class OutcomeSupport(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
