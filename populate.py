@@ -33,15 +33,18 @@ class populate(webapp.RequestHandler):
         u.put()
         a=datamodel.AuthenticationMethod(university=u.key(),cas_url="https://cas.nau.edu")
         a.put()
+        
+        nag_before_dict=["six months before","one month before","one week before","one day before"]
+        nag_after_dict=["six months after","one month after","one week after","one day after"]
                 
         p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
-                            description="Computer Science")
+                            nag_before=nag_before_dict,nag_after=nag_after_dict,description="Computer Science")
         p.put()
         p2=datamodel.Program(University=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
-                            description="Electrical Engineering")
+                            nag_before=nag_before_dict,nag_after=nag_after_dict,description="Electrical Engineering")
         p2.put()
         p3=datamodel.Program(University=u,name="ME",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing mechanical engineers",
-                            description="Mechanical Engineering")
+                            nag_before=nag_before_dict,nag_after=nag_after_dict,description="Mechanical Engineering")
         p3.put()
         
         c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",
