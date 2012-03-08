@@ -121,19 +121,19 @@ class populate(webapp.RequestHandler):
                       (datamodel.CourseTask(name="Test one day before",description="Collect student evals for CS396",begin_date=test_date_day,
                                             end_date=test_date_day,fulfilled=0),"396 Evals")]
                        
-        users = [(datamodel.User(full_name="Michael Brooks",email="test@test.com",employee_id="rmb237",display_name="Mike",
+        users = [(datamodel.User(full_name="Michael Brooks",email="rmb237@nau.edu",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
-                 (datamodel.User(full_name="Jonah Hirsch",email="test2@test.com",employee_id="jwh83",display_name="Jonah",
+                 (datamodel.User(full_name="Jonah Hirsch",email="jwh83@nau.edu",employee_id="jwh83",display_name="Jonah",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"jwh83"),
                  (datamodel.User(full_name="Eddie Hillenbrand",email="test3@test.com",employee_id="eh88",display_name="Eddie",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"eh88"),
-                 (datamodel.User(full_name="Kyoko Makino",email="test4@test.com",employee_id="kcm58",display_name="Kyoko",
+                 (datamodel.User(full_name="Kyoko Makino",email="kcm58@nau.edu",employee_id="kcm58",display_name="Kyoko",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"kcm58"),
-                 (datamodel.User(full_name="Owain Moss",email="test5@test.com",employee_id="olm3",display_name="Owain",
+                 (datamodel.User(full_name="Owain Moss",email="olm3@nau.edu",employee_id="olm3",display_name="Owain",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"olmm3"),
-                 (datamodel.User(full_name="Eck Doerry",email="test6@test.com",employee_id="edo",display_name="Eck",
+                 (datamodel.User(full_name="Eck Doerry",email="olm3@nau.edu",employee_id="edo",display_name="Eck",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"edo"),
-                 (datamodel.User(full_name="James Palmer",email="test7@test.com",employee_id="jdp85",display_name="James",
+                 (datamodel.User(full_name="James Palmer",email="olm3@nau.edu",employee_id="jdp85",display_name="James",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"jdp85")]
         
         ct_key_list=[]
