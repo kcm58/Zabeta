@@ -79,6 +79,9 @@ class Program(Version):
     webpage = db.StringProperty() #url to website
     thumbnail = db.StringProperty() #identifier of image file
     docs = db.StringProperty() #identifier of docs array
+    nag_before = db.StringListProperty()
+    nag_after = db.StringListProperty()
+    
     
 class Task(Version):
     delegates = db.ListProperty(db.Key)
@@ -106,8 +109,7 @@ class Instrument(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     empty = db.StringProperty()  
-    
-      
+         
 class CourseTask(Task):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
@@ -199,3 +201,12 @@ class AuthenticationRecord(db.MoraModel):
     programs = db.ListProperty(db.Key)#Progam refernce
     privileges = db.ListProperty(int)
     user = db.ReferenceProperty(User,indexed=True)
+    
+class EmailLog(db.MoraModel):
+    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    task = db.ReferenceProperty(None,indexed=True) #void pointer to a task
+    user = db.ReferenceProperty(None,indexed=True) #void pointer to a user
+    email = db.StringProperty()
+    
+    
