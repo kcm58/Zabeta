@@ -1,13 +1,14 @@
 import datamodel
 import urllib
+import session
 
-from google.appengine.ext import blobstore,webapp
+from google.appengine.ext import blobstore,webapp,db
 from google.appengine.ext.webapp import blobstore_handlers
 
-class test(webapp.RequestHandler):
+class test(session.session):
 
     def get(self):
-        upload_url = blobstore.create_upload_url('/file/upload/123')
+        upload_url = blobstore.create_upload_url('/file/upload/'+self.user['id'])
         self.response.out.write('<html><body>')
         self.response.out.write('<form action="%s" method="POST" enctype="multipart/form-data">' % upload_url)
         self.response.out.write("""Upload File: <input type="file" name="file"><br> <input type="submit" name="submit" value="Submit"> </form></body></html>""")
@@ -18,29 +19,39 @@ class test(webapp.RequestHandler):
 class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
 
     def post(self):
+        sess=session.session(self.request,self.response)
         id=self.request.path.split("/")[-1]
-        collection=self.request.path.split("/")[-2]
+        model=db.get(id)      
+        collection=model.class_name()
         upload_files = self.get_uploads('file')
         blob_info = upload_files[0]
-        key=blob_info._BlobInfo__key          
+        key=str(blob_info._BlobInfo__key)          
         if collection == "University":
-            datamodel.University.thumbnail=key
-            datamodel.University.save()
+            model.thumbnail=key
+            model.save()
         elif collection == "Program":
-            datamodel.Program.thumbnail=key
-            datamodel.Program.save()
+            model.thumbnail=key
+            model.save()
         elif collection == "CourseOffering":
-            datamodel.CourseOffering.syllabus=key
-            datamodel.CourseOffering.save()
+            model.syllabus=key
+            model.save()
         elif collection == "Minutes":
-            datamodel.Minutes.attachment=key
-            datamodel.Minutes.save()
+            model.attachment.append(key)
+            model.save()
+        elif collection == "User":
+            model.thumbnail=key
+            model.save()
+            sess.user['thumbnail']=key
+            sess.save_session()
+                      
         #todo remove,  debug only
         self.redirect('/file/test')
 
 class DownloadFile(blobstore_handlers.BlobstoreDownloadHandler):
 
     def get(self, blob_key):
+        #This will exit if the user isn't authenticated. 
+        session.session(self.request,self.response)
         blob_key = str(urllib.unquote(blob_key))
         if not blobstore.get(blob_key):
             self.error(404)

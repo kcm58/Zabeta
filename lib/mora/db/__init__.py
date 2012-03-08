@@ -228,6 +228,12 @@ class ListProperty(db.ListProperty):
   def as_json(self, model_instance, value=None):
     if value is None:
       value = self.get_value_for_datastore(model_instance)
+   
+    if type(value[0]) is Key:
+        ret=[]
+        for v in value:
+            ret.append(str(v))
+        value=ret
     # TODO: Flatten each item inside the list
     return value
 
@@ -455,6 +461,7 @@ class ModelMixin(object):
                 continue
             if p in available_properties:
                 p_kind = self.properties()[p]
+                
                 try:
                     result[p] = p_kind.as_json(self)
                 except:
