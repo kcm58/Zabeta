@@ -81,8 +81,7 @@ class Program(Version):
     docs = db.StringProperty() #identifier of docs array
     nag_before = db.StringListProperty()
     nag_after = db.StringListProperty()
-    
-    
+     
 class Task(Version):
     delegates = db.ListProperty(db.Key)
     name = db.StringProperty()
