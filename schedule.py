@@ -4,6 +4,7 @@ import datamodel
 import datetime
 import dateutil
 from dateutil.relativedelta import relativedelta
+from google.appengine.api import mail
 
 
 class schedule(webapp.RequestHandler):
@@ -31,10 +32,6 @@ class schedule(webapp.RequestHandler):
         return ret 
     
     def print_curr_task(self,task):
-        begin_date_ls=task['begin_date'].split(':')
-        begin_date=begin_date_ls[0].rstrip('T00')
-        end_date_ls=task['end_date'].split(':')
-        end_date=end_date_ls[0].rstrip('T00')
         task_str="""Task: %s <br /> Description: %s <br /> 
                     Delegates: %s <br /> 
                     Begin Date: %s <br /> 
@@ -42,7 +39,8 @@ class schedule(webapp.RequestHandler):
                     Fulfilled: %s <br /><br />""" %(task['name'],
                                                   task['description'],
                                                   task['delegates'],
-                                                  begin_date,end_date,
+                                                  task['begin_date'],
+                                                  task['end_date'],
                                                   task['fulfilled'])
         self.response.out.write(task_str)    
 
@@ -101,131 +99,312 @@ class schedule(webapp.RequestHandler):
             self.print_curr_task(t)
                      
         #Check nag lists    
-        self.check_nags_before2(nag_before_dict)
-        #self.check_nags_after2(task_list,nag_after_dict)
+        self.check_nags_before(nag_before_dict)
+        self.check_nags_after(nag_after_dict)
         
-    def check_nags_before2(self,nag_before_dict):
-        header_str="<br />CHECKING NAG BEFORE LIST:<br />"
+    def check_nags_before(self,nag_before_dict):
+        header_str="<br />CHECKING NAG BEFORE LIST:<br /><br />"
         self.response.out.write(header_str)
         deltas={}
         deltas['day']=datetime.timedelta(days=1)
         deltas['week']=datetime.timedelta(days=7)
         deltas['month']=relativedelta(months=+1)
         deltas['six_months']=relativedelta(months=+6)
-        curr_date=datetime.datetime.now()
-        curr_date_test=datetime.date(2011,12,15)
 
         if nag_before_dict['six months before']==1:
-            start_window=(datetime.datetime.now().date())-deltas['six_months']#+six_month_delta
-            end_window=(datetime.datetime.now().date())-deltas['six_months']+deltas['day']
+            start_window=(datetime.datetime.now().date())+deltas['six_months']
+            end_window=(start_window+deltas['six_months']+deltas['day'])
+            #self.response.out.write(start_window)
+            #self.response.write("<br />")
+            #self.response.out.write(end_window)
+            #self.response.write("<br />")
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                task_str="""Task name: %s <br /> 
+                            Task description %s <br /> 
+                            Begin date: %s <br /> 
+                            End date: %s <br /> 
+                            Fulfilled?: %s <br />
+                            Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
+                self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                self.response.out.write(dele[0].email)
-                self.response.write("six months <br />")
+                for d in dele:
+                    self.response.out.write(d.email)
+                    self.response.write(" ")
+                    d_full_name=d.full_name
+                    d.email=d.email
+                    mail.send_mail(sender="test@zabeta.com",
+                                   to="%s %s"%(d.full_name,d.email),
+                                   subject="Test email",
+                                   body="""Dear %s:
+
+                                           This is a test email.
+
+                                           Please let me know if you got it.""" %d.full_name)
+                self.response.write("one day <br />")
                 self.response.write("<br />")
                 
         if nag_before_dict['one month before']==1:
-            start_window=(datetime.datetime.now().date())-deltas['month']#+six_month_delta
-            end_window=(datetime.datetime.now().date())-deltas['month']+deltas['day']
+            start_window=(datetime.datetime.now().date())+deltas['month']
+            end_window=(start_window+deltas['month']+deltas['day'])
+            self.response.out.write("Start window: ")
+            self.response.out.write(start_window)
+            self.response.write("<br />")
+            self.response.out.write("End window: ")
+            self.response.out.write(end_window)
+            self.response.write("<br />")
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                task_str="""Task name: %s <br /> 
+                            Task description %s <br /> 
+                            Begin date: %s <br /> 
+                            End date: %s <br /> 
+                            Fulfilled?: %s <br />
+                            Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
+                self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                self.response.out.write(dele[0].email)
-                self.response.write("one month <br />")
+                for d in dele:
+                    self.response.out.write(d.email)
+                    self.response.write(" ")
+                    d_full_name=d.full_name
+                    d.email=d.email
+                    mail.send_mail(sender="test@zabeta.com",
+                                   to="%s %s"%(d.full_name,d.email),
+                                   subject="Test email",
+                                   body="""Dear %s:
 
+                                           This is a test email.
+
+                                           Please let me know if you got it.""" %d.full_name)
+                self.response.write("one day <br />")
                 self.response.write("<br />")
                 
         if nag_before_dict['one week before']==1:
-            start_window=(datetime.datetime.now().date())-deltas['week']#+six_month_delta
-            end_window=(datetime.datetime.now().date())-deltas['week']+deltas['day']
+            start_window=(datetime.datetime.now().date())+deltas['week']
+            end_window=(start_window+deltas['week']+deltas['day'])
+            self.response.out.write("Start window: ")
+            self.response.out.write(start_window)
+            self.response.write("<br />")
+            self.response.out.write("End window: ")
+            self.response.out.write(end_window)
+            self.response.write("<br />")
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                task_str="""Task name: %s <br /> 
+                            Task description %s <br /> 
+                            Begin date: %s <br /> 
+                            End date: %s <br /> 
+                            Fulfilled?: %s <br />
+                            Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
+                self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                self.response.out.write(dele[0].email)
-                self.response.write("one week <br />")
+                for d in dele:
+                    self.response.out.write(d.email)
+                    self.response.write(" ")
+                    d_full_name=d.full_name
+                    d.email=d.email
+                    mail.send_mail(sender="test@zabeta.com",
+                                   to="%s %s"%(d.full_name,d.email),
+                                   subject="Test email",
+                                   body="""Dear %s:
 
+                                           This is a test email.
+
+                                           Please let me know if you got it.""" %d.full_name)
+                self.response.write("one day <br />")
                 self.response.write("<br />")
                 
         if nag_before_dict['one day before']==1:
-            start_window=(datetime.datetime.now().date())-deltas['day']#+six_month_delta
-            end_window=(datetime.datetime.now().date())
+            start_window=(datetime.datetime.now().date())+deltas['day']
+            end_window=(start_window+deltas['day'])
+            self.response.out.write("Start window: ")
+            self.response.out.write(start_window)
+            self.response.write("<br />")
+            self.response.out.write("End window: ")
+            self.response.out.write(end_window)
+            self.response.write("<br />")
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
             task_list=tasks.fetch(1024)
             for t in task_list:
+                task_str="""Task name: %s <br /> 
+                            Task description %s <br /> 
+                            Begin date: %s <br /> 
+                            End date: %s <br /> 
+                            Fulfilled?: %s <br />
+                            Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
+                self.response.out.write(task_str)
                 dele=db.get(t.delegates)
-                self.response.out.write(dele[0].email)
-                self.response.write("one day <br />")
+                for d in dele:
+                    self.response.out.write(d.email)
+                    self.response.write(" ")
+                    d_full_name=d.full_name
+                    d.email=d.email
+                    mail.send_mail(sender="test@zabeta.com",
+                                   to="%s %s"%(d.full_name,d.email),
+                                   subject="Test email",
+                                   body="""Dear %s:
 
+                                           This is a test email.
+
+                                           Please let me know if you got it.""" %d.full_name)
+                self.response.write("one day <br />")
                 self.response.write("<br />")
-            
-         
-    #Given: a nag_list object representing all the times to nag after a task is due
-    #Given: a list of tasks to check
-    #Create a list of deltas to add/subtract from current date
-    #Check nag list flags and add deltas from current date to see if it is time to nag
-    def check_nags_after2(self,task_list,nag_after_dict):
-        header_str="CHECKING NAG AFTER LIST:<br />"
+                
+    def check_nags_after(self,nag_after_dict):
+        header_str="<br />CHECKING NAG AFTER LIST:<br /><br />"
         self.response.out.write(header_str)
         deltas={}
         deltas['day']=datetime.timedelta(days=1)
         deltas['week']=datetime.timedelta(days=7)
-        deltas['month']=datetime.timedelta(days=31)
-        curr_date=datetime.datetime.now().date()
-        curr_date_test=datetime.date(2012,12,18) #Use this to debug
-        curr_date_test_str=""
-        curr_date_test_str+=str(curr_date_test.year)
-        curr_date_test_str+="-"
-        curr_date_test_str+=str(curr_date_test.month)
-        curr_date_test_str+="-"
-        curr_date_test_str+=str(curr_date_test.day)
-        self.response.out.write("Using %s as current date for debugging <br /><br />" %curr_date_test_str)
-        
-        for t in range(0,len(task_list)):
-            begin_date_ls=task_list[t]['begin_date'].split(':')
-            begin_date=begin_date_ls[0].rstrip('T00')
-            end_date_ls=task_list[t]['end_date'].split(':')
-            end_date=end_date_ls[0].rstrip('T00')
-            task_str="""Task: %s <br /> Description: %s <br /> 
-                        Delegates: %s <br /> 
-                        Current Date: %s <br /> 
-                        Begin Date: %s <br /> 
-                        End Date: %s <br /> 
-                        Fulfilled: %s <br />""" %(task_list[t]['name'],
-                                                  task_list[t]['description'],
-                                                  task_list[t]['delegates'],
-                                                  curr_date_test,begin_date,end_date,
-                                                  task_list[t]['fulfilled'])
-                                                                                                                                                          
-            self.response.out.write(task_str)
-            end_date_ls=end_date.split('-')
-            end_date_obj=datetime.date(int(end_date_ls[0]),int(end_date_ls[1]),int(end_date_ls[2]))
-            if nag_after_dict['six months after']==1 and int(task_list[t]['fulfilled'])==0:
-                six_months_after=end_date_obj+(6*deltas['month'])
-                if curr_date_test==six_months_after:
-                    self.response.out.write("Need to nag at 6 months after! <br />")
-            if nag_after_dict['one month after']==1 and int(task_list[t]['fulfilled'])==0:
-                one_week_month=end_date_obj+deltas['month']
-                if curr_date_test==one_week_month:
-                    self.response.out.write("Need to nag at 1 month after! <br />")
-            if nag_after_dict['one week after']==1 and int(task_list[t]['fulfilled'])==0:
-                one_week_after=end_date_obj+deltas['week']
-                if curr_date_test==one_week_after:
-                    self.response.out.write("Need to nag at 1 week after! <br />")
-            if nag_after_dict['one day after']==1 and int(task_list[t]['fulfilled'])==0:
-                one_day_after=end_date_obj+deltas['day']
-                if curr_date_test==one_day_after:
-                    self.response.write("Need to nag at one day after! <br />")
-                    
-            self.response.out.write("<br />")
-            
-            
+        deltas['month']=relativedelta(months=+1)
+        deltas['six_months']=relativedelta(months=+6)
 
-                    
-            
+        if nag_after_dict['six months after']==1:
+            start_window=(datetime.datetime.now().date())-deltas['six_months']
+            end_window=(start_window+deltas['day'])
+            self.response.out.write("Start window: ")
+            self.response.out.write(start_window)
+            self.response.write("<br />")
+            self.response.out.write("End window: ")
+            self.response.out.write(end_window)
+            self.response.write("<br />")
+            tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
+            task_list=tasks.fetch(1024)
+            for t in task_list:
+                task_str="""Task name: %s <br /> 
+                            Task description %s <br /> 
+                            Begin date: %s <br /> 
+                            End date: %s <br /> 
+                            Fulfilled?: %s <br />
+                            Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
+                self.response.out.write(task_str)
+                dele=db.get(t.delegates)
+                for d in dele:
+                    self.response.out.write(d.email)
+                    self.response.write(" ")
+                    d_full_name=d.full_name
+                    d.email=d.email
+                    mail.send_mail(sender="test@zabeta.com",
+                                   to="%s %s"%(d.full_name,d.email),
+                                   subject="Test email",
+                                   body="""Dear %s:
+
+                                           This is a test email.
+
+                                           Please let me know if you got it.""" %d.full_name)
+                self.response.write("one day <br />")
+                self.response.write("<br />")
+                
+        if nag_after_dict['one month after']==1:
+            start_window=(datetime.datetime.now().date())-deltas['month']
+            end_window=(start_window+deltas['day'])
+            self.response.out.write("Start window: ")
+            self.response.out.write(start_window)
+            self.response.write("<br />")
+            self.response.out.write("End window: ")
+            self.response.out.write(end_window)
+            self.response.write("<br />")
+            tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
+            task_list=tasks.fetch(1024)
+            for t in task_list:
+                task_str="""Task name: %s <br /> 
+                            Task description %s <br /> 
+                            Begin date: %s <br /> 
+                            End date: %s <br /> 
+                            Fulfilled?: %s <br />
+                            Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
+                self.response.out.write(task_str)
+                dele=db.get(t.delegates)
+                for d in dele:
+                    self.response.out.write(d.email)
+                    self.response.write(" ")
+                    d_full_name=d.full_name
+                    d.email=d.email
+                    mail.send_mail(sender="test@zabeta.com",
+                                   to="%s %s"%(d.full_name,d.email),
+                                   subject="Test email",
+                                   body="""Dear %s:
+
+                                           This is a test email.
+
+                                           Please let me know if you got it.""" %d.full_name)
+                self.response.write("one day <br />")
+                self.response.write("<br />")
+                
+        if nag_after_dict['one week after']==1:
+            start_window=(datetime.datetime.now().date())-deltas['week']
+            end_window=(start_window+deltas['day'])
+            self.response.out.write("Start window: ")
+            self.response.out.write(start_window)
+            self.response.write("<br />")
+            self.response.out.write("End window: ")
+            self.response.out.write(end_window)
+            self.response.write("<br />")
+            tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
+            task_list=tasks.fetch(1024)
+            for t in task_list:
+                task_str="""Task name: %s <br /> 
+                            Task description %s <br /> 
+                            Begin date: %s <br /> 
+                            End date: %s <br /> 
+                            Fulfilled?: %s <br />
+                            Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
+                self.response.out.write(task_str)
+                dele=db.get(t.delegates)
+                for d in dele:
+                    self.response.out.write(d.email)
+                    self.response.write(" ")
+                    d_full_name=d.full_name
+                    d.email=d.email
+                    mail.send_mail(sender="test@zabeta.com",
+                                   to="%s %s"%(d.full_name,d.email),
+                                   subject="Test email",
+                                   body="""Dear %s:
+
+                                           This is a test email.
+
+                                           Please let me know if you got it.""" %d.full_name)
+                self.response.write("one day <br />")
+                self.response.write("<br />")
+                
+        if nag_after_dict['one day after']==1:
+            start_window=(datetime.datetime.now().date())-deltas['day']
+            end_window=(datetime.datetime.now().date())
+            self.response.out.write("Start window: ")
+            self.response.out.write(start_window)
+            self.response.write("<br />")
+            self.response.out.write("End window: ")
+            self.response.out.write(end_window)
+            self.response.write("<br />")
+            tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2",start_window,end_window)
+            task_list=tasks.fetch(1024)
+            for t in task_list:
+                task_str="""Task name: %s <br /> 
+                            Task description %s <br /> 
+                            Begin date: %s <br /> 
+                            End date: %s <br /> 
+                            Fulfilled?: %s <br />
+                            Delegate emails: """ %(t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
+                self.response.out.write(task_str)
+                dele=db.get(t.delegates)
+                for d in dele:
+                    self.response.out.write(d.email)
+                    self.response.write(" ")
+                    d_full_name=d.full_name
+                    d.email=d.email
+                    mail.send_mail(sender="test@zabeta.com",
+                                   to="%s %s"%(d.full_name,d.email),
+                                   subject="Test email",
+                                   body="""Dear %s:
+
+                                           This is a test email.
+
+                                           Please let me know if you got it.""" %d.full_name)
+                self.response.write("one day <br />")
+                self.response.write("<br />")
 
         
         
