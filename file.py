@@ -14,7 +14,7 @@ class test(session.session):
         self.response.out.write("""Upload File: <input type="file" name="file"><br> <input type="submit" name="submit" value="Submit"> </form></body></html>""")
 
         for b in blobstore.BlobInfo.all():
-            self.response.out.write('<li><a href="/serve/%s' % str(b.key()) + '">' + str(b.filename) + '</a>')
+            self.response.out.write('<li><a href="/file/download/%s' % str(b.key()) + '">' + str(b.filename) + '</a>')
 
 class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
 

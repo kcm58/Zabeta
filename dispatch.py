@@ -121,12 +121,12 @@ if __name__ == "__main__":
                                          ('/authentication/.*', session.auth),
                                          ('/a/.*', session.path_handler),  
                                          ('/file/upload/.*', file.UploadFile),
-                                         ('/file/download/.*', file.DownloadFile),            
+                                         ('/file/download/([^/]+)?', file.DownloadFile),            
                                          #todo:  remove debug code!
                                          ('/file/test', file.test),                              
                                          ('/populate', populate.populate),
                                          ('/schedule', schedule.schedule),
-                                         ('/api/.*', dispatch)
+                                         ('/api/.*', dispatch),
                                          ],
                                         debug=True))
     #except SystemExit:
