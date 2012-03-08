@@ -103,29 +103,42 @@ class populate(webapp.RequestHandler):
         deltas['month']=relativedelta(months=+1)
         deltas['six months']=relativedelta(months=+6)
         
-        test_date_six_months=(datetime.datetime.now())-deltas['six months']
-        test_date_month=(datetime.datetime.now())-deltas['month']
-        test_date_week=(datetime.datetime.now())-deltas['week']
-        test_date_day=(datetime.datetime.now())-deltas['day']
+        test_date_six_months_before=(datetime.datetime.now())+deltas['six months']
+        test_date_month_before=(datetime.datetime.now())+deltas['month']
+        test_date_week_before=(datetime.datetime.now())+deltas['week']
+        test_date_day_before=(datetime.datetime.now())+deltas['day']
+        
+        test_date_six_months_after=(datetime.datetime.now())-deltas['six months']
+        test_date_month_after=(datetime.datetime.now())-deltas['month']
+        test_date_week_after=(datetime.datetime.now())-deltas['week']
+        test_date_day_after=(datetime.datetime.now())-deltas['day']
         
         course_tasks=[(datamodel.CourseTask(name="CS 315 Evals",description="Collect student evals for CS 315",begin_date=datetime.datetime(2012,1,1),
                                             end_date=datetime.datetime(2012,6,15),fulfilled=0),"315 Evals"),
                       (datamodel.CourseTask(name="CS 396 Evals",description="Collect student evals for CS396",begin_date=datetime.datetime(2012,1,1),
                                             end_date=datetime.datetime(2012,6,15),fulfilled=0),"396 Evals"),
-                      (datamodel.CourseTask(name="Test six months before",description="Collect student evals for CS396",begin_date=test_date_six_months,
-                                            end_date=test_date_six_months,fulfilled=0),"396 Evals"),
-                      (datamodel.CourseTask(name="Test one month before",description="Collect student evals for CS396",begin_date=test_date_month,
-                                            end_date=test_date_month,fulfilled=0),"396 Evals"),
-                      (datamodel.CourseTask(name="Test one week before",description="Collect student evals for CS396",begin_date=test_date_week,
-                                            end_date=test_date_week,fulfilled=0),"396 Evals"),
-                      (datamodel.CourseTask(name="Test one day before",description="Collect student evals for CS396",begin_date=test_date_day,
-                                            end_date=test_date_day,fulfilled=0),"396 Evals")]
+                      (datamodel.CourseTask(name="Test six months before",description="Running the six month before test for scheduling",begin_date=test_date_six_months_before,
+                                            end_date=test_date_six_months_before,fulfilled=0),"Six month before test"),
+                      (datamodel.CourseTask(name="Test one month before",description="Running the one month before test for scheduling",begin_date=test_date_month_before,
+                                            end_date=test_date_month_before,fulfilled=0),"One month before test"),
+                      (datamodel.CourseTask(name="Test one week before",description="Running the one week before test for scheduling",begin_date=test_date_week_before,
+                                            end_date=test_date_week_before,fulfilled=0),"One week before test"),
+                      (datamodel.CourseTask(name="Test one day before",description="Running the one day before test for scheduling",begin_date=test_date_day_before,
+                                            end_date=test_date_day_before,fulfilled=0),"One day before test"),
+                      (datamodel.CourseTask(name="Test six months after",description="Running the six month after test for scheduling",begin_date=test_date_six_months_after,
+                                            end_date=test_date_six_months_after,fulfilled=0),"Six month after test"),
+                      (datamodel.CourseTask(name="Test one month after",description="Running the one month after test for scheduling",begin_date=test_date_month_after,
+                                            end_date=test_date_month_after,fulfilled=0),"One month after test"),
+                      (datamodel.CourseTask(name="Test one week after",description="Running the one week after test for scheduling",begin_date=test_date_week_after,
+                                            end_date=test_date_week_after,fulfilled=0),"One week after test"),
+                      (datamodel.CourseTask(name="Test one day after",description="Running the one day after test for scheduling",begin_date=test_date_day_after,
+                                            end_date=test_date_day_after,fulfilled=0),"One day after test")]
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="rmb237@nau.edu",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
                  (datamodel.User(full_name="Jonah Hirsch",email="jwh83@nau.edu",employee_id="jwh83",display_name="Jonah",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"jwh83"),
-                 (datamodel.User(full_name="Eddie Hillenbrand",email="test3@test.com",employee_id="eh88",display_name="Eddie",
+                 (datamodel.User(full_name="Eddie Hillenbrand",email="eh88@nau.edu",employee_id="eh88",display_name="Eddie",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"eh88"),
                  (datamodel.User(full_name="Kyoko Makino",email="kcm58@nau.edu",employee_id="kcm58",display_name="Kyoko",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"kcm58"),
