@@ -30,22 +30,23 @@ class session(webapp.RequestHandler):
     user={}
     #Does this instance need authentication?
     always_allowed=False
+    session_id=None
     
     def __init__(self, request, response):
         super(session, self).__init__(request, response)
         #Check if this instance of session had disabled authentication
         if not self.always_allowed:
             if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
-                self.cookie=self.request.cookies["cid"]
+                self.session_id=self.request.cookies["cid"]
                 #Dont use memcache for anything else.
                 #otherwise an attacker could read or delete an arbitrary value.
-                user_mem=memcache.get(self.cookie)
+                user_mem=memcache.get(self.session_id)
                 #Is this session active?
                 if user_mem is not None and len(user_mem):
                     self.user=pickle.loads(user_mem)
                     #Reset the server-side timeout value for this session.
                     #return as fast as possible because this will affect all load times. 
-                    memcache.set(self.cookie,user_mem,7200)
+                    memcache.set(self.session_id,user_mem,7200)
                     #webapp.Request.cookies["cid"]
                     dex=0
                     #This maybe populated differently in the future.
@@ -108,7 +109,10 @@ class session(webapp.RequestHandler):
 
     def destroy_session(self):
         #overwrite session id->user id mapping
-        memcache.delete(self.session_id)
+        try:
+            memcache.delete(self.session_id)
+        except:
+            pass
         #null the cookie value
         self.response.headers.add_header("Set-Cookie", "cid=; path=/; HttpOnly")
 
