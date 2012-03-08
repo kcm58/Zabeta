@@ -2,45 +2,66 @@
  * main.js
  */
 
+//This is used to display a message to the user if something goes wrong while loading the page
+var loadingTimeout;
 
 $(document).ready(function(){
 	initRouter();
 	initPage();
+	clearTimeout(loadingTimeout);
+	loadingTimeout = setTimeout("showLoadingHelp()", 5000);
+	$('#loading').show();
 	/* 
 	 * Hides the loading pane when all AJAX requests are done
-	 * alaxComplete recieves a callback whenever an AJAX request finishes
-	 * and $.active is the number of active AJAX requests
-	 * ...not sure why but 1 is the lowest it gets.
+	 * ajaxStop receives a callback whenever an AJAX request finishes
+	 * and there are no active AJAX requests left
 	 * 
 	 * It also will SHOW the loading screen whenever any AJAX requests occur.
 	 * We can tone down what it looks like if it's too intrusive, popping up too much
 	 */
 	$('body').ajaxStop(function(){
+		clearTimeout(loadingTimeout);
 		$('#loading').hide();
+		
 	});
 	$('body').ajaxStart(function(){
+		clearTimeout(loadingTimeout);
+		loadingTimeout = setTimeout("showLoadingHelp()", 5000);
 		$('#loading').show();
 	});
 });
+
+function showLoadingHelp(){
+	$('#loading-text').html('<h1>Loading...</h1><h3>This is taking longer than usual...soemthing may have gone wrong.</h3><img src="img/ajax-loader.gif" />')
+}
 
 function initRouter(){
 	var Router = Backbone.Router.extend({
 		routes: {		
 			"course/:course_id":	"course",
 			"users":				"users",
+			"programs":				"programs",
 			"*data": 				"default"
 		},
 
 		default: function(data){
+			clearPanes();
 			loadDashboard();
 		},
 
 		course: function(course_id){
+			clearPanes();
 			loadCourseData(course_id);
 		},
 		
 		users: function(){
-			loadUsers();
+			clearPanes();
+			loadUsers('#top');
+		},
+		
+		programs: function(){
+			clearPanes();
+			loadPrograms();
 		}
 			
 	});
@@ -75,37 +96,35 @@ function loadProgramList(){
 	if(userdata['user']['programs'].length > 1){
 		$('#program-chooser').html('');
 		var programsStore = {programs: []};
-		for(key in userdata['user']['programs']){
-			$.ajax({
-				url: 'api/crud/'+userdata['user']['programs'][key],
-				dataType: 'json',
-				ajaxKey: key,
-				success: function(programjson){
-					key = this.ajaxKey;
-					programsStore['programs'][key] = {programName: programjson['name'], programId: programjson['id']}
-					if(key == userdata['user']['programs'].length-1){
-						T.render('program_chooser', function(t){
-							$('#program-chooser').html(t(programsStore));
-							///////// REMOVE ME IN FINAL RELEASE /////////
-							$.jStorage.deleteKey('program');
-							///////// 			 THANKS		 	 /////////  
-							if($.jStorage.get('program') == null){
-								$.jStorage.set('program', $('#program-chooser-select option:selected').val());
-								$.jStorage.setTTL('program', 604800000);
-							}else{
-								$('#program-chooser-select').val($.jStorage.get('program'));
-							}
-							$('#program-chooser-select').change(function(){
-								$.jStorage.set('program', $('#program-chooser-select option:selected').val());
-								$.jStorage.setTTL('program', 604800000);
-								loadMenu();
-							});
-						});
-						loadMenu();
-					}
+		$.ajax({
+			url: 'api/list/Batch',
+			dataType: 'json',
+			data: JSON.stringify(userdata['user']['programs']),
+			type: "POST",
+			success: function(json){
+				for(var key in json['Batch']){
+					programsStore['programs'][key] = {programName: json['Batch'][key]['name'], programId: json['Batch'][key]['id']};
 				}
-			});
-		}	
+				T.render('program_chooser', function(t){
+					$('#program-chooser').html(t(programsStore));
+					///////// REMOVE ME IN FINAL RELEASE /////////
+					$.jStorage.deleteKey('program');
+					///////// 			 THANKS		 	 ////////
+					if($.jStorage.get('program') == null){
+						$.jStorage.set('program', $('#program-chooser-select option:selected').val());
+						$.jStorage.setTTL('program', 604800000);
+					}else{
+						$('#program-chooser-select').val($.jStorage.get('program'));
+					}
+					$('#program-chooser-select').change(function(){
+						$.jStorage.set('program', $('#program-chooser-select option:selected').val());
+						$.jStorage.setTTL('program', 604800000);
+						loadMenu();
+					});
+				});
+				loadMenu();
+			}
+		});
 	}else{
 		$.jStorage.set('program', json['user']['programs'][0]);
 		$.jStorage.setTTL('program', 604800000);
@@ -125,8 +144,8 @@ function loadMenu(){
 					"name":	"Overview"
 				},
 				{
-					"hash":	"program",
-					"name":	"Program"
+					"hash":	"programs",
+					"name":	"Programs"
 				},
 				{
 					"hash": "accredidation",
@@ -141,8 +160,8 @@ function loadMenu(){
 						"name":	"Overview"
 					},
 					{
-						"hash":	"program",
-						"name":	"Program"
+						"hash":	"programs",
+						"name":	"Programs"
 					},
 					{
 						"hash": "accredidation",
@@ -175,13 +194,7 @@ function loadDashboard() {
 		var endDateTicks = Date.parse(end_date);
 		$('#relativeTimeHandler').attr('datetime', end_date);
 		$('#relativeTimeHandler').html('');
-		var format;
-		if(new Date().getTime() > endDateTicks){
-			format = '%dd %DAYS ago';
-		}else{
-			format = 'in %dd %DAYS';
-		}
-		$('#relativeTimeHandler').relative({format:format, displayZeros:false, tick:0	});
+		$('#relativeTimeHandler').relative({format:'human', displayZeros:false, tick:0	});
 		var relative_date = $('#relativeTimeHandler').html();
 		$.extend(json['user'][key], {'relative_date': relative_date});
 		$('#relativeTimeHandler').remove();
@@ -189,7 +202,7 @@ function loadDashboard() {
 	T.render('task_list', function(t) {
 		 $('#top').html( t(json) );
 	});
-	loadTermCourses();
+	loadTermCourses('#bottom-left');
   });
 }
 
@@ -201,31 +214,29 @@ function loadCourseData(course_id){
 	});
 }
 
-function loadTermCourses(){
+function loadTermCourses(element){
 	var outputJSON = {};
 	$.getJSON('/api/list/Semester', function(json){
 		$.extend(outputJSON, {'semester_name': json['Semester'][0]['name']});
 	});
 	$.getJSON('/api/user/getCurrentCourses', function(json){
-		var inAjax = false;
+		//prepare a list of IDs
+		var courseIDs = [];
 		for(var key in json['user']){
-			var courseID = json['user'][key]['course'];
-			$.ajax({
-				url: 'api/crud/'+courseID,
-				dataType: 'json',
-				ajaxKey: key,
-				success: function(coursejson){
-					key = this.ajaxKey;
-					$.extend(json['user'][key], {name: coursejson['name'], catalog: coursejson['catalog']});
-					if(key == json['user'].length-1){
-						$.extend(outputJSON, json);
-						T.render('term_class_list', function(t){
-							$('#bottom-left').html(t(outputJSON));
-						});
-					}
-				}
-			});
+			courseIDs[key] = json['user'][key]['course'];
 		}
+		$.ajax({
+			url: 'api/list/Batch',
+			dataType: 'json',
+			data: JSON.stringify(courseIDs),
+			type: "POST",
+			success: function(json){
+				$.extend(outputJSON, json);
+				T.render('term_class_list', function(t){
+					$(element).html(t(outputJSON));
+				});
+			}
+		});
 	});
 }
 
@@ -243,12 +254,51 @@ function expandPanes(){
 	$('#top').css('border-bottom', '1px gray dashed');
 }
 
-function loadUsers(){
+function clearPanes(){
+	$('#top').html('');
+	$('#bottom-left').html('');
+	$('#bottom-right').html('');
+}
+
+function loadUsers(element){
 	var userdata = $.jStorage.get('userdata');
-	collapsePanes();
+	if(element == '#top'){
+		collapsePanes();
+	}
 	$.getJSON('api/list/User', function(userJSON){
 		T.render('user_list', function(t){
-			$('#top').html(t(userJSON));
-		})
+			$(element).html(t(userJSON));
+		});
 	});
+}
+
+function loadSemesters(element){
+	$.getJSON('api/list/Semester', function(semesterJSON){
+		console.log(semesterJSON);
+		T.render('semester_list', function(t){
+			$(element).html(t(semesterJSON));
+		});
+	});
+}
+
+function loadPrograms(){
+	expandPanes();
+	loadSemesters('#top');
+	loadUsers('#bottom-left');
+	loadTermCourses('#bottom-right');
+}
+
+//These are development functions that need to be replaced or expanded on
+function edit(id){
+	$('#dialog').dialog({
+		'title': 'Edit Box'
+	});
+	$('#dialog').html('This is a box where you would edit the entry with id <strong>'+id+'</strong>');
+}
+
+function addNew(type){
+	$('#dialog').dialog({
+		'title': 'Add Box'
+	});
+	$('#dialog').html('This is a box where you would add a new <strong>'+type+'</strong>');
 }
