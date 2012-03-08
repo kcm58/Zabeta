@@ -14,10 +14,12 @@ body {
 	opacity:0.9;
 	z-index:9001;
 	text-align:center;
+	display: table;
 }
 
 #loading-text{
-	margin-top:30%;
+	display:table-cell;
+	vertical-align:middle;'
 }
 
 #toolbar-bg{
@@ -145,7 +147,6 @@ body {
 
 #bottom-left, #bottom-right{
   height:50%;
-  width:45%;
 }
 
 #bottom-left{
@@ -153,6 +154,7 @@ body {
 	margin-left:-1.4%;
 	border-right:1px gray solid;
 	padding-left:15px;
+	width:50%;
 }
 
 #bottom-left li{
@@ -160,9 +162,10 @@ body {
 }
 
 #bottom-right{
-	position:relative;
+	float:left;
+	margin-left:1.4%;
 	left:50%;
-	bottom:47.5%;
+	width:45%;
 }
 
 #footer{
