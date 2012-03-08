@@ -81,6 +81,7 @@ class dispatch(session.session):
                         ref_ret.append(self.getElement(r))
                     ret=ref_ret
                 if t is db.GqlQuery:
+                    #t=t.filter("university=",self.university_id).filter().filter("program=",self.program_id)
                     #1024 is always the max return size
                     u_list=ret.fetch(1024)
                     ret=[]

@@ -22,9 +22,7 @@ class Version(db.MoraPolyModel):
     commit_program = db.ReferenceProperty(None,indexed=True)#reference to the Program
     commit_object = db.ReferenceProperty(Object) 
     commit_commment = db.StringProperty()
-    #This must be in all collections for access control.
-    #university = db.ReferenceProperty(None,indexed=True)
-    
+
 class Form(Version):
     form_name = db.StringProperty()
     assessment_form = db.StringProperty() 
@@ -41,8 +39,6 @@ class ScheduleLog(db.MoraModel):
     email = db.EmailProperty()
     
 class User(db.MoraModel):
-    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
-    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     full_name = db.StringProperty() #full name
     display_name = db.StringProperty()
     email = db.EmailProperty()
@@ -54,11 +50,9 @@ class User(db.MoraModel):
     depart_date = db.DateProperty()
     thumbnail = db.StringProperty() #identifier of uploadable image
     webpage = db.StringProperty()
-    tasks = db.ListProperty(db.Key) 
       
 class University(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
-    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     name = db.StringProperty()
     domain = db.StringProperty()
     semesters = db.StringProperty() #needs to be reverse reference
@@ -81,7 +75,7 @@ class Program(Version):
     docs = db.StringProperty() #identifier of docs array
     nag_before = db.StringListProperty()
     nag_after = db.StringListProperty()
-     
+
 class Task(Version):
     delegates = db.ListProperty(db.Key)
     name = db.StringProperty()
@@ -103,18 +97,18 @@ class Course(Version):
     catalog = db.StringProperty()
     webpage = db.StringProperty()
     core_topics = db.StringProperty()
- 
+
 class Instrument(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
-    empty = db.StringProperty()  
-         
+    empty = db.StringProperty()
+
 class CourseTask(Task):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     course = db.ReferenceProperty(Course,indexed=True)
     rubric = db.ReferenceProperty(Instrument,indexed=True) 
-    
+
 class Semester(db.MoraModel):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
@@ -149,7 +143,7 @@ class Outcome(Form):
     rationalize_course = db.ListProperty(db.Key)
     rationalize_instrument = db.ReferenceProperty(Instrument,indexed=True)
     index = db.IntegerProperty()
-    
+
 class OutcomeSupport(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
@@ -200,12 +194,10 @@ class AuthenticationRecord(db.MoraModel):
     programs = db.ListProperty(db.Key)#Progam refernce
     privileges = db.ListProperty(int)
     user = db.ReferenceProperty(User,indexed=True)
-    
+
 class EmailLog(db.MoraModel):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     task = db.ReferenceProperty(None,indexed=True) #void pointer to a task
     user = db.ReferenceProperty(None,indexed=True) #void pointer to a user
     email = db.StringProperty()
-    
-    

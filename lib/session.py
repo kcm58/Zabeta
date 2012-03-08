@@ -30,23 +30,39 @@ class session(webapp.RequestHandler):
     user={}
     #Does this instance need authentication?
     always_allowed=False
+    session_id=None
     
     def __init__(self, request, response):
         super(session, self).__init__(request, response)
         #Check if this instance of session had disabled authentication
         if not self.always_allowed:
             if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
-                self.cookie=self.request.cookies["cid"]
+                self.session_id=self.request.cookies["cid"]
                 #Dont use memcache for anything else.
                 #otherwise an attacker could read or delete an arbitrary value.
-                user_mem=memcache.get(self.cookie)
+                user_mem=memcache.get(self.session_id)
                 #Is this session active?
                 if user_mem is not None and len(user_mem):
                     self.user=pickle.loads(user_mem)
                     #Reset the server-side timeout value for this session.
                     #return as fast as possible because this will affect all load times. 
-                    memcache.set(self.cookie,user_mem,7200)
+                    memcache.set(self.session_id,user_mem,7200)
                     #webapp.Request.cookies["cid"]
+                    dex=0
+                    #This maybe populated differently in the future.
+                    self.university_id=self.user['university']
+                    self.program_id=None
+                    self.program_priv=None
+                    #lets populate the program that the user would like
+                    #Of course we are making sure that they have access to this program
+                    for p in self.user['programs']:
+                        if p ==  self.request.cookies.multi['program']:
+                            self.program_id=self.user['programs'][dex]
+                            self.program_priv=self.user['privileges'][dex]                            
+                        dex+=1
+                    if  self.program_id is None:
+                        self.program_id=self.user['programs'][0]
+                        self.program_priv=self.user['privileges'][0]
                 else:
                     #session expired
                     self.destroy_session()
@@ -59,14 +75,12 @@ class session(webapp.RequestHandler):
     #this should only be called after a successful login to prevent session fixation.
     def new_session(self, auth):
         user=auth.user
-        cookie=self.rand()
+        session_id=self.rand()
         programs=[]
         tasks=[]
         #must be a string id
         for p in auth.programs:
             programs.append(str(p))
-        for t in user.tasks:
-            tasks.append(str(t))
         sess={"email":user.email,
               "full_name":user.full_name,
               "display_name":user.display_name,
@@ -81,21 +95,24 @@ class session(webapp.RequestHandler):
               "university":str(auth.university.key()),
               "programs":programs,
               "privileges":auth.privileges,
-              "tasks":tasks}  
+              }  
         sess_mem=pickle.dumps(sess)      
         #expires in two hours,  time in seconds. 
-        memcache.set(cookie,sess_mem,7200)
+        memcache.set(session_id,sess_mem,7200)
         #HttpOnly will help defend against XSS.
-        self.response.headers.add_header("Set-Cookie", "cid="+cookie+"; path=/; HttpOnly")
+        self.response.headers.add_header("Set-Cookie", "cid="+session_id+"; path=/; HttpOnly")
 
     def save_session(self):
         sess_mem=pickle.dumps(self.user)      
         #expires in two hours,  time in seconds. 
-        memcache.set(self.cookie,sess_mem,7200)      
+        memcache.set(self.session_id,sess_mem,7200)      
 
     def destroy_session(self):
         #overwrite session id->user id mapping
-        memcache.delete(self.cookie)
+        try:
+            memcache.delete(self.session_id)
+        except:
+            pass
         #null the cookie value
         self.response.headers.add_header("Set-Cookie", "cid=; path=/; HttpOnly")
 
