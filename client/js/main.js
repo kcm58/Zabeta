@@ -11,18 +11,18 @@ $(document).ready(function(){
 	clearTimeout(loadingTimeout);
 	loadingTimeout = setTimeout("showLoadingHelp()", 5000);
 	$('#loading').show();
-	/* 
+	/*
 	 * Hides the loading pane when all AJAX requests are done
 	 * ajaxStop receives a callback whenever an AJAX request finishes
 	 * and there are no active AJAX requests left
-	 * 
+	 *
 	 * It also will SHOW the loading screen whenever any AJAX requests occur.
 	 * We can tone down what it looks like if it's too intrusive, popping up too much
 	 */
 	$('body').ajaxStop(function(){
 		clearTimeout(loadingTimeout);
 		$('#loading').hide();
-		
+
 	});
 	$('body').ajaxStart(function(){
 		clearTimeout(loadingTimeout);
@@ -37,11 +37,12 @@ function showLoadingHelp(){
 
 function initRouter(){
 	var Router = Backbone.Router.extend({
-		routes: {		
+		routes: {
 			"course/:course_id":	"course",
 			"users":				"users",
 			"programs":				"programs",
 			"tasks":				"tasks",
+			'allTasks':			"allTasks",
 			"*data": 				"default"
 		},
 
@@ -54,22 +55,28 @@ function initRouter(){
 			clearPanes();
 			loadCourseData(course_id);
 		},
-		
+
 		users: function(){
 			clearPanes();
 			loadUsers('#top');
 		},
-		
+
 		programs: function(){
 			clearPanes();
 			loadPrograms();
 		},
-		
+
 		tasks: function(){
 			clearPanes();
 			loadTaskPage();
+		},
+
+		allTasks: function() {
+			clearPanes();
+			loadAllTasksPage();
 		}
-			
+
+
 	});
 
 	var router = new Router;
@@ -162,6 +169,10 @@ function loadMenu(){
 				{
 					"hash": "accredidation",
 					"name":	"Accredidation"
+				},
+				{
+					'hash': 'allTasks',
+					'name': 'All Tasks'
 				}]
 	}
 	if(privilege == 2){
@@ -222,6 +233,14 @@ function loadTasks(element){
 			 $(element).html( t(json) );
 		});
 	  });
+}
+
+function loadAllTasksPage() {
+	$.getJSON('/api/list/Task/', function(json) {
+		T.render('all_tasks', function(t) {
+			 $('#top').html( t(json) );
+		});
+	});
 }
 
 function loadTermCourses(element){
@@ -315,16 +334,22 @@ function loadTaskPage(){
 }
 
 //These are development functions that need to be replaced or expanded on
-function edit(id){
+function edit(id, template){
 	$('#dialog').dialog({
-		'title': 'Edit Box'
+		title: 'Edit',
+		minWidth: 340,
+		minHeight: 480
 	});
-	$('#dialog').html('This is a box where you would edit the entry with id <strong>'+id+'</strong>');
+	$.getJSON('/api/crud/'+id, function (json) {
+		T.render(template, function (t) {
+			 $('#dialog').html(t(json));
+		});
+	});
 }
 
 function addNew(type){
 	$('#dialog').dialog({
-		'title': 'Add Box'
+		'title': 'Add'
 	});
 	$('#dialog').html('This is a box where you would add a new <strong>'+type+'</strong>');
 }
