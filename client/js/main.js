@@ -177,13 +177,12 @@ function loadMenu(){
 					"name":	"Accredidation"
 				},
 				{
-<<<<<<< HEAD
 					'hash': 'allTasks',
 					'name': 'All Tasks'
-=======
+				},
+				{
 					"hash": "uploadTest",
 					"name": "Test Upload"
->>>>>>> 7cd42415543a6c20dad2448ce23c35fc68634c6b
 				}]
 	}
 	if(privilege == 2){
