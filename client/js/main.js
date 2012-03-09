@@ -3,37 +3,38 @@
  */
 
 //This is used to display a message to the user if something goes wrong while loading the page
-var loadingTimeout;
+// var loadingTimeout;
 
 $(document).ready(function(){
 	initRouter();
 	initPage();
-	clearTimeout(loadingTimeout);
-	loadingTimeout = setTimeout("showLoadingHelp()", 5000);
-	$('#loading').show();
-	/*
-	 * Hides the loading pane when all AJAX requests are done
-	 * ajaxStop receives a callback whenever an AJAX request finishes
-	 * and there are no active AJAX requests left
-	 *
-	 * It also will SHOW the loading screen whenever any AJAX requests occur.
-	 * We can tone down what it looks like if it's too intrusive, popping up too much
-	 */
-	$('body').ajaxStop(function(){
-		clearTimeout(loadingTimeout);
-		$('#loading').hide();
 
-	});
-	$('body').ajaxStart(function(){
-		clearTimeout(loadingTimeout);
-		loadingTimeout = setTimeout("showLoadingHelp()", 5000);
-		$('#loading').show();
-	});
+	// clearTimeout(loadingTimeout);
+	// loadingTimeout = setTimeout("showLoadingHelp()", 5000);
+	// $('#loading').show();
+	// /*
+	//  * Hides the loading pane when all AJAX requests are done
+	//  * ajaxStop receives a callback whenever an AJAX request finishes
+	//  * and there are no active AJAX requests left
+	//  *
+	//  * It also will SHOW the loading screen whenever any AJAX requests occur.
+	//  * We can tone down what it looks like if it's too intrusive, popping up too much
+	//  */
+	// $('body').ajaxStop(function(){
+	// 	clearTimeout(loadingTimeout);
+	// 	$('#loading').hide();
+
+	// });
+	// $('body').ajaxStart(function(){
+	// 	clearTimeout(loadingTimeout);
+	// 	loadingTimeout = setTimeout("showLoadingHelp()", 5000);
+	// 	$('#loading').show();
+	// });
 });
 
-function showLoadingHelp(){
-	$('#loading-text').html('<h1>Loading...</h1><h3>This is taking longer than usual...soemthing may have gone wrong.</h3><img src="img/ajax-loader.gif" />')
-}
+// function showLoadingHelp(){
+// 	$('#loading-text').html('<h1>Loading...</h1><h3>This is taking longer than usual...soemthing may have gone wrong.</h3><img src="img/ajax-loader.gif" />')
+// }
 
 function initRouter(){
 	var Router = Backbone.Router.extend({
@@ -177,13 +178,12 @@ function loadMenu(){
 					"name":	"Accredidation"
 				},
 				{
-<<<<<<< HEAD
 					'hash': 'allTasks',
 					'name': 'All Tasks'
-=======
+				},
+				{
 					"hash": "uploadTest",
 					"name": "Test Upload"
->>>>>>> 7cd42415543a6c20dad2448ce23c35fc68634c6b
 				}]
 	}
 	if(privilege == 2){
@@ -369,8 +369,8 @@ function loadUploadPage(){
 function edit(id, template){
 	$('#dialog').dialog({
 		title: 'Edit',
-		minWidth: 340,
-		minHeight: 480
+		minWidth: 580,
+		minHeight: 560
 	});
 	$.getJSON('/api/crud/'+id, function (json) {
 		T.render(template, function (t) {
@@ -384,4 +384,47 @@ function addNew(type){
 		'title': 'Add'
 	});
 	$('#dialog').html('This is a box where you would add a new <strong>'+type+'</strong>');
+}
+
+function editResponse(id, template) {
+	$('#edit-response').dialog({
+		title: 'Edit',
+		minWidth: 1020,
+		minHeight: 750
+	});
+
+	$.getJSON('/api/crud/'+id, function (json) {
+		T.render(template, function (t) {
+			$('#edit-response').html(t(json));
+
+			var input = $('#source');
+			var demo = document.getElementById('generated');
+
+			var creole = new WikiForms.Form({
+				forIE: document.all,
+				interwiki: {
+					WikiCreole: 'http://www.wikicreole.org/wiki/',
+					Wikipedia: 'http://en.wikipedia.org/wiki/'
+				},
+				linkFormat: ''
+			});
+
+			var render = function () {
+				demo.innerHTML = '';
+				creole.parse(demo, input.val());
+			};
+
+			$('#build').click(function () {
+				render();
+			});
+
+			$('#update-response').click(function () {
+				$.ajax({
+					type: 'POST',
+					url: '/api/crud/'+id+'/response',
+					data: input.val()
+				});
+			});
+		});
+	});
 }

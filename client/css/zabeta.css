@@ -319,3 +319,18 @@ background: -webkit-gradient(linear, left top, left bottom, from(transparent), c
 #dialog form ul li input {
 	/* -webkit-box-flex: 1; */
 }
+
+.task form input {
+  width: 400px;
+}
+
+.task form textarea {
+  width: 400px;
+  height: 150px;
+}
+
+.task form a[onclick] {
+  cursor: pointer;
+  color: #00E;
+  text-decoration: underline;
+}

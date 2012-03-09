@@ -8,36 +8,48 @@
   <form><ul>
     <li>
       <label for="name">Name</label>
-      <input type="text" id="name" name="name" />
+      <input type="text" id="name" name="name" value="{{name}}" />
     </li>
     <li>
       <label for="description">Description</label>
-      <textarea id="description" name="description"></textarea>
+      <textarea id="description" name="description">{{description}}</textarea>
     </li>
     <li>
       <label for="begin_date">Begin date</label>
-      <input type="text" id="begin_date" name="begin_date" />
+      <input type="text" id="begin_date" name="begin_date" value="{{begin_date}}" />
     </li>
     <li>
       <label for="end_date">End date</label>
-      <input type="text" id="end_date" name="end_date" />
+      <input type="text" id="end_date" name="end_date" vaule="{{end_date}}" />
     </li>
+    <!--
     <li>
       <label for="owner">Owner</label>
       <input type="text" id="owner" name="owner" />
     </li>
+    -->
     <li>
       <label for="program">Program</label>
-      <input type="text" id="program" name="program" />
+      <select id="program-chooser-select">
+        <option value="agxkZXZ-emFiZXRhLTJyEwsSDU1vcmFQb2x5TW9kZWwYAww">CS</option>
+
+        <option value="agxkZXZ-emFiZXRhLTJyEwsSDU1vcmFQb2x5TW9kZWwYBAw">EE</option>
+
+        <option value="agxkZXZ-emFiZXRhLTJyEwsSDU1vcmFQb2x5TW9kZWwYBQw">ME</option>
+      </select>
+      <!--  <input type="text" id="program" name="program" /> -->
     </li>
     <li>
       <label for="response">Response</label>
-      <input type="text" id="response" name="response" />
+      <!-- <input type="text" id="response" name="response" /> -->
+      <a onclick="editResponse('{{id}}', 'edit_response')">Edit response...</a>
     </li>
+    <!--
     <li>
       <label for="rubric">Rubric</label>
       <input type="text" id="rubric" name="rubric" />
     </li>
+    -->
   </ul></form>
 </div>
 
