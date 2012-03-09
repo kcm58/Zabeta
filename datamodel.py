@@ -81,8 +81,7 @@ class Program(Version):
     docs = db.StringProperty() #identifier of docs array
     nag_before = db.StringListProperty()
     nag_after = db.StringListProperty()
-    
-    
+
 class Task(Version):
     delegates = db.ListProperty(db.Key)
     name = db.StringProperty()
@@ -92,6 +91,8 @@ class Task(Version):
     attachment_names = db.StringListProperty()
     attachment_blob_ids = db.StringListProperty()
     response = db.StringProperty() #Form response
+
+class TodoTask(Task):
     description = db.StringProperty()
 
 class Course(Version):
@@ -109,7 +110,6 @@ class Instrument(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     empty = db.StringProperty()  
-    
       
 class CourseTask(Task):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
