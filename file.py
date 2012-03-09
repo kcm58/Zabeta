@@ -1,6 +1,7 @@
 import datamodel
 import urllib
 import session
+import json
 
 from google.appengine.ext import blobstore,webapp,db
 from google.appengine.ext.webapp import blobstore_handlers
@@ -15,6 +16,13 @@ class test(session.session):
 
         for b in blobstore.BlobInfo.all():
             self.response.out.write('<li><a href="/file/download/%s' % str(b.key()) + '">' + str(b.filename) + '</a>')
+
+class getAll(session.session):
+    def get(self):
+        output = []
+        for b in blobstore.BlobInfo.all():
+            output.append(str(b.key()))
+        self.response.out.write(json.dumps(output))
 
 class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
 
@@ -45,14 +53,7 @@ class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
             sess.save_session()
                       
         #todo remove,  debug only
-        self.redirect("/file/%d/success" % (blob_info.key().id(),))
-
-
-class AjaxSuccessHandler(session.session):
-  def get(self, file_id):
-    self.response.headers['Content-Type'] = 'text/plain'
-    self.response.out.write('%s/file/%s' % (self.request.host_url, file_id))
-
+        self.redirect("http://localhost:9999/#uploadTest")
 
 class DownloadFile(blobstore_handlers.BlobstoreDownloadHandler):
 
