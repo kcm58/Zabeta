@@ -42,6 +42,7 @@ function initRouter(){
 			"users":				"users",
 			"programs":				"programs",
 			"tasks":				"tasks",
+			"uploadTest":			"uploadTest",
 			"*data": 				"default"
 		},
 
@@ -68,6 +69,11 @@ function initRouter(){
 		tasks: function(){
 			clearPanes();
 			loadTaskPage();
+		},
+		
+		uploadTest: function(){
+			clearPanes();
+			loadUploadPage();
 		}
 			
 	});
@@ -162,6 +168,10 @@ function loadMenu(){
 				{
 					"hash": "accredidation",
 					"name":	"Accredidation"
+				},
+				{
+					"hash": "uploadTest",
+					"name": "Test Upload"
 				}]
 	}
 	if(privilege == 2){
@@ -186,6 +196,10 @@ function loadMenu(){
 					{
 						"hash": "users",
 						"name":	"Users"
+					},
+					{
+						"hash": "uploadTest",
+						"name": "Test Upload"
 					}]
 		}
 	}
@@ -312,6 +326,23 @@ function loadDashboard() {
 function loadTaskPage(){
 	collapsePanes();
 	loadTasks('#top');
+}
+
+function loadUploadPage(){
+	collapsePanes();
+	var json = {}
+	var userdata = $.jStorage.get('userdata');
+	var id = userdata['user']['id'];
+	$.extend(json, {'id': id});
+	T.render('upload_test', function(t){
+		$('#top').html(t(json));
+		$.getJSON('file/getAll', function(fileJSON){
+			for(var key in fileJSON){
+				$('#top').append('<a href="file/download/'+fileJSON[key]+'">Uploaded File #'+key+'</a><br />')
+			}
+		})
+		.error(function(jqXHR, textStatus, errorThrown){ alert(textStatus)});
+	});
 }
 
 //These are development functions that need to be replaced or expanded on
