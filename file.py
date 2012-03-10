@@ -37,7 +37,7 @@ class UploadFrame(session.session):
             upload_url = blobstore.create_upload_url('/file/upload/'+m.string)
             self.response.out.write('<html><body>')
             self.response.out.write('<form action="%s" method="POST" enctype="multipart/form-data">' % upload_url)
-            self.response.out.write("""<input type="file" name="file"><br> <input type="submit" name="submit" value="Submit"></form></body></html>""")
+            self.response.out.write("""<input type="file" name="file"><input type="submit" name="submit" value="Submit"></form></body></html>""")
 
 class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
 
