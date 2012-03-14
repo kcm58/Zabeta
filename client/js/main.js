@@ -365,7 +365,24 @@ function loadUploadPage(){
 	});
 }
 
-//These are development functions that need to be replaced or expanded on
+
+function view(id, template){
+	$('#dialog').dialog({
+		title: 'View',
+		minWidth: 580,
+		minHeight: 560
+	});
+	$.getJSON('/api/crud/'+id, function (json) {
+		T.render(template, function (t) {
+			var data = {
+				view: true,
+				task: json
+			};
+			$('#dialog').html(t(data));
+		});
+	});
+}
+
 function edit(id, template){
 	$('#dialog').dialog({
 		title: 'Edit',
@@ -374,7 +391,11 @@ function edit(id, template){
 	});
 	$.getJSON('/api/crud/'+id, function (json) {
 		T.render(template, function (t) {
-			 $('#dialog').html(t(json));
+			var data = {
+				edit: true,
+				task: json
+			};
+			$('#dialog').html(t(data));
 		});
 	});
 }

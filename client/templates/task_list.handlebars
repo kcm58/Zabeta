@@ -25,7 +25,7 @@
   <tbody>
     {{#user}}
     <tr>
-      <td style="cursor:pointer">{{name}}</td>
+      <td><a onclick="view('{{id}}', 'task_view')">{{name}}</a></td>
       <td>None</td>
       <td>None</td>
       <td>{{fulfilled}}%</td>

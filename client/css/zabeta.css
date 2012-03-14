@@ -231,7 +231,7 @@ table.list tr {
 td.edit {
 	text-align: right;
 }
-.edit a[onclick] {
+a[onclick] {
   cursor: pointer;
 }
 
