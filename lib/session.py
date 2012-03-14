@@ -73,7 +73,7 @@ class session(webapp.RequestHandler):
                 #   self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
             else:
                 #Not allowed                  
-                sys.exit("Not allowed")
+                sys.exit("Not authenticated")
     #Create a new session id and link it to a user account using memcachd
     #this should only be called after a successful login to prevent session fixation.
     def new_session(self, auth):

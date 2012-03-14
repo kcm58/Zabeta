@@ -40,13 +40,21 @@ class populate(webapp.RequestHandler):
         p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Computer Science")
         p.put()
+        p.program=p.key()
+        p.save()
         
         p2=datamodel.Program(University=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Electrical Engineering")
         p2.put()
+        p2.program=p2.key()
+        p2.save()
+        
         p3=datamodel.Program(University=u,name="ME",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing mechanical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Mechanical Engineering")
         p3.put()
+        p3.program=p3.key()
+        p3.save()
+        
         
         c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",
                             core_topics="fundamental principles of computability and different families of languages.",
@@ -73,33 +81,6 @@ class populate(webapp.RequestHandler):
         ins.put()
         
         wiki_form="@name@;@description|textarea(5,10)@;@occupation|list(Scientist,Engineer,Philosopher)@"
-        
-        o2_1=datamodel.Outcome(name="Outcome 2.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
-                            index=1,
-                            description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
-                            rationale="Empty",
-                            assessments="Empty",
-                            last_evaluation=datetime.datetime(2011,6,10),
-                            evaluation_next=365,
-                            evaluation_duration=365,
-                            rationalize_course=[c1.key()],
-                            rationalize_instrument=ins,
-                            where_from=wiki_form)
-        o2_1.put()
-        
-        o2_2=datamodel.Outcome(name="Outcome 2.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
-                            index=2,
-                            description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
-                            assessments="Empty",
-                            last_evaluation=datetime.datetime(2011,6,10),
-                            evaluation_next=365,
-                            evaluation_duration=365,
-                            rationalize_course=[c2.key()],
-                            rationalize_instrument=ins,
-                            where_from=wiki_form)
-        o2_2.put()
-        #kdjfhdkjhf
-        
         
         deltas={}
         deltas['day']=datetime.timedelta(days=1)
@@ -173,7 +154,30 @@ class populate(webapp.RequestHandler):
                                            programs=[p.key(),p2.key(),p3.key()],
                                            privileges=[1,2,1])
             ar.put()
+        o2_1=datamodel.Outcome(name="Outcome 2.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
+                            index=1,
+                            description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
+                            rationale="Empty",
+                            assessments=[ct_key_list[0]],
+                            last_evaluation=datetime.datetime(2011,6,10),
+                            evaluation_next=365,
+                            evaluation_duration=365,
+                            rationalize_course=[c1.key()],
+                            rationalize_instrument=ins,
+                            where_from=wiki_form)
+        o2_1.put()
         
+        o2_2=datamodel.Outcome(name="Outcome 2.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
+                            index=2,
+                            description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
+                            assessments=[ct_key_list[1]],
+                            last_evaluation=datetime.datetime(2011,6,10),
+                            evaluation_next=365,
+                            evaluation_duration=365,
+                            rationalize_course=[c2.key()],
+                            rationalize_instrument=ins,
+                            where_from=wiki_form)
+        o2_2.put()        
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
                                                     course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
