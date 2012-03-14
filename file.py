@@ -2,6 +2,7 @@ import datamodel
 import urllib
 import session
 import json
+import re
 
 from google.appengine.ext import blobstore,webapp,db
 from google.appengine.ext.webapp import blobstore_handlers
@@ -23,6 +24,20 @@ class getAll(session.session):
         for b in blobstore.BlobInfo.all():
             output.append(str(b.key()))
         self.response.out.write(json.dumps(output))
+
+class UploadFrame(session.session):
+
+    def get(self):
+        id=self.request.path.split("/")[-1]
+        #Make sure its a base64 key,  like the one google datastore uses.
+        base64_check=re.compile("^[A-Za-z0-9+/\-=]*$")
+        m=base64_check.match(id)
+        #is this string base64?
+        if m:
+            upload_url = blobstore.create_upload_url('/file/upload/'+m.string)
+            self.response.out.write('<html><body>')
+            self.response.out.write('<form action="%s" method="POST" enctype="multipart/form-data">' % upload_url)
+            self.response.out.write("""<input type="file" name="file"><input type="submit" name="submit" value="Submit"></form></body></html>""")
 
 class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
 

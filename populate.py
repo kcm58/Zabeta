@@ -40,6 +40,7 @@ class populate(webapp.RequestHandler):
         p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Computer Science")
         p.put()
+        
         p2=datamodel.Program(University=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Electrical Engineering")
         p2.put()
@@ -117,25 +118,25 @@ class populate(webapp.RequestHandler):
         test_date_day_after=(datetime.datetime.now())-deltas['day']
         
         course_tasks=[(datamodel.CourseTask(name="CS 315 Evals",description="Collect student evals for CS 315",begin_date=datetime.datetime(2012,1,1),
-                                            end_date=datetime.datetime(2012,6,15),fulfilled=0,program=p,university=u),"315 Evals"),
+                                            end_date=datetime.datetime(2012,6,15),fulfilled=0,university=u),"315 Evals"),
                       (datamodel.CourseTask(name="CS 396 Evals",description="Collect student evals for CS396",begin_date=datetime.datetime(2012,1,1),
-                                            end_date=datetime.datetime(2012,6,15),fulfilled=0,program=p,university=u),"396 Evals"),
+                                            end_date=datetime.datetime(2012,6,15),fulfilled=0,university=u),"396 Evals"),
                       (datamodel.CourseTask(name="Test six months before",description="Running the six month before test for scheduling",begin_date=test_date_six_months_before,
-                                            end_date=test_date_six_months_before,fulfilled=0,program=p,university=u),"Six month before test"),
+                                            end_date=test_date_six_months_before,fulfilled=0,university=u),"Six month before test"),
                       (datamodel.CourseTask(name="Test one month before",description="Running the one month before test for scheduling",begin_date=test_date_month_before,
-                                            end_date=test_date_month_before,fulfilled=0,program=p,university=u),"One month before test"),
+                                            end_date=test_date_month_before,fulfilled=0,university=u),"One month before test"),
                       (datamodel.CourseTask(name="Test one week before",description="Running the one week before test for scheduling",begin_date=test_date_week_before,
-                                            end_date=test_date_week_before,fulfilled=0,program=p,university=u),"One week before test"),
+                                            end_date=test_date_week_before,fulfilled=0,university=u),"One week before test"),
                       (datamodel.CourseTask(name="Test one day before",description="Running the one day before test for scheduling",begin_date=test_date_day_before,
-                                            end_date=test_date_day_before,fulfilled=0,program=p,university=u),"One day before test"),
+                                            end_date=test_date_day_before,fulfilled=0,university=u),"One day before test"),
                       (datamodel.CourseTask(name="Test six months after",description="Running the six month after test for scheduling",begin_date=test_date_six_months_after,
-                                            end_date=test_date_six_months_after,fulfilled=0,program=p,university=u),"Six month after test"),
+                                            end_date=test_date_six_months_after,fulfilled=0,university=u),"Six month after test"),
                       (datamodel.CourseTask(name="Test one month after",description="Running the one month after test for scheduling",begin_date=test_date_month_after,
-                                            end_date=test_date_month_after,fulfilled=0,program=p,university=u),"One month after test"),
+                                            end_date=test_date_month_after,fulfilled=0,university=u),"One month after test"),
                       (datamodel.CourseTask(name="Test one week after",description="Running the one week after test for scheduling",begin_date=test_date_week_after,
-                                            end_date=test_date_week_after,fulfilled=0,program=p,university=u),"One week after test"),
+                                            end_date=test_date_week_after,fulfilled=0,university=u),"One week after test"),
                       (datamodel.CourseTask(name="Test one day after",description="Running the one day after test for scheduling",begin_date=test_date_day_after,
-                                            end_date=test_date_day_after,fulfilled=0,program=p,university=u),"One day after test")]
+                                            end_date=test_date_day_after,fulfilled=0,university=u),"One day after test")]
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="rmb237@nau.edu",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
@@ -156,6 +157,8 @@ class populate(webapp.RequestHandler):
         usr_key_list=[]
         
         for ct,id in course_tasks:
+            ct.program=p
+            #self.response.out.write(ct.program.key())
             ct.put()
             ct_key_list.append(ct.key())
        
