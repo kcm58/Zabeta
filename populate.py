@@ -56,6 +56,13 @@ class populate(webapp.RequestHandler):
         p3.program=p3.key()
         p3.save()
         
+        nau_semesters=[(datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,8,15),end_date=datetime.datetime(2012,12,15),name="fall")),
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,12,18),end_date=datetime.datetime(2013,1,12),name="winter")),
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,1,15),end_date=datetime.datetime(2013,5,12),name="spring")),
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,5,15),end_date=datetime.datetime(2013,8,12),name="summer"))]
+        for s in nau_semesters:
+            s.put()
+        
         
         c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",
                             core_topics="fundamental principles of computability and different families of languages.",
