@@ -71,14 +71,14 @@ class dispatch(session.session):
                     ret=getattr(instance,call_method)()
                 #We allow the user to return a GQL query and we'll convert it to json for them.
                 t=type(ret)
-                if t is db.Query:
+                #if t is db.Query:
                     #User Access Control
                     #k=Key(self.university_id)
                     #u=datamodel.University(key_name=self.university_id)
-                    #ret=ret.filter("university=",u)#.filter("program=",Key(self.program_id))
+                    #ret=ret.filter("university=",self.university_id )#.filter("program=",Key(self.program_id))
                     
-                    ret=ret.fetch(1024)
-                    t=type(ret)
+                    #ret=ret.fetch(1024)
+                    #t=type(ret)
                 if t is list:
                     t=type(ret[0])
                     #if type(ret[0]) is PolymorphicClass:
@@ -94,6 +94,9 @@ class dispatch(session.session):
                     ret=[]
                     #iterate over each element returned by the select.
                     for u in u_list:
+                        #This User Access Control is redundant at the time of writing.
+                        #if r.program != self.program_id or r.university != self.university_id:
+                        #    ref_ret.append(self.getElement(r))                      
                         element=self.getElement(u)
                         ret.append(element)
             else:
