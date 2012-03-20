@@ -1,16 +1,17 @@
 /*
  * main.js
+ * 
  */
 
 //This is used to display a message to the user if something goes wrong while loading the page
 var loadingTimeout;
 
 $(document).ready(function(){
-	initRouter();
-	initPage();
 	clearTimeout(loadingTimeout);
 	loadingTimeout = setTimeout("showLoadingHelp()", 5000);
 	$('#loading').show();
+	initRouter();
+	initPage();
 	/*
 	 * Hides the loading pane when all AJAX requests are done
 	 * ajaxStop receives a callback whenever an AJAX request finishes
@@ -26,13 +27,34 @@ $(document).ready(function(){
 	});
 	$('body').ajaxStart(function(){
 		clearTimeout(loadingTimeout);
+		$('#loading-text').html('<h1>Loading...</h1><img src="img/ajax-loader.gif" />');
 		loadingTimeout = setTimeout("showLoadingHelp()", 5000);
 		$('#loading').show();
+	});
+	
+	/*
+	 * Handle all AJAX errors by assuming the user isn't logged in. Bad, but for now, good.
+	 */
+	$('body').ajaxError(function(e, jqxhr, settings, exception){
+		clearPanes();
+		$('#menu').html('');
+		$('#toolbar').html('');
+		$('#top').html('<img src="img/google-signin.png" alt="Sign in with Google" /><h3>Debug: See JavaScript Console for more info');
+		console.log('---Start AJAX Error Details---');
+		console.log('Event:');
+		console.log(e);
+		console.log('jqXHR:');
+		console.log(jqxhr);
+		console.log('AJAX Settings:');
+		console.log(settings);
+		console.log('AJAX Exception:');
+		console.log(exception);
+		console.log('----End AJAX Error Details----');
 	});
 });
 
 function showLoadingHelp(){
-	$('#loading-text').html('<h1>Loading...</h1><h3>This is taking longer than usual...soemthing may have gone wrong.</h3><img src="img/ajax-loader.gif" />')
+	$('#loading-text').html('<h1>Loading...</h1><img src="img/ajax-loader.gif" /><h3>This is taking longer than usual...soemthing may have gone wrong.</h3>')
 }
 
 function initRouter(){
@@ -41,8 +63,8 @@ function initRouter(){
 			"course/:course_id":	"course",
 			"users":				"users",
 			"programs":				"programs",
-			"tasks":				"tasks",
-			'allTasks':			"allTasks",
+			"allTasks":				"allTasks",
+			"accredidation":		"accredidation",
 			"uploadTest":			"uploadTest",
 			"*data": 				"default"
 		},
@@ -50,6 +72,7 @@ function initRouter(){
 		default: function(data){
 			clearPanes();
 			loadDashboard();
+			embolden('#overview');
 		},
 
 		course: function(course_id){
@@ -60,26 +83,32 @@ function initRouter(){
 		users: function(){
 			clearPanes();
 			loadUsers('#top');
+			embolden('#users');
 		},
 
 		programs: function(){
 			clearPanes();
-			loadPrograms();
-		},
-
-		tasks: function(){
-			clearPanes();
-			loadTaskPage();
+			loadProgramList();
+			embolden('#programs');
 		},
 
 		allTasks: function() {
 			clearPanes();
-			loadAllTasksPage();
+			collapsePanes();
+			loadAllTasksPage('#top');
+			embolden('#allTasks')
 		},
 
+		accredidation: function(){
+			clearPanes();
+			loadAccredationPage('#top');
+			embolden('#accredidation');
+		},
+		
 		uploadTest: function(){
 			clearPanes();
 			loadUploadPage();
+			embolden('#uploadTest');
 		}
 
 
@@ -97,20 +126,20 @@ function initPage() {
 			var uni_name;
 			$.getJSON('/api/crud/'+json['user']['university'], function(uni_json){
 				uni_name = uni_json['name'];
+				login_path = uni_json['login_path'];
+				$.jStorage.set('login_path', login_path);
+				$.jStorage.setTTL('login_path', 604800000);
 				$.extend(json['user'], {usr_logo: 'img/face.png', uni_name:uni_name});
 				T.render('toolbar', function(t) {
 					 $('#toolbar').html( t(json) );
 				});
-				loadProgramList();
+				loadProgramChooser();
 			});
 		}
-	})
-	.error(function(){
-		$('#top').html('<img src="img/google-signin.png" alt="Sign in with Google" />');
 	});
 }
 
-function loadProgramList(){
+function loadProgramChooser(){
 	var userdata = $.jStorage.get('userdata');
 	if(userdata['user']['programs'].length > 1){
 		$('#program-chooser').html('');
@@ -130,17 +159,21 @@ function loadProgramList(){
 					$.jStorage.deleteKey('program');
 					///////// 			 THANKS		 	 ////////
 					if($.jStorage.get('program') == null){
-						$.jStorage.set('program', $('#program-chooser-select option:selected').val());
-						$.cookie('program', $('#program-chooser-select option:selected').val(), { expires: 7});
+						var program = $('#program-chooser-select option:selected').val();
+						$.jStorage.set('program', program);
+						updateProgramToolbar(program);
+						$.cookie('program', program, { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
 					}else{
 						$('#program-chooser-select').val($.jStorage.get('program'));
 					}
 					$('#program-chooser-select').change(function(){
-						$.jStorage.set('program', $('#program-chooser-select option:selected').val());
-						$.cookie('program', $('#program-chooser-select option:selected').val(), { expires: 7});
+						var program = $('#program-chooser-select option:selected').val();
+						$.jStorage.set('program', program);
+						updateProgramToolbar(program);
+						$.cookie('program', program, { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
-						console.log($.jStorage.get('program'));
+						updateProgramToolbar(program);
 						loadMenu();
 					});
 					loadMenu();
@@ -148,8 +181,10 @@ function loadProgramList(){
 			}
 		});
 	}else{
-		$.jStorage.set('program', userdata['user']['programs'][0]);
-		$.cookie('program', userdata['user']['programs'][0], { expires: 7});
+		var program = userdata['user']['programs'][0];
+		$.jStorage.set('program', program);
+		updateProgramToolbar(program);
+		$.cookie('program', program, { expires: 7});
 		$.jStorage.setTTL('program', 604800000);
 		console.log($.jStorage.get('program'));
 		loadMenu();
@@ -169,16 +204,8 @@ function loadMenu(){
 					"name":	"Overview"
 				},
 				{
-					"hash":	"programs",
-					"name":	"Programs"
-				},
-				{
 					"hash": "accredidation",
 					"name":	"Accredidation"
-				},
-				{
-					'hash': 'allTasks',
-					'name': 'All Tasks'
 				},
 				{
 					"hash": "uploadTest",
@@ -201,8 +228,8 @@ function loadMenu(){
 						"name":	"Accredidation"
 					},
 					{
-						"hash": "tasks",
-						"name":	"Tasks"
+						"hash": "allTasks",
+						"name":	"All Tasks"
 					},
 					{
 						"hash": "users",
@@ -214,11 +241,8 @@ function loadMenu(){
 					}]
 		}
 	}
-	$.getJSON('/api/crud/'+programID, function(data){
-		$.extend(menuJson, data);
-		T.render('menu', function(t) {
-			 $('#menu-content').html( t(menuJson) );
-		});
+	T.render('menu', function(t) {
+		 $('#menu-content').html( t(menuJson) );
 	});
 }
 
@@ -230,32 +254,41 @@ function loadCourseData(course_id){
 	});
 }
 
-function loadTasks(element){
-  $.getJSON('api/user/getTasks', function(json){
-	    for(var key in json['user']){
-	    	$('body').append('<div id="relativeTimeHandler" style="display:none"></div>');
-			var end_date = json['user'][key]['end_date'];
-			var endDateTicks = Date.parse(end_date);
-			$('#relativeTimeHandler').attr('datetime', end_date);
-			$('#relativeTimeHandler').html('');
-			$('#relativeTimeHandler').relative({format:'human', displayZeros:false, tick:0	});
-			var relative_date = $('#relativeTimeHandler').html();
-			$.extend(json['user'][key], {'relative_date': relative_date});
-			$('#relativeTimeHandler').remove();
-		}
-		T.render('task_list', function(t) {
-			 $(element).html( t(json) );
-		});
-	  });
-}
-
-function loadAllTasksPage() {
+function loadAllTasksPage(element) {
 	$.getJSON('/api/list/Task/', function(json) {
+		for(var key in json['Task']){
+			var end_date = json['Task'][key]['end_date'];
+			var relative_date = getRelativeDate(end_date);
+			$.extend(json['Task'][key], {'relative_date': relative_date});
+		}
 		T.render('all_tasks', function(t) {
-			 $('#top').html( t(json) );
+			$(element).html( t(json) );
 		});
 	});
 }
+
+function loadAccredationPage(element){
+	collapsePanes();
+	$.getJSON('/api/list/Objective', function(json){
+		console.log(json);
+		T.render('objective_list', function(t){
+			$(element).html(t(json));
+		});
+	});
+}
+
+function loadTasks(element){
+	  $.getJSON('api/user/getTasks', function(json){
+		    for(var key in json['user']){
+				var end_date = json['user'][key]['end_date'];
+				var relative_date = getRelativeDate(end_date);
+				$.extend(json['user'][key], {'relative_date': relative_date});
+			}
+			T.render('task_list', function(t) {
+				 $(element).html( t(json) );
+			});
+		  });
+	}
 
 function loadTermCourses(element){
 	var outputJSON = {};
@@ -304,7 +337,6 @@ function clearPanes(){
 }
 
 function loadUsers(element){
-	console.log('hi)');
 	var userdata = $.jStorage.get('userdata');
 	if(userdata == null){
 		initPage();
@@ -329,22 +361,25 @@ function loadSemesters(element){
 	});
 }
 
-function loadPrograms(){
+function loadPrograms(element){
+	$.getJSON('api/list/Program', function(programJSON){
+		T.render('program_list', function(t){
+			$(element).html(t(programJSON));
+		});
+	});
+}
+
+function loadProgramList(){
 	expandPanes();
-	loadSemesters('#top');
+	loadPrograms('#top');
 	loadUsers('#bottom-left');
-	loadTermCourses('#bottom-right');
+	//loadTermCourses('#bottom-right');
 }
 
 function loadDashboard() {
 	expandPanes();
 	loadTasks('#top');
 	loadTermCourses('#bottom-left');
-}
-
-function loadTaskPage(){
-	collapsePanes();
-	loadTasks('#top');
 }
 
 function loadUploadPage(){
@@ -383,4 +418,26 @@ function addNew(type){
 		'title': 'Add'
 	});
 	$('#dialog').html('This is a box where you would add a new <strong>'+type+'</strong>');
+}
+
+function getRelativeDate(abs_date){
+	$('#relativeTimeHandler').remove();
+	$('body').append('<div id="relativeTimeHandler" style="display:none"></div>');
+	$('#relativeTimeHandler').attr('datetime', abs_date);
+	$('#relativeTimeHandler').html('');
+	$('#relativeTimeHandler').relative({format:'human', displayZeros:false, tick:0	});
+	return $('#relativeTimeHandler').html();
+}
+
+function embolden(element){
+	$('.menu-item').each(function(){
+		$(this).css('font-weight', 'normal');
+	});
+	$(element).css('font-weight', 'bold');
+}
+
+function updateProgramToolbar(program){
+	$.getJSON('/api/crud/'+program, function(json){
+		$('#program').html('&nbsp;-&nbsp;'+json['description']);
+	});
 }

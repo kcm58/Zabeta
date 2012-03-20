@@ -42,17 +42,17 @@ body {
   -webkit-border-image: url("../img/border.png") 0 0 4 0 stretch stretch;
 }
 
-#logo {
+#title {
   position: absolute;
   top:0;
   left:0;
-  width: 40%;
+  width: 60%;
 }
-#logo img {
+#title img {
   float: left;
   margin:8px;
 }
-#logo h1 {
+#title h1 {
   font-size: 28px;
   color: white;
   display: table-cell;
@@ -60,7 +60,7 @@ body {
   height: 48px;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
-#logo h1 span.logo-alt-color {
+#title h1 span.logo-alt-color {
   /* color: black; */
 }
 
