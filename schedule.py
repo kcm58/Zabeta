@@ -6,6 +6,13 @@ import datamodel
 import datetime
 import dateutil
 
+debug=1
+deltas={}
+deltas['day']=datetime.timedelta(days=1)
+deltas['week']=datetime.timedelta(days=7)
+deltas['month']=relativedelta(months=+1)
+deltas['six_months']=relativedelta(months=+6)
+
 class schedule(webapp.RequestHandler):
     
     def to_json(self,g):
@@ -31,21 +38,19 @@ class schedule(webapp.RequestHandler):
         return ret 
     
     def print_curr_task(self,task):
-        #self.response.out.write(task)
+        #self.debug(task)
         task_str="""Task: %s <br /> 
                     Task id: %s <br />
-                    Description: %s <br /> 
                     Delegates: %s <br /> 
                     Begin Date: %s <br /> 
                     End Date: %s <br /> 
                     Fulfilled: %s <br /><br />""" %(task['name'],
                                                     task['id'],
-                                                    task['description'],
                                                     task['delegates'],
                                                     task['begin_date'],
                                                     task['end_date'],
                                                     task['fulfilled'])
-        self.response.out.write(task_str)  
+        self.debug(task_str)  
         
     def print_prog(self,prog):
         prog_str="""University: %s <br /> 
@@ -63,7 +68,7 @@ class schedule(webapp.RequestHandler):
                                                    prog['webpage'],
                                                    prog['nag_before'],
                                                    prog['nag_after'],)
-        self.response.out.write(prog_str)  
+        self.debug(prog_str)  
          
 
     def get(self): 
@@ -74,35 +79,29 @@ class schedule(webapp.RequestHandler):
         
         curr_date=datetime.datetime.now().date()
         curr_date_str=curr_date.isoformat()
-        self.response.out.write("<br />")
         test_date=datetime.datetime.now().date()
-        self.response.out.write("Test date: ")
-        self.response.out.write(test_date)
-        self.response.out.write("<br />")
+        self.debug("Test date: ")
+        self.debug(test_date)
         r_delta=relativedelta(months=+1)
         test_date+=r_delta
-        self.response.out.write("Test date + one month: ")
-        self.response.out.write(test_date)
-        self.response.out.write("<br />")
+        self.debug("Test date + one month: ")
+        self.debug(test_date)
         test_date=datetime.date(2012,2,15)
-        self.response.out.write("Test date: ")
-        self.response.out.write(test_date)
-        self.response.out.write("<br />")
+        self.debug("Test date: ")
+        self.debug(test_date)
         r_delta=relativedelta(months=+1)
         test_date+=r_delta
-        self.response.out.write("Test date + one month: ")
-        self.response.out.write(test_date)
-        self.response.out.write("<br />")
+        self.debug("Test date + one month: ")
+        self.debug(test_date)
         self.response.out.write("<br />")
         
         progs=datamodel.Program.gql("")
         prog_list=progs.fetch(1024)
         progs_to_json=self.to_json(progs) #want to print these out
-        #self.response.out.write(progs_to_json)
-        self.response.out.write("CURRENT PROGRAMS: <br /><br />")
+        #self.debug(progs_to_json)
+        self.debug("CURRENT PROGRAMS: <br />")
         for p in progs_to_json:
             self.print_prog(p)
-            self.response.out.write("<br />")
             
         for p in prog_list:
             #p_key=p.key()
@@ -132,28 +131,75 @@ class schedule(webapp.RequestHandler):
                 elif el=="one day after":
                     nag_after_dict['one day after']=1 
                        
-            header_str="CURRENT TASKS: %s<br /><br />" %curr_date_str
-            self.response.out.write(header_str)
+            header_str="CURRENT TASKS: %s<br />" %curr_date_str
+            self.debug(header_str)
         
             curr_tasks=datamodel.CourseTask.gql("where program=:1",p)
             tasks_to_json=self.to_json(curr_tasks)
-            #self.response.out.write(tasks_to_json)
+            #self.debug(tasks_to_json)
         
             for t in tasks_to_json:
                 self.print_curr_task(t)
+            
+            self.check_expired_tasks(p)
                      
             #Check nag lists    
             self.check_nags_before(nag_before_dict,p)
             self.check_nags_after(nag_after_dict,p)
+            
+    def debug(self,message):
+        global debug
+        if debug==1:
+            self.response.out.write(message)
+            self.response.out.write("<br />")
+            
+    def check_expired_tasks(self,program):
+        start_window=datetime.datetime.now().date()
+        end_window=start_window+deltas['day']
+        tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
+        task_list=tasks.fetch(1024)
+        self.debug(start_window)
+        self.debug(end_window)
+        for t in task_list:
+            t_type=t.class_name()
+            self.debug(t_type)
+            self.debug(t.name)
+            if t_type==datamodel.AssessmentTask:
+                self.debug("Curr task is Assessment Task")
+                t_copy=datamodel.AssessmentTask(university=t.University,
+                                                   program=t.program,
+                                                   outcome=t.outcome,
+                                                   name=t.name,
+                                                   fulfilled=0,
+                                                   attachment_names=t.attachment_names,
+                                                   attachment_blob_ids=t.attachment.blob_ids,
+                                                   delegates=t.delegates)
+                
+                #need to update these to reflect correct values
+                t_copy.begin_date=None
+                t_copy.end_date=None
+                #t_copy.put()
+            elif t_type==datamodel.CourseTask:
+                #This copy will have a empty delegates list to be updated by system later
+                self.debug("Curr task is Course Task")
+                t_copy=datamodel.CourseTask(university=t.university,
+                                            program=t.program,
+                                            course=t.course,
+                                            rubric=t.rubric,
+                                            name=t.name,
+                                            fulfilled=0,
+                                            attachment_names=t.attachment_names,
+                                            attachment_blob_ids=t.attachment.blob_ids)
+                
+                #need to update these to reflect correct values
+                t_copy.begin_date=None
+                t_copy.end_date=None
+                #t_copy.put()
         
     def check_nags_before(self,nag_before_dict,program):
         header_str="<br />CHECKING NAG BEFORE LIST:<br /><br />"
-        self.response.out.write(header_str)
-        deltas={}
-        deltas['day']=datetime.timedelta(days=1)
-        deltas['week']=datetime.timedelta(days=7)
-        deltas['month']=relativedelta(months=+1)
-        deltas['six_months']=relativedelta(months=+6)
+        self.debug(header_str)
+        global deltas
 
         if nag_before_dict['six months before']==1:
             start_window=(datetime.datetime.now().date())+deltas['six_months']
@@ -161,25 +207,22 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
             task_list=tasks.fetch(1024)
             if len(task_list)!=0:
-                self.response.out.write("Start window: ")
-                self.response.out.write(start_window)
-                self.response.write("<br />")
-                self.response.out.write("End window: ")
-                self.response.out.write(end_window)
-                self.response.write("<br />")
+                self.debug("Start window: ")
+                self.debug(start_window)
+                self.debug("End window: ")
+                self.debug(end_window)
                 for t in task_list:
                     t_key=t.key()
                     task_str="""Program: %s <br />
                                 Task key: %s <br />
                                 Task name: %s <br /> 
-                                Task description %s <br /> 
                                 Begin date: %s <br /> 
                                 End date: %s <br /> 
-                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
-                    self.response.out.write(task_str)
+                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.begin_date,t.end_date,t.fulfilled)
+                    self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                    self.response.out.write("<br />")
+                    self.debug("<br />")
 
                 
         if nag_before_dict['one month before']==1:
@@ -188,25 +231,22 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
             task_list=tasks.fetch(1024)
             if len(task_list)!=0:
-                self.response.out.write("Start window: ")
-                self.response.out.write(start_window)
-                self.response.write("<br />")
-                self.response.out.write("End window: ")
-                self.response.out.write(end_window)
-                self.response.write("<br />")
+                self.debug("Start window: ")
+                self.debug(start_window)
+                self.debug("End window: ")
+                self.debug(end_window)
                 for t in task_list:
                     t_key=t.key()
                     task_str="""Program: %s <br />
                                 Task key: %s <br />
                                 Task name: %s <br /> 
-                                Task description %s <br /> 
                                 Begin date: %s <br /> 
                                 End date: %s <br /> 
-                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
-                    self.response.out.write(task_str)
+                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.begin_date,t.end_date,t.fulfilled)
+                    self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                    self.response.out.write("<br />")
+                    self.debug("<br />")
                 
         if nag_before_dict['one week before']==1:
             start_window=(datetime.datetime.now().date())+deltas['week']
@@ -214,25 +254,21 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
             task_list=tasks.fetch(1024)
             if len(task_list)!=0:
-                self.response.out.write("Start window: ")
-                self.response.out.write(start_window)
-                self.response.write("<br />")
-                self.response.out.write("End window: ")
-                self.response.out.write(end_window)
-                self.response.write("<br />")
+                self.debug("Start window: ")
+                self.debug(start_window)
+                self.debug("End window: ")
+                self.debug(end_window)
                 for t in task_list:
                     t_key=t.key()
                     task_str="""Program: %s <br />
                                 Task key: %s <br />
                                 Task name: %s <br /> 
-                                Task description %s <br /> 
                                 Begin date: %s <br /> 
                                 End date: %s <br /> 
-                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
-                    self.response.out.write(task_str)
+                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.begin_date,t.end_date,t.fulfilled)
+                    self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                    self.response.out.write("<br />")
                 
         if nag_before_dict['one day before']==1:
             start_window=(datetime.datetime.now().date())+deltas['day']
@@ -240,34 +276,27 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
             task_list=tasks.fetch(1024)
             if len(task_list)!=0:
-                self.response.out.write("Start window: ")
-                self.response.out.write(start_window)
-                self.response.write("<br />")
-                self.response.out.write("End window: ")
-                self.response.out.write(end_window)
-                self.response.write("<br />")
+                self.debug("Start window: ")
+                self.debug(start_window)
+                self.debug("End window: ")
+                self.debug(end_window)
                 for t in task_list:
                     t_key=t.key()
                     task_str="""Program: %s <br />
                                 Task key: %s <br />
                                 Task name: %s <br /> 
-                                Task description %s <br /> 
                                 Begin date: %s <br /> 
                                 End date: %s <br /> 
-                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
-                    self.response.out.write(task_str)
+                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.begin_date,t.end_date,t.fulfilled)
+                    self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                    self.response.out.write("<br />")
+                    self.debug("<br />")
                 
     def check_nags_after(self,nag_after_dict,program):
         header_str="<br />CHECKING NAG AFTER LIST:<br /><br />"
-        self.response.out.write(header_str)
-        deltas={}
-        deltas['day']=datetime.timedelta(days=1)
-        deltas['week']=datetime.timedelta(days=7)
-        deltas['month']=relativedelta(months=+1)
-        deltas['six_months']=relativedelta(months=+6)
+        self.debug(header_str)
+        global deltas
 
         if nag_after_dict['six months after']==1:
             start_window=(datetime.datetime.now().date())-deltas['six_months']
@@ -275,25 +304,21 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
             task_list=tasks.fetch(1024)
             if len(task_list)!=0:
-                self.response.out.write("Start window: ")
-                self.response.out.write(start_window)
-                self.response.write("<br />")
-                self.response.out.write("End window: ")
-                self.response.out.write(end_window)
-                self.response.write("<br />")
+                self.debug("Start window: ")
+                self.debug(start_window)
+                self.debug("End window: ")
+                self.debug(end_window)
                 for t in task_list:
                     t_key=t.key()
                     task_str="""Program: %s <br />
                                 Task key: %s <br />
                                 Task name: %s <br /> 
-                                Task description %s <br /> 
                                 Begin date: %s <br /> 
                                 End date: %s <br /> 
-                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
-                    self.response.out.write(task_str)
+                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.begin_date,t.end_date,t.fulfilled)
+                    self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                    self.response.out.write("<br />")
                 
         if nag_after_dict['one month after']==1:
             start_window=(datetime.datetime.now().date())-deltas['month']
@@ -302,25 +327,21 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
             task_list=tasks.fetch(1024)
             if len(task_list)!=0:
-                self.response.out.write("Start window: ")
-                self.response.out.write(start_window)
-                self.response.write("<br />")
-                self.response.out.write("End window: ")
-                self.response.out.write(end_window)
-                self.response.write("<br />")
+                self.debug("Start window: ")
+                self.debug(start_window)
+                self.debug("End window: ")
+                self.debug(end_window)
                 for t in task_list:
                     t_key=t.key()
                     task_str="""Program: %s <br />
                                 Task key: %s <br />
                                 Task name: %s <br /> 
-                                Task description %s <br /> 
                                 Begin date: %s <br /> 
                                 End date: %s <br /> 
-                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
-                    self.response.out.write(task_str)
+                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.begin_date,t.end_date,t.fulfilled)
+                    self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                    self.response.out.write("<br />")
                 
         if nag_after_dict['one week after']==1:
             start_window=(datetime.datetime.now().date())-deltas['week']
@@ -329,25 +350,21 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
             task_list=tasks.fetch(1024)
             if len(task_list)!=0:
-                self.response.out.write("Start window: ")
-                self.response.out.write(start_window)
-                self.response.write("<br />")
-                self.response.out.write("End window: ")
-                self.response.out.write(end_window)
-                self.response.write("<br />")
+                self.debug("Start window: ")
+                self.debug(start_window)
+                self.debug("End window: ")
+                self.debug(end_window)
                 for t in task_list:
                     t_key=t.key()
                     task_str="""Program: %s <br />
                                 Task key: %s <br />
                                 Task name: %s <br /> 
-                                Task description %s <br /> 
                                 Begin date: %s <br /> 
                                 End date: %s <br /> 
-                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
-                    self.response.out.write(task_str)
+                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.begin_date,t.end_date,t.fulfilled)
+                    self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                    self.response.out.write("<br />")
                 
         if nag_after_dict['one day after']==1:
             start_window=(datetime.datetime.now().date())-deltas['day']
@@ -355,30 +372,26 @@ class schedule(webapp.RequestHandler):
             tasks=datamodel.CourseTask.gql("where end_date>:1 and end_date<:2 and program=:3",start_window,end_window,program)
             task_list=tasks.fetch(1024)
             if len(task_list)!=0:
-                self.response.out.write("Start window: ")
-                self.response.out.write(start_window)
-                self.response.write("<br />")
-                self.response.out.write("End window: ")
-                self.response.out.write(end_window)
-                self.response.write("<br />")
+                self.debug("Start window: ")
+                self.debug(start_window)
+                self.debug("End window: ")
+                self.debug(end_window)
                 for t in task_list:
                     t_key=t.key()
                     task_str="""Program: %s <br />
                                 Task key: %s <br />
                                 Task name: %s <br /> 
-                                Task description %s <br /> 
                                 Begin date: %s <br /> 
                                 End date: %s <br /> 
-                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.description,t.begin_date,t.end_date,t.fulfilled)
-                    self.response.out.write(task_str)
+                                Fulfilled?: %s <br />""" %(t.program.name,t_key,t.name,t.begin_date,t.end_date,t.fulfilled)
+                    self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                    self.response.out.write("<br />")
                 
     def send_emails(self,delegates,t_key):
-        self.response.out.write("Sending emails to: ")
+        self.debug("Sending emails to: ")
         for d in delegates:
-            self.response.out.write(d.email)
+            self.debug(d.email)
             self.response.write(" ")
             d_full_name=d.full_name
             d.email=d.email
@@ -390,7 +403,6 @@ class schedule(webapp.RequestHandler):
                                     This is a test email.
 
                                     Please let me know if you got it.""" %(d.full_name,t_key))
-        self.response.out.write("<br />")
        
     def interpret_delta(self,str):
         print ""
