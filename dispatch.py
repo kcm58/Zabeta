@@ -7,6 +7,7 @@ import session
 import datetime
 import populate
 import schedule
+import datamodel
 import file
 
 from api import crud
@@ -72,7 +73,8 @@ class dispatch(session.session):
                 if t is db.Query:
                     #User Access Control
                     #k=Key(self.university_id)
-                    #ret=ret.filter("university=",)#.filter("program=",Key(self.program_id))
+                    #u=datamodel.University(key_name=self.university_id)
+                    #ret=ret.filter("university=",u)#.filter("program=",Key(self.program_id))
                     
                     ret=ret.fetch(1024)
                     t=type(ret)
