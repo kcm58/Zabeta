@@ -137,6 +137,7 @@ class CourseOffering(Version):
 class Outcome(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    rationalize_instrument = db.ReferenceProperty(Instrument,indexed=True)
     outcome_description = db.StringProperty()
     name = db.StringProperty()
     rationale = db.StringProperty()
@@ -145,7 +146,6 @@ class Outcome(Form):
     evaluation_next = db.IntegerProperty() #needs to be intDays
     evaluation_duration = db.IntegerProperty() #needs to be intDays
     rationalize_course = db.ListProperty(db.Key)
-    rationalize_instrument = db.ReferenceProperty(Instrument,indexed=True)
     index = db.IntegerProperty()
     
 class OutcomeSupport(Version):
@@ -171,9 +171,8 @@ class Objective(Version):
 
 class Minutes(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
-    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
-    description = db.StringProperty()
     program = db.ReferenceProperty(Program)
+    description = db.StringProperty()
     docs = db.StringProperty() #identifier of docs array
     date = db.DateTimeProperty()
     content = db.StringProperty()
@@ -188,14 +187,13 @@ class AuthenticationMethod(db.MoraModel):
     cas_url = db.StringProperty()
     
 class AuthenticationRecord(db.MoraModel):
-    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
+    university = db.ReferenceProperty(University,indexed=True)
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
+    user = db.ReferenceProperty(User,indexed=True)
     oauth_id = db.StringProperty()
     cas_id = db.StringProperty()
-    university = db.ReferenceProperty(University,indexed=True)
     programs = db.ListProperty(db.Key)#Progam refernce
     privileges = db.ListProperty(int)
-    user = db.ReferenceProperty(User,indexed=True)
     
 class EmailLog(db.MoraModel):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
