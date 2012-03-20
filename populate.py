@@ -40,21 +40,13 @@ class populate(webapp.RequestHandler):
         p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Computer Science")
         p.put()
-        p.program=p.key()
-        p.save()
         
         p2=datamodel.Program(University=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Electrical Engineering")
         p2.put()
-        p2.program=p2.key()
-        p2.save()
-        
         p3=datamodel.Program(University=u,name="ME",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing mechanical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Mechanical Engineering")
         p3.put()
-        p3.program=p3.key()
-        p3.save()
-        
         
         c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",
                             core_topics="fundamental principles of computability and different families of languages.",
@@ -82,11 +74,40 @@ class populate(webapp.RequestHandler):
         
         wiki_form="@name@;@description|textarea(5,10)@;@occupation|list(Scientist,Engineer,Philosopher)@"
         
+        o2_1=datamodel.Outcome(name="Outcome 2.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
+                            index=1,
+                            description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
+                            rationale="Empty",
+                            assessments="Empty",
+                            last_evaluation=datetime.datetime(2011,6,10),
+                            evaluation_next=365,
+                            evaluation_duration=365,
+                            rationalize_course=[c1.key()],
+                            rationalize_instrument=ins,
+                            where_from=wiki_form)
+        o2_1.put()
+        
+        o2_2=datamodel.Outcome(name="Outcome 2.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
+                            index=2,
+                            description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
+                            assessments="Empty",
+                            last_evaluation=datetime.datetime(2011,6,10),
+                            evaluation_next=365,
+                            evaluation_duration=365,
+                            rationalize_course=[c2.key()],
+                            rationalize_instrument=ins,
+                            where_from=wiki_form)
+        o2_2.put()
+        #kdjfhdkjhf
+        
+        
         deltas={}
         deltas['day']=datetime.timedelta(days=1)
         deltas['week']=datetime.timedelta(days=7)
         deltas['month']=relativedelta(months=+1)
         deltas['six months']=relativedelta(months=+6)
+        
+        test_date_day_of=datetime.datetime.now()
         
         test_date_six_months_before=(datetime.datetime.now())+deltas['six months']
         test_date_month_before=(datetime.datetime.now())+deltas['month']
@@ -102,22 +123,24 @@ class populate(webapp.RequestHandler):
                                             end_date=datetime.datetime(2012,6,15),fulfilled=0,university=u),"315 Evals"),
                       (datamodel.CourseTask(name="CS 396 Evals",description="Collect student evals for CS396",begin_date=datetime.datetime(2012,1,1),
                                             end_date=datetime.datetime(2012,6,15),fulfilled=0,university=u),"396 Evals"),
-                      (datamodel.CourseTask(name="Test six months before",description="Running the six month before test for scheduling",begin_date=test_date_six_months_before,
+                      (datamodel.CourseTask(name="Test six months before",begin_date=test_date_six_months_before,
                                             end_date=test_date_six_months_before,fulfilled=0,university=u),"Six month before test"),
-                      (datamodel.CourseTask(name="Test one month before",description="Running the one month before test for scheduling",begin_date=test_date_month_before,
+                      (datamodel.CourseTask(name="Test one month before",begin_date=test_date_month_before,
                                             end_date=test_date_month_before,fulfilled=0,university=u),"One month before test"),
-                      (datamodel.CourseTask(name="Test one week before",description="Running the one week before test for scheduling",begin_date=test_date_week_before,
+                      (datamodel.CourseTask(name="Test one week before",begin_date=test_date_week_before,
                                             end_date=test_date_week_before,fulfilled=0,university=u),"One week before test"),
-                      (datamodel.CourseTask(name="Test one day before",description="Running the one day before test for scheduling",begin_date=test_date_day_before,
+                      (datamodel.CourseTask(name="Test one day before",begin_date=test_date_day_before,
                                             end_date=test_date_day_before,fulfilled=0,university=u),"One day before test"),
-                      (datamodel.CourseTask(name="Test six months after",description="Running the six month after test for scheduling",begin_date=test_date_six_months_after,
+                      (datamodel.CourseTask(name="Test six months after",begin_date=test_date_six_months_after,
                                             end_date=test_date_six_months_after,fulfilled=0,university=u),"Six month after test"),
-                      (datamodel.CourseTask(name="Test one month after",description="Running the one month after test for scheduling",begin_date=test_date_month_after,
+                      (datamodel.CourseTask(name="Test one month after",begin_date=test_date_month_after,
                                             end_date=test_date_month_after,fulfilled=0,university=u),"One month after test"),
-                      (datamodel.CourseTask(name="Test one week after",description="Running the one week after test for scheduling",begin_date=test_date_week_after,
+                      (datamodel.CourseTask(name="Test one week after",begin_date=test_date_week_after,
                                             end_date=test_date_week_after,fulfilled=0,university=u),"One week after test"),
-                      (datamodel.CourseTask(name="Test one day after",description="Running the one day after test for scheduling",begin_date=test_date_day_after,
-                                            end_date=test_date_day_after,fulfilled=0,university=u),"One day after test")]
+                      (datamodel.CourseTask(name="Test one day after",begin_date=test_date_day_after,
+                                            end_date=test_date_day_after,fulfilled=0,university=u),"One day after test"),
+                      (datamodel.CourseTask(name="Test day of",begin_date=test_date_day_of,
+                                            end_date=test_date_day_of,fulfilled=0,university=u),"One day after test")]
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="rmb237@nau.edu",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
@@ -154,30 +177,7 @@ class populate(webapp.RequestHandler):
                                            programs=[p.key(),p2.key(),p3.key()],
                                            privileges=[1,2,1])
             ar.put()
-        o2_1=datamodel.Outcome(name="Outcome 2.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
-                            index=1,
-                            description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
-                            rationale="Empty",
-                            assessments=[ct_key_list[0]],
-                            last_evaluation=datetime.datetime(2011,6,10),
-                            evaluation_next=365,
-                            evaluation_duration=365,
-                            rationalize_course=[c1.key()],
-                            rationalize_instrument=ins,
-                            where_from=wiki_form)
-        o2_1.put()
         
-        o2_2=datamodel.Outcome(name="Outcome 2.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
-                            index=2,
-                            description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
-                            assessments=[ct_key_list[1]],
-                            last_evaluation=datetime.datetime(2011,6,10),
-                            evaluation_next=365,
-                            evaluation_duration=365,
-                            rationalize_course=[c2.key()],
-                            rationalize_instrument=ins,
-                            where_from=wiki_form)
-        o2_2.put()        
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
                                                     course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
