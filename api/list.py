@@ -22,56 +22,60 @@ class list(api.api):
             "Batch":True,
             "EmailLog":True,
             }
+    
+    #takes in a collection and makes sure to only pull out records the user has access to.
+    def filter(self,collection):
+        return collection.gql("where university=key(:1) and program=key(:2)",self.university_id,self.program_id)
 
     def University(self):
         #"where university=:1",self.university
-        return datamodel.University.all()
+        return self.filter(datamodel.University)
 
     def Program(self):      
-        return datamodel.Program.all()
+        return self.filter(datamodel.Program)
 
     def CourseTask(self):
-        return datamodel.CourseTask.all()
+        return self.filter(datamodel.CourseTask)
 
     def Task(self):
-        return datamodel.Task.all()
+        return self.filter(datamodel.Task)
 
     def AssessmentTask(self):
-        return datamodel.AssessmentTask.all()
+        return self.filter(datamodel.AssessmentTask)
 
     def Semester(self):
-        return datamodel.Semester.all()
+        return self.filter(datamodel.Semester)
 
     def CourseOffering(self):
-        return datamodel.CourseOffering.all()
+        return self.filter(datamodel.CourseOffering)
 
     def Course(self):
-        return datamodel.Course.all()
+        return self.filter(datamodel.Course)
 
     def Instrument(self):
-        return datamodel.Instrument.all()
+        return self.filter(datamodel.Instrument)
 
     def Outcome(self,assessment=False):
         if assessment:
-            ret = datamodel.Outcome.gql("where assessments=KEY(:1)",assessment)
+            ret = datamodel.Outcome.gql("where university=key(:1) and program=key(:2) and assessments=KEY(:3)",self.university_id, self.program_id, assessment)
         else:
-            ret = datamodel.Outcome.all()
+            ret = self.filter(datamodel.Outcome)
         return ret
       
     def Objective(self):
-        return datamodel.Objective.all()
+        return self.filter(datamodel.Objective)
 
     def Minutes(self,program):
-        return datamodel.Minutes.all()
+        return self.filter(datamodel.Minutes)
 
     def ScheduleLog(self,program):
-        return datamodel.ScheduleLog.all()
+        return self.filter(datamodel.ScheduleLog)
 
     def User(self):
-        return datamodel.User.all()
+        return self.filter(datamodel.User)
     
     def EmailLog(self):
-        return datamodel.EmailLog.all()
+        return self.filter(datamodel.EmailLog)
     
     #Accepts a post body of json and returns the list of keys.
     def Batch(self):
