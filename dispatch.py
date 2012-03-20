@@ -7,6 +7,7 @@ import session
 import datetime
 import populate
 import schedule
+import task_util
 import datamodel
 import file
 
@@ -133,6 +134,7 @@ if __name__ == "__main__":
                                          ('/file/getAll', file.getAll),                            
                                          ('/populate', populate.populate),
                                          ('/schedule', schedule.schedule),
+                                         ('/task_util',task_util.task_util),
                                          ('/api/.*', dispatch),
                                          ],
                                         debug=True))

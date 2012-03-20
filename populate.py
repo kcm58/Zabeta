@@ -89,6 +89,8 @@ class populate(webapp.RequestHandler):
         deltas['month']=relativedelta(months=+1)
         deltas['six months']=relativedelta(months=+6)
         
+        test_date_day_of=datetime.datetime.now()
+        
         test_date_six_months_before=(datetime.datetime.now())+deltas['six months']
         test_date_month_before=(datetime.datetime.now())+deltas['month']
         test_date_week_before=(datetime.datetime.now())+deltas['week']
@@ -118,7 +120,9 @@ class populate(webapp.RequestHandler):
                       (datamodel.CourseTask(name="Test one week after",description="Running the one week after test for scheduling",begin_date=test_date_week_after,
                                             end_date=test_date_week_after,fulfilled=0,university=u),"One week after test"),
                       (datamodel.CourseTask(name="Test one day after",description="Running the one day after test for scheduling",begin_date=test_date_day_after,
-                                            end_date=test_date_day_after,fulfilled=0,university=u),"One day after test")]
+                                            end_date=test_date_day_after,fulfilled=0,university=u),"One day after test"),
+                      (datamodel.CourseTask(name="Test day of",begin_date=test_date_day_of,
+                                            end_date=test_date_day_of,fulfilled=0,university=u),"One day after test")]
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="rmb237@nau.edu",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
