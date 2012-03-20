@@ -108,8 +108,7 @@ class Course(Version):
  
 class Instrument(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
-    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
-    empty = db.StringProperty()  
+    program = db.ReferenceProperty(None,indexed=True) #void pointer to program 
       
 class CourseTask(Task):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
@@ -144,7 +143,7 @@ class Outcome(Form):
     outcome_description = db.StringProperty()
     name = db.StringProperty()
     rationale = db.StringProperty()
-    assessments = db.StringProperty() #needs to be reverse reference
+    assessments = db.ListProperty(db.Key) #needs to be reverse reference
     last_evaluation = db.DateTimeProperty()
     evaluation_next = db.IntegerProperty() #needs to be intDays
     evaluation_duration = db.IntegerProperty() #needs to be intDays

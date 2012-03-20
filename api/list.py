@@ -25,49 +25,53 @@ class list(api.api):
 
     def University(self):
         #"where university=:1",self.university
-        return datamodel.University.gql("")
+        return datamodel.University.all()
 
     def Program(self):      
-        return datamodel.Program.gql("")
+        return datamodel.Program.all()
 
     def CourseTask(self):
-        return datamodel.CourseTask.gql("")
+        return datamodel.CourseTask.all()
 
     def Task(self):
-        return datamodel.Task.gql("")
+        return datamodel.Task.all()
 
     def AssessmentTask(self):
-        return datamodel.AssessmentTask.gql("")
+        return datamodel.AssessmentTask.all()
 
     def Semester(self):
-        return datamodel.Semester.gql("")
+        return datamodel.Semester.all()
 
     def CourseOffering(self):
-        return datamodel.CourseOffering.gql("")
+        return datamodel.CourseOffering.all()
 
     def Course(self):
-        return datamodel.Course.gql("")
+        return datamodel.Course.all()
 
     def Instrument(self):
-        return datamodel.Instrument.gql("")
+        return datamodel.Instrument.all()
 
-    def Outcome(self):
-        return datamodel.Outcome.gql("")
-
+    def Outcome(self,assessment=False):
+        if assessment:
+            ret = datamodel.Outcome.gql("where assessments=KEY(:1)",assessment)
+        else:
+            ret = datamodel.Outcome.all()
+        return ret
+      
     def Objective(self):
-        return datamodel.Objective.gql("")
+        return datamodel.Objective.all()
 
     def Minutes(self,program):
-        return datamodel.Minutes.gql("")
+        return datamodel.Minutes.all()
 
     def ScheduleLog(self,program):
-        return datamodel.ScheduleLog.gql("")
+        return datamodel.ScheduleLog.all()
 
     def User(self):
-        return datamodel.User.gql("")
+        return datamodel.User.all()
     
     def EmailLog(self):
-        return datamodel.EmailLog.gql("")
+        return datamodel.EmailLog.all()
     
     #Accepts a post body of json and returns the list of keys.
     def Batch(self):

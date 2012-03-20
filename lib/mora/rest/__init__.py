@@ -240,8 +240,14 @@ class RestDispatcher(session.session):
             model = db.get(key)
         except db.BadKeyError:
             raise DispatchError(404, "ResourceNotFound")
-
+        
         model_name = model.class_name()
+        
+        #User Access Control DO NOT REMOVE!
+        #University is except,  anyone can access this collection
+        #Check to make sure the program and university match what the user has access to.
+        if model_name != "University" and (str(model.program.key()) != self.program_id or str(model.university.key()) != self.university_id):
+            raise DispatchError(403, "ResourceNotAllowed")
 
         # We then can use the model to create an appropriate handler.
         if model_name in self.rest_handlers:
