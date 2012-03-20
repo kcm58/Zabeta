@@ -27,6 +27,7 @@ class populate(webapp.RequestHandler):
         self.clear(datamodel.Task)
         self.clear(datamodel.CourseTask)
         self.clear(datamodel.Instrument)
+        self.clear(datamodel.Objective)
         #debug, create a new user
         
         u=datamodel.University(name="NAU",domain="nau.edu",login_path="nau",webpage="http://nau.edu")
@@ -154,7 +155,8 @@ class populate(webapp.RequestHandler):
                                            programs=[p.key(),p2.key(),p3.key()],
                                            privileges=[1,2,1])
             ar.put()
-        o2_1=datamodel.Outcome(name="Outcome 2.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
+        
+        o1_1=datamodel.Outcome(name="Outcome 1.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
                             index=1,
                             description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
                             rationale="Empty",
@@ -165,9 +167,9 @@ class populate(webapp.RequestHandler):
                             rationalize_course=[c1.key()],
                             rationalize_instrument=ins,
                             where_from=wiki_form)
-        o2_1.put()
+        o1_1.put()
         
-        o2_2=datamodel.Outcome(name="Outcome 2.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
+        o1_2=datamodel.Outcome(name="Outcome 1.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
                             index=2,
                             description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
                             assessments=[ct_key_list[1]],
@@ -177,7 +179,11 @@ class populate(webapp.RequestHandler):
                             rationalize_course=[c2.key()],
                             rationalize_instrument=ins,
                             where_from=wiki_form)
-        o2_2.put()        
+        o1_2.put()
+
+        ob=datamodel.Objective(university=u,program=p,name="Writing Requirement",description="Make sure student does writing good.",index=1,outcomes=[o1_1.key(),o1_2.key()])
+        ob.put()
+
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
                                                     course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
