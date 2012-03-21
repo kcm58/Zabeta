@@ -365,19 +365,48 @@ function loadUploadPage(){
 	});
 }
 
+Handlebars.registerHelper('taskResponse', function(response, options) {
+	var ret = ''
+	console.log('Response: ');
+	console.dir(response);
+	if (response == 'None') return '';
+	ret += options.fn();
+  return ret;
+});
 
 function view(id, template){
-	$('#dialog').dialog({
-		title: 'View',
-		minWidth: 580,
-		minHeight: 560
-	});
 	$.getJSON('/api/crud/'+id, function (json) {
+		/* get referenced properties
+		   $.ajax({
+		    	type: 'POST',
+		    	url: 'api/list/Batch',
+		    	dataType: 'json',
+		    	data: {
+		    	},
+		    	success: function (references) {
+		    	}
+		   });
+		*/
+
 		T.render(template, function (t) {
 			var data = {
 				view: true,
 				task: json
 			};
+			$('#dialog').dialog({
+				title: 'View',
+				minWidth: 580,
+				/*
+					TODO: Obviously this is fragile!
+					      What should happen is the dialog should expand to display
+					      its contents, until a maximum then overflow-y: scroll
+								its contents.
+					header: 32
+					body: (6*42)
+					actions: 42
+				*/
+				minHeight: 32 + 42 + (6*42)
+			});
 			$('#dialog').html(t(data));
 		});
 	});

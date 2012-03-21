@@ -249,7 +249,7 @@ a[onclick] {
 	left: 0;
 	right: 0;
 	height: 42px;
-background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
 	border-bottom: 1px solid gray;
 }
 #dialog .header h1 {
@@ -267,7 +267,7 @@ background: -webkit-gradient(linear, left top, left bottom, from(transparent), c
 	right: 0;
 	height: 42px;
 	margin: 0;
-background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
 	border-top: 1px solid gray;
 }
 #dialog .actions button {
@@ -303,8 +303,8 @@ background: -webkit-gradient(linear, left top, left bottom, from(transparent), c
 #dialog form ul li {
 	/* display: -webkit-box; */
 	/* display: -moz-box; */
-	margin-top: 17px;
-	padding-bottom: 20px;
+	margin-top: 8px;
+	padding-bottom: 10px;
 }
 #dialog form ul li label {
 	float: left;

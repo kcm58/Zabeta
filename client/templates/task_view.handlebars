@@ -15,6 +15,8 @@
         <div>{{name}}</div>
       {{/if}}
     </li>
+
+    {{#if description}}
     <li>
       <label for="description">Description</label>
       {{#if ../edit}}
@@ -23,6 +25,8 @@
         <div>{{description}}</div>
       {{/if}}
     </li>
+    {{/if}}
+
     <li>
       <label for="begin_date">Begin date</label>
       {{#if ../edit}}
@@ -31,6 +35,7 @@
         <div>{{begin_date}}</div>
       {{/if}}
     </li>
+
     <li>
       <label for="end_date">End date</label>
       {{#if ../edit}}
@@ -39,31 +44,19 @@
         <div>{{end_date}}</div>
       {{/if}}
     </li>
+
     <!--
     <li>
       <label for="owner">Owner</label>
       {{#if ../edit}}
         <input type="text" id="owner" name="owner" />
       {{else}}
-        <div>{{owner}}
+        <div>{{owner}}</div>
       {{/if}}
     </li>
     -->
-    <li>
-      <label for="program">Program</label>
-      {{#if ../edit}}
-      <select id="program-chooser-select">
-        <option value="agxkZXZ-emFiZXRhLTJyEwsSDU1vcmFQb2x5TW9kZWwYAww">CS</option>
 
-        <option value="agxkZXZ-emFiZXRhLTJyEwsSDU1vcmFQb2x5TW9kZWwYBAw">EE</option>
-
-        <option value="agxkZXZ-emFiZXRhLTJyEwsSDU1vcmFQb2x5TW9kZWwYBQw">ME</option>
-      </select>
-      <!--  <input type="text" id="program" name="program" /> -->
-      {{else}}
-        <div>program-placeholder</div>
-      {{/if}}
-    </li>
+    {{# taskResponse this}}
     <li>
       <label for="response">Response</label>
       {{#if ../edit}}
@@ -72,7 +65,46 @@
         <div>{{response}}</div>
       {{/if}}
     </li>
+    {{/taskResponse}}
+
     <!--
+    {{#if university}}
+    <li>
+      <label for="program">Program</label>
+      {{#if ../edit}}
+        <div>edit-university-placeholder</div>
+      {{else}}
+        <div>university-placeholder</div>
+      {{/if}}
+    </li>
+    {{/if}}
+    -->
+
+    <!--
+    {{#if program}}
+    <li>
+      <label for="program">Program</label>
+      {{#if ../edit}}
+        <div>edit-program-placeholder</div>
+      {{else}}
+        <div>program-placeholder</div>
+      {{/if}}
+    </li>
+    {{/if}}
+    -->
+
+    {{#if course}}
+    <li>
+      <label for="cource">Course</label>
+      {{#if ../edit}}
+        <div>edit-course-placeholder</div>
+      {{else}}
+        <div>course-placeholder</div>
+      {{/if}}
+    </li>
+    {{/if}}
+
+    {{#if rubric}}
     <li>
       <label for="rubric">Rubric</label>
       {{#if ../edit}}
@@ -81,7 +113,7 @@
         <div>{{rubric}}</div>
       {{/if}}
     </li>
-    -->
+    {{/if}}
   </ul></form>
 </div>
 {{/task}}
