@@ -27,6 +27,7 @@ class populate(webapp.RequestHandler):
         self.clear(datamodel.Task)
         self.clear(datamodel.CourseTask)
         self.clear(datamodel.Instrument)
+        self.clear(datamodel.Objective)
         #debug, create a new user
         
         u=datamodel.University(name="NAU",domain="nau.edu",login_path="nau",webpage="http://nau.edu")
@@ -54,6 +55,14 @@ class populate(webapp.RequestHandler):
         p3.put()
         p3.program=p3.key()
         p3.save()
+        
+        nau_semesters=[(datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,8,15),end_date=datetime.datetime(2012,12,15),name="fall")),
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,12,18),end_date=datetime.datetime(2013,1,12),name="winter")),
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,1,15),end_date=datetime.datetime(2013,5,12),name="spring")),
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,5,15),end_date=datetime.datetime(2013,8,12),name="summer")),
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,8,15),end_date=datetime.datetime(2013,8,15),name="year"))]
+        for s in nau_semesters:
+            s.put()
         
         
         c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",
@@ -88,6 +97,8 @@ class populate(webapp.RequestHandler):
         deltas['month']=relativedelta(months=+1)
         deltas['six months']=relativedelta(months=+6)
         
+        test_date_day_of=datetime.datetime.now()
+        
         test_date_six_months_before=(datetime.datetime.now())+deltas['six months']
         test_date_month_before=(datetime.datetime.now())+deltas['month']
         test_date_week_before=(datetime.datetime.now())+deltas['week']
@@ -117,7 +128,9 @@ class populate(webapp.RequestHandler):
                       (datamodel.CourseTask(name="Test one week after",description="Running the one week after test for scheduling",begin_date=test_date_week_after,
                                             end_date=test_date_week_after,fulfilled=0,university=u),"One week after test"),
                       (datamodel.CourseTask(name="Test one day after",description="Running the one day after test for scheduling",begin_date=test_date_day_after,
-                                            end_date=test_date_day_after,fulfilled=0,university=u),"One day after test")]
+                                            end_date=test_date_day_after,fulfilled=0,university=u),"One day after test"),
+                      (datamodel.CourseTask(name="Test day of",begin_date=test_date_day_of,
+                                            end_date=test_date_day_of,fulfilled=0,university=u),"One day after test")]
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="rmb237@nau.edu",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
@@ -154,7 +167,8 @@ class populate(webapp.RequestHandler):
                                            programs=[p.key(),p2.key(),p3.key()],
                                            privileges=[1,2,1])
             ar.put()
-        o2_1=datamodel.Outcome(name="Outcome 2.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
+        
+        o1_1=datamodel.Outcome(name="Outcome 1.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
                             index=1,
                             description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
                             rationale="Empty",
@@ -165,9 +179,9 @@ class populate(webapp.RequestHandler):
                             rationalize_course=[c1.key()],
                             rationalize_instrument=ins,
                             where_from=wiki_form)
-        o2_1.put()
+        o1_1.put()
         
-        o2_2=datamodel.Outcome(name="Outcome 2.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
+        o1_2=datamodel.Outcome(name="Outcome 1.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
                             index=2,
                             description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
                             assessments=[ct_key_list[1]],
@@ -177,7 +191,11 @@ class populate(webapp.RequestHandler):
                             rationalize_course=[c2.key()],
                             rationalize_instrument=ins,
                             where_from=wiki_form)
-        o2_2.put()        
+        o1_2.put()
+
+        ob=datamodel.Objective(university=u,program=p,name="Writing Requirement",description="Make sure student does writing good.",index=1,outcomes=[o1_1.key(),o1_2.key()])
+        ob.put()
+
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
                                                     course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
