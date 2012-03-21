@@ -59,7 +59,8 @@ class populate(webapp.RequestHandler):
         nau_semesters=[(datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,8,15),end_date=datetime.datetime(2012,12,15),name="fall")),
                        (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,12,18),end_date=datetime.datetime(2013,1,12),name="winter")),
                        (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,1,15),end_date=datetime.datetime(2013,5,12),name="spring")),
-                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,5,15),end_date=datetime.datetime(2013,8,12),name="summer"))]
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,5,15),end_date=datetime.datetime(2013,8,12),name="summer")),
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,8,15),end_date=datetime.datetime(2013,8,15),name="year"))]
         for s in nau_semesters:
             s.put()
         
