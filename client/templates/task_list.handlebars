@@ -6,16 +6,7 @@
         Title
       </th>
       <th>
-        Type
-      </th>
-      <th>
-        Priority
-      </th>
-      <th>
         Completion
-      </th>
-      <th>
-        Responsible
       </th>
       <th>
         Due
@@ -25,11 +16,8 @@
   <tbody>
     {{#user}}
     <tr>
-      <td style="cursor:pointer">{{name}}</td>
-      <td>None</td>
-      <td>None</td>
+      <td><a onclick="view('{{id}}', 'task_view')">{{name}}</a></td>
       <td>{{fulfilled}}%</td>
-      <td>None</td>
       <td>{{relative_date}}</td>
     </tr>
     {{/user}}

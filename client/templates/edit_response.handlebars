@@ -1,0 +1,218 @@
+  <div id="main" role="main">
+    <div id="markup-help">
+      <h4>Syntax:</h4>
+      <table cellpadding="0" cellspacing="0"><tbody>
+          <tr>
+            <td>//italics//</td>
+            <td class="arrow">&#8594;</td>
+            <td><em>italics</em></td>
+          </tr>
+
+          <tr>
+            <td>**bold**</td>
+            <td class="arrow">&#8594;</td>
+            <td><strong>bold</strong></td>
+          </tr>
+
+          <tr>
+            <td>
+              * Bullet list<br>
+              * Second item<br>
+              ** Sub item
+            </td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              <!-- &#8226; Bullet list<br> -->
+              <!-- &#8226; Second item<br> -->
+              <!-- ..&#8226; Sub item -->
+              <ul>
+                <li>Bullet list</li>
+                <li>Second item</li>
+                <ul>
+                  <li>Sub item</li>
+                </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              # Numbered list<br>
+              # Second item<br>
+              ## Sub item
+            </td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              <!-- 1. Numbered list<br> -->
+              <!-- 2. Second item<br> -->
+              <!-- 2.1 Sub item -->
+              <ol>
+                <li>Numbered list</li>
+                <li>Second item</li>
+                <ol>
+                  <li>Sub item</li>
+                </ol>
+              </ol>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Link to [[wiki page]]</td>
+            <td class="arrow">&#8594;</td>
+            <td>Link to
+              <a href="http://www.wikicreole.org/attach/CheatSheet/URL">
+                wiki page
+              </a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>[[URL|link name]]</td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              <a href="http://www.wikicreole.org/attach/CheatSheet/URL">
+                link name
+              </a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              == Large heading<br>
+              === Medium heading<br>
+              ==== Small heading
+            </td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              <span style="font-size: 130%; font-weight: bold;">
+                Large heading
+              </span><br>
+              <span style="font-size: 115%; font-weight: bold;">
+                Medium heading
+              </span><br>
+              <span style="font-size: 100%; font-weight: bold;">
+                Small heading
+              </span>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              No<br>
+              linebreak!<br><br>
+              Use empty line
+            </td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              No line break!<br><br>
+              Use empty line
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              Forced\\linebreak<br>
+            </td><td class="arrow">&#8594;</td>
+            <td>
+              Forced<br>
+              line break
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              Horizontal line:<br>
+              ----
+            </td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              Horizontal line:
+              <hr>
+            </td>
+          </tr>
+
+          <tr>
+            <td>&#7B;&#7B;Image.jpg|title&#7D;&#7D;</td>
+            <td class="arrow">&#8594;</td>
+            <td>Image with title</td>
+          </tr>
+
+          <tr>
+            <td>
+              |=|=table|=header|<br>
+              |a|table|row|<br>
+              |b|table|row|
+            </td>
+            <td class="arrow">&#8594;</td>
+            <td>Table</td>
+          </tr>
+
+          <tr>
+            <td>
+              &#7B;&#7B;&#7B;<br>
+              == [[Nowiki]]:<br>
+              //**don't** format//<br>
+              &#7D;&#7D;&#7D;
+            </td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              == [[Nowiki]]:<br>
+              //**don't** format//
+            </td>
+          </tr>
+          <tr>
+            <td class="syntax">@name@</td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              <form class="wikiform example"><!-- <ul> -->
+                <!-- <li> -->
+                <!--   <label for="example_name">Name</label> -->
+                <input type="text" id="example_name" name="name" />
+                <!--   </li> -->
+                <!-- </ul> --></form>
+            </td>
+          </tr>
+          <tr>
+            <td class="syntax">@blurb|textarea(5,16)@</td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              <form class="wikiform example"><!-- <ul> -->
+                <!-- <li> -->
+                <!--   <label for="example_blurb">Blurb</label> -->
+                <textarea id="example_blurb" name="blurb" rows="5" cols="16"></textarea>
+                <!--   </li> -->
+                <!-- </ul> --></form>
+            </td>
+          </tr>
+          <tr>
+            <td class="syntax">@foo|list(S,N,L)@</td>
+            <td class="arrow">&#8594;</td>
+            <td>
+              <form class="wikiform example"><!-- <ul> -->
+                <!-- <li> -->
+                <!--   <label for="example_foo">Foo</label> -->
+                <select id="example_foo" name="foo">
+                  <option value="S">S</option>
+                  <option value="N">N</option>
+                  <option value="L">L</option>
+                </select>
+                <!-- </li> -->
+                <!-- </ul> --></form>
+            </td>
+          </tr>
+      </tbody></table>
+    </div>
+
+    <div>
+      <textarea id="source" cols="80" rows="18">{{response}}</textarea>
+      <div id="response-toolbar">
+        <button id="build">Preview</button>
+        <button id="update-response">Update</button>
+      </div>
+    </div>
+
+    <div id="stage">
+      <div id="generated">
+      </div>
+    </div>
+
+  </div>

@@ -1,0 +1,85 @@
+#main {
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#main h1 {
+  margin-bottom: 4px;
+}
+#main h4 {
+  margin: 0;
+}
+textarea#source {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  font-family: monospace;
+  width: 576px;
+}
+#response-toolbar {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  width: 576px;
+  margin-top:4px;
+  margin-bottom: 4px;
+  padding: 4px;
+  border-top: 2px solid gray;
+  background: rgb(221,	221,	221);
+  border-bottom: 2px solid gray;
+}
+button#build {
+}
+div#markup-help {
+  float: right;
+}
+div#markup-help table {
+  width: 399px;
+  border-bottom: 3px solid #BBB;
+  border-left: 3px solid #999;
+  border-right: 3px solid #BBB;
+  border-top: 3px solid #999;
+  margin-bottom: 0;
+}
+div#markup-help td {
+  border: 1px solid #999;
+  border-width: 1px 0;
+  font-size: 80%;
+  margin: 0;
+  padding: 0.2em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+div#markup-help td.syntax, div#markup-help tr > :first-child {
+  padding-left: 4px;
+  font-family: monospace;
+}
+div#markup-help td.arrow {
+  color: #666;
+  padding: 0 1em;
+}
+#markup-help table {
+  border: double black;
+  border-collapse: collapse;
+}
+div#stage {
+  margin-top: 20px;
+  width: 576px;
+  border: 1px solid gray;
+  background-color: #e8e8e8;
+}
+div#generated {
+  padding: 12px;
+}
+form.wikiform {
+}
+form.wikiform ul { list-style:none }
+form.wikiform ul li label {
+  float: left;
+  display: inline-block;
+  width: 150px;
+  text-align: left;
+  padding: 3px;
+  white-space: normal;
+}
+form.wikiform.example ul li label {
+  width: 42px;
+}

@@ -4,44 +4,121 @@
 </div>
 -->
 
+{{#task}}
 <div class="task">
   <form><ul>
     <li>
       <label for="name">Name</label>
-      <input type="text" id="name" name="name" />
+      {{#if ../edit}}
+        <input type="text" id="name" name="name" value="{{name}}" />
+      {{else}}
+        <div>{{name}}</div>
+      {{/if}}
     </li>
+
+    {{#if description}}
     <li>
       <label for="description">Description</label>
-      <textarea id="description" name="description"></textarea>
+      {{#if ../edit}}
+        <textarea id="description" name="description">{{description}}</textarea>
+      {{else}}
+        <div>{{description}}</div>
+      {{/if}}
     </li>
+    {{/if}}
+
     <li>
       <label for="begin_date">Begin date</label>
-      <input type="text" id="begin_date" name="begin_date" />
+      {{#if ../edit}}
+        <input type="text" id="begin_date" name="begin_date" value="{{begin_date}}" />
+      {{else}}
+        <div>{{begin_date}}</div>
+      {{/if}}
     </li>
+
     <li>
       <label for="end_date">End date</label>
-      <input type="text" id="end_date" name="end_date" />
+      {{#if ../edit}}
+        <input type="text" id="end_date" name="end_date" vaule="{{end_date}}" />
+      {{else}}
+        <div>{{end_date}}</div>
+      {{/if}}
     </li>
+
+    <!--
     <li>
       <label for="owner">Owner</label>
-      <input type="text" id="owner" name="owner" />
+      {{#if ../edit}}
+        <input type="text" id="owner" name="owner" />
+      {{else}}
+        <div>{{owner}}</div>
+      {{/if}}
     </li>
-    <li>
-      <label for="program">Program</label>
-      <input type="text" id="program" name="program" />
-    </li>
+    -->
+
+    {{# taskResponse this}}
     <li>
       <label for="response">Response</label>
-      <input type="text" id="response" name="response" />
+      {{#if ../edit}}
+        <a onclick="editResponse('{{id}}', 'edit_response')">Edit response...</a>
+      {{else}}
+        <div>{{response}}</div>
+      {{/if}}
     </li>
+    {{/taskResponse}}
+
+    <!--
+    {{#if university}}
+    <li>
+      <label for="program">Program</label>
+      {{#if ../edit}}
+        <div>edit-university-placeholder</div>
+      {{else}}
+        <div>university-placeholder</div>
+      {{/if}}
+    </li>
+    {{/if}}
+    -->
+
+    <!--
+    {{#if program}}
+    <li>
+      <label for="program">Program</label>
+      {{#if ../edit}}
+        <div>edit-program-placeholder</div>
+      {{else}}
+        <div>program-placeholder</div>
+      {{/if}}
+    </li>
+    {{/if}}
+    -->
+
+    {{#if course}}
+    <li>
+      <label for="cource">Course</label>
+      {{#if ../edit}}
+        <div>edit-course-placeholder</div>
+      {{else}}
+        <div>course-placeholder</div>
+      {{/if}}
+    </li>
+    {{/if}}
+
+    {{#if rubric}}
     <li>
       <label for="rubric">Rubric</label>
-      <input type="text" id="rubric" name="rubric" />
+      {{#if ../edit}}
+        <input type="text" id="rubric" name="rubric" />
+      {{else}}
+        <div>{{rubric}}</div>
+      {{/if}}
     </li>
+    {{/if}}
   </ul></form>
 </div>
+{{/task}}
 
 <div class="actions">
   <button class="cancel" name="cancel">Cancel</button>
-  <button class="update" name="update">Update</button>
+  {{#unless view}}<button class="update" name="update">Update</button>{{/unless}}
 </div>

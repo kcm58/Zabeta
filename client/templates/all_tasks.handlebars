@@ -9,21 +9,10 @@
         Title
       </th>
       <th>
-        Type
-      </th>
-      <th>
-        Priority
-      </th>
-      <th>
         Completion
       </th>
       <th>
-        Responsible
-      </th>
-      <th>
         Due
-      </th>
-      <th>
       </th>
     </tr>
   </thead>
@@ -31,12 +20,8 @@
     {{#Task}}
     <tr>
       <td style="cursor:pointer">{{name}}</td>
-      <td>None</td>
-      <td>None</td>
       <td>{{fulfilled}}%</td>
-      <td>None</td>
       <td>{{relative_date}}</td>
-      <td class="edit"><a onclick="edit('{{id}}', 'task_view')">Edit</td>
     </tr>
     {{/Task}}
   </tbody>

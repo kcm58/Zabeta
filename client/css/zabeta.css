@@ -42,17 +42,17 @@ body {
   -webkit-border-image: url("../img/border.png") 0 0 4 0 stretch stretch;
 }
 
-#logo {
+#title {
   position: absolute;
   top:0;
   left:0;
-  width: 40%;
+  width: 60%;
 }
-#logo img {
+#title img {
   float: left;
   margin:8px;
 }
-#logo h1 {
+#title h1 {
   font-size: 28px;
   color: white;
   display: table-cell;
@@ -60,7 +60,7 @@ body {
   height: 48px;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
-#logo h1 span.logo-alt-color {
+#title h1 span.logo-alt-color {
   /* color: black; */
 }
 
@@ -231,7 +231,7 @@ table.list tr {
 td.edit {
 	text-align: right;
 }
-.edit a[onclick] {
+a[onclick] {
   cursor: pointer;
 }
 
@@ -249,7 +249,7 @@ td.edit {
 	left: 0;
 	right: 0;
 	height: 42px;
-background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
 	border-bottom: 1px solid gray;
 }
 #dialog .header h1 {
@@ -267,7 +267,7 @@ background: -webkit-gradient(linear, left top, left bottom, from(transparent), c
 	right: 0;
 	height: 42px;
 	margin: 0;
-background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
 	border-top: 1px solid gray;
 }
 #dialog .actions button {
@@ -303,8 +303,8 @@ background: -webkit-gradient(linear, left top, left bottom, from(transparent), c
 #dialog form ul li {
 	/* display: -webkit-box; */
 	/* display: -moz-box; */
-	margin-top: 17px;
-	padding-bottom: 20px;
+	margin-top: 8px;
+	padding-bottom: 10px;
 }
 #dialog form ul li label {
 	float: left;
@@ -318,4 +318,19 @@ background: -webkit-gradient(linear, left top, left bottom, from(transparent), c
 }
 #dialog form ul li input {
 	/* -webkit-box-flex: 1; */
+}
+
+.task form input {
+  width: 400px;
+}
+
+.task form textarea {
+  width: 400px;
+  height: 150px;
+}
+
+.task form a[onclick] {
+  cursor: pointer;
+  color: #00E;
+  text-decoration: underline;
 }
