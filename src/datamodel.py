@@ -57,8 +57,6 @@ class User(db.MoraModel):
     tasks = db.ListProperty(db.Key) 
       
 class University(Version):
-    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
-    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     name = db.StringProperty()
     domain = db.StringProperty()
     semesters = db.StringProperty() #needs to be reverse reference
@@ -142,9 +140,12 @@ class Outcome(Form):
     name = db.StringProperty()
     rationale = db.StringProperty()
     assessments = db.ListProperty(db.Key) #needs to be reverse reference
+    scheduling_cycle = db.StringProperty()
     last_evaluation = db.DateTimeProperty()
-    evaluation_next = db.IntegerProperty() #needs to be intDays
-    evaluation_duration = db.IntegerProperty() #needs to be intDays
+    #evaluation_next = db.IntegerProperty() #needs to be intDays
+    #evaluation_duration  = db.IntegerProperty() #needs to be intDays
+    evaluation_start = db.DateTimeProperty() #needs to be intDays
+    evaluation_end = db.DateTimeProperty() #needs to be intDays
     rationalize_course = db.ListProperty(db.Key)
     index = db.IntegerProperty()
     
@@ -176,7 +177,8 @@ class Minutes(Version):
     docs = db.StringProperty() #identifier of docs array
     date = db.DateTimeProperty()
     content = db.StringProperty()
-    attachment = db.StringProperty() # allow the user to upload a file.
+    attachment_names = db.StringListProperty()
+    attachment_blob_ids = db.StringListProperty()
     
 class AuthenticationMethod(db.MoraModel):
     university = db.ReferenceProperty(University,indexed=True)
