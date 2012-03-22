@@ -62,7 +62,7 @@ class Program(Version):
     start_date = db.DateProperty() #null/blank for current?
     end_date = db.DateProperty() #null/blank for current?
     mission = db.StringProperty()
-    description = db.Text()
+    description = db.StringProperty()
     webpage = db.StringProperty() #url to website
     thumbnail = db.StringProperty() #identifier of image file
     docs = db.StringProperty() #identifier of docs array
