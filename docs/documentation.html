@@ -1,0 +1,1120 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API Specification &mdash; Zabeta 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Zabeta 1.0 documentation" href="index.html" />
+    <link rel="next" title="Zabeta Scheduling" href="scheduling_lang.html" />
+    <link rel="prev" title="Problem Description" href="intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="scheduling_lang.html" title="Zabeta Scheduling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Problem Description"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Zabeta 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="api-specification">
+<h1>API Specification<a class="headerlink" href="#api-specification" title="Permalink to this headline">¶</a></h1>
+<p>The Zabeta project is implemented in Python using Google App Engine. Our application creates entities, with all associated data stored as properties of these entities. These properties are named values of one of the data types supported by Google App Engine Datastore. App Engine Datastore provides a NoSQL schemaless object datastore, with a query engine and atomic transactions. A full listing of data types supported by Google App Engine Datastore can be found here: <a class="reference external" href="http://code.google.com/appengine/docs/python/datastore/entities.html#Properties_and_Value_Types/">Data Types</a>. In the Python API, a model describes a kind of entity, including the types and configuration for its properties. An application defines a model using Python classes, with class attributes describing the properties.</p>
+<p>The following is a listing of the models that the Zabeta project uses and the properties for each.</p>
+<div class="section" id="assessmenttask">
+<h2>AssessmentTask<a class="headerlink" href="#assessmenttask" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>Assessment tasks are tasks that are not associated with a Course, but are associated insead with an outcome that needs to be evaulated on a cyclical basis.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="13%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Void pointer to the University associated with the Task</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Void pointer to the Program associated with the Task</td>
+</tr>
+<tr class="row-even"><td>outcome</td>
+<td>Reference</td>
+<td>Pointer to the Outcome associated with the Task</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="authenticationmethod">
+<h2>AuthenticationMethod<a class="headerlink" href="#authenticationmethod" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>An AuthenticationMethod is information for how a Univeristy authenticates its Users. It allows for the University to use OAuth or CAS and stores the associated information.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="11%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to the University associated with the AuthenticationMethod</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Void pointer to the Program associated with the Minutes object</td>
+</tr>
+<tr class="row-even"><td>oauth_url</td>
+<td>String</td>
+<td>The OAuth providers landing url for the User</td>
+</tr>
+<tr class="row-odd"><td>oauth_client_id</td>
+<td>String</td>
+<td>String representation of client id</td>
+</tr>
+<tr class="row-even"><td>oauth_client_secret</td>
+<td>String</td>
+<td>String representation of client secret</td>
+</tr>
+<tr class="row-odd"><td>cas_url</td>
+<td>String</td>
+<td>Url to CAS Authentication method</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="authenticationrecord">
+<h2>AuthenticationRecord<a class="headerlink" href="#authenticationrecord" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>An AuthenticationRecord essentially ties together an AuthenticationMethod with a User. It also keeps track of the priviliges a User has within the University&#8217;s Programs.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="11%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to University associated with AuthenticationRecord</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Void pointer to the Program associated with the Minutes object</td>
+</tr>
+<tr class="row-even"><td>user</td>
+<td>Reference</td>
+<td>Pointer to the User associated with AuthenticationRecord</td>
+</tr>
+<tr class="row-odd"><td>oauth_id</td>
+<td>String</td>
+<td>String representation of OAuth id</td>
+</tr>
+<tr class="row-even"><td>cas_id</td>
+<td>String</td>
+<td>String representation of CAS id</td>
+</tr>
+<tr class="row-odd"><td>programs</td>
+<td>List</td>
+<td>List of key identifiers for programs associated with AuthenticationRecord</td>
+</tr>
+<tr class="row-even"><td>privileges</td>
+<td>List</td>
+<td>Integer list of privileges</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="course">
+<h2>Course<a class="headerlink" href="#course" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The Course class inherits from Version and holds metadata related to a given Course. Each Course belongs to a program.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="13%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to University associated with the given Course</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to Program associated with the given Course</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>Course name</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>text</td>
+<td>Course description</td>
+</tr>
+<tr class="row-even"><td>catalog_descr</td>
+<td>String</td>
+<td>TODO!!!</td>
+</tr>
+<tr class="row-odd"><td>catalog</td>
+<td>String</td>
+<td>Program and Course number</td>
+</tr>
+<tr class="row-even"><td>webpage</td>
+<td>String</td>
+<td>Url of Course webpage</td>
+</tr>
+<tr class="row-odd"><td>core_topics</td>
+<td>String</td>
+<td>Listing of the core topics covered in the given Course</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="courseoffering">
+<h2>CourseOffering<a class="headerlink" href="#courseoffering" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The CourseOffering class inherits from Version and holds information about a specific Course instance. When a course is offered a new CourseOffering instance is created.  This instance is associated with a <cite>term</cite> and a <cite>year</cite>,  such as “spring” “2012”.  This course is taught by an instructor so it has a reference to a User.   This object contains stats for how well the class performed.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="10%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Void pointer to the University associated with the CourseOffering</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Void pointer to the Program associated with the CourseOffering</td>
+</tr>
+<tr class="row-even"><td>semester</td>
+<td>Reference</td>
+<td>Pointer to the Semester assocaited with the CourseOffering</td>
+</tr>
+<tr class="row-odd"><td>instructor</td>
+<td>Reference</td>
+<td>Pointer to the User who is teaching the CourseOffering</td>
+</tr>
+<tr class="row-even"><td>course</td>
+<td>Reference</td>
+<td>Pointer to the Course object that a given CourseOffering is an instance of</td>
+</tr>
+<tr class="row-odd"><td>student_count</td>
+<td>Integer</td>
+<td>Number of students in the CourseOffering</td>
+</tr>
+<tr class="row-even"><td>section</td>
+<td>Integer</td>
+<td>Section number of the CourseOffering</td>
+</tr>
+<tr class="row-odd"><td>final_grades</td>
+<td>StringList</td>
+<td>List of the students&#8217; grades at the end of the CourseOffering</td>
+</tr>
+<tr class="row-even"><td>tasks</td>
+<td>StringList</td>
+<td>List of the tasks linked to a given CourseOffering</td>
+</tr>
+<tr class="row-odd"><td>syllabus</td>
+<td>String</td>
+<td>String identifier of the syllabus document</td>
+</tr>
+<tr class="row-even"><td>website</td>
+<td>String</td>
+<td>Url of the Course website</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="coursetask">
+<h2>CourseTask<a class="headerlink" href="#coursetask" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The CourseTask class inherits from Task and represents a Task object that is carried out with respect to a given Course. CourseTask objects are rescheduled by the system.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="12%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to the University associated with the Task</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to the Program associated with the Task</td>
+</tr>
+<tr class="row-even"><td>course</td>
+<td>Reference</td>
+<td>Pointer to the Course associated with the Task</td>
+</tr>
+<tr class="row-odd"><td>rubric</td>
+<td>Reference</td>
+<td>Pointer to the assessment Instrument associated with the Task</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="form">
+<h2>Form<a class="headerlink" href="#form" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>A form is the parent class that houses the WikiForm. THis is used to collect data from Users about measures.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="12%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>form_name</td>
+<td>String</td>
+<td>Name of the form</td>
+</tr>
+<tr class="row-odd"><td>assessment_form</td>
+<td>String</td>
+<td>The WikiForm in WikiForm syntax</td>
+</tr>
+<tr class="row-even"><td>require_attachments</td>
+<td>StringList</td>
+<td>A list of the attachment names required to satisfy this form</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>Text</td>
+<td>Form description</td>
+</tr>
+<tr class="row-even"><td>instructions</td>
+<td>String</td>
+<td>Form instructions</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="instrument">
+<h2>Instrument<a class="headerlink" href="#instrument" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The Instrument class inherits from Form and holds information about an assessment instrument. (IS THIS RIGHT???)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="13%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to the University associated with the Instrument</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to the Program associated with the Instrument</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="minutes">
+<h2>Minutes<a class="headerlink" href="#minutes" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>Minutes inherits from Version and is a revisioned notepad associated with a program.  Anyone within the program can modify this notepad.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="11%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Void pointer to the University associated with the Minutes object</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to the Program associated with the Minutes object</td>
+</tr>
+<tr class="row-even"><td>description</td>
+<td>Text</td>
+<td>Description of the Minutes object</td>
+</tr>
+<tr class="row-odd"><td>docs</td>
+<td>String</td>
+<td>String identifier of the docs array</td>
+</tr>
+<tr class="row-even"><td>date</td>
+<td>Date</td>
+<td>Date of the creation of the Minutes object</td>
+</tr>
+<tr class="row-odd"><td>content</td>
+<td>String</td>
+<td>Content of the Minutes object</td>
+</tr>
+<tr class="row-even"><td>attachment_names</td>
+<td>StringList</td>
+<td>A list of file names parired with the blobs below</td>
+</tr>
+<tr class="row-odd"><td>attachment_blobs</td>
+<td>StringList</td>
+<td>A list of blob ids to retrive the file from the Google Blob Store</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="object">
+<h2>Object<a class="headerlink" href="#object" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>DESCRIPTION/RATIONALE GOES HERE!</p>
+<p><strong>Field Summary</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="20%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to a University</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to a Program</td>
+</tr>
+<tr class="row-even"><td>uid</td>
+<td>String</td>
+<td>TODO!!</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The Objective class inherits from Version and holds all the information about a Objective. Defined by a program, objectives are descriptions of goals that the program intends to meet to maintain ABET accreditation.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="10%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Void pointer to the University associated with the Objective</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to the Program associated with the Objective (NEED TO EXPLAIN THIS!!)</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>Objective name</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>Text</td>
+<td>Objective description</td>
+</tr>
+<tr class="row-even"><td>index</td>
+<td>Integer</td>
+<td>Index of the Objective</td>
+</tr>
+<tr class="row-odd"><td>outcomes</td>
+<td>List</td>
+<td>List of key identifiers of outcomes associated with Objective</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="outcome">
+<h2>Outcome<a class="headerlink" href="#outcome" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The Outcome class inherits from Form and holds information about a given Outcome that has been defined by a Program.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="11%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Void pointer to the University associated with the Outcome</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Void pointer to the Program associated with the Outcome</td>
+</tr>
+<tr class="row-even"><td>rationalize_instrument</td>
+<td>Reference</td>
+<td>Pointer to the Instrument</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>String</td>
+<td>Name of Outcome</td>
+</tr>
+<tr class="row-even"><td>rationale</td>
+<td>String</td>
+<td>Reasoning behind Outcome</td>
+</tr>
+<tr class="row-odd"><td>assessments</td>
+<td>KeyList</td>
+<td>List of keys identifying the assessments associated with an Outcome</td>
+</tr>
+<tr class="row-even"><td>last_evaluation</td>
+<td>DateTime</td>
+<td>Date and time of last evaluation of Outcome</td>
+</tr>
+<tr class="row-odd"><td>evaluation_start</td>
+<td>DateTime</td>
+<td>Start date and time of the next evaluation</td>
+</tr>
+<tr class="row-even"><td>evaluation_end</td>
+<td>DateTime</td>
+<td>End date and time of the next evaluation</td>
+</tr>
+<tr class="row-odd"><td>rationalize_course</td>
+<td>List</td>
+<td>List of key identifiers of all Courses linked to Outcome</td>
+</tr>
+<tr class="row-even"><td>index</td>
+<td>Integer</td>
+<td>Index of Outcome</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="outcomesupport">
+<h2>OutcomeSupport<a class="headerlink" href="#outcomesupport" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong>
+TODO!!</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Void pointer to the University associated with the Outcome</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Void pointer to the Program associated with the Outcome</td>
+</tr>
+<tr class="row-even"><td>course</td>
+<td>Reference</td>
+<td>Pointer to the Course associated with the Outcome</td>
+</tr>
+<tr class="row-odd"><td>instrument</td>
+<td>Reference</td>
+<td>Pointer to the Instrument associated with the Outcome</td>
+</tr>
+<tr class="row-even"><td>rationale</td>
+<td>String</td>
+<td>Reasoning behind Outcome</td>
+</tr>
+<tr class="row-odd"><td>goal</td>
+<td>String</td>
+<td>Goal of Outcome</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="program">
+<h2>Program<a class="headerlink" href="#program" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The Program class inherits from Version and holds information about a department that belongs a University.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="12%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to University object associated with a given program</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to Program (WHY DO WE HAVE THIS???)</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>Name of the Program</td>
+</tr>
+<tr class="row-odd"><td>start_date</td>
+<td>Date</td>
+<td>Date of Program installation at University</td>
+</tr>
+<tr class="row-even"><td>end_date</td>
+<td>Date</td>
+<td>Date of Program termination at University</td>
+</tr>
+<tr class="row-odd"><td>mission</td>
+<td>String</td>
+<td>Statement of Program goals/objectives</td>
+</tr>
+<tr class="row-even"><td>description</td>
+<td>Text</td>
+<td>Program description</td>
+</tr>
+<tr class="row-odd"><td>webpage</td>
+<td>String</td>
+<td>Url of Program website</td>
+</tr>
+<tr class="row-even"><td>thumbnail</td>
+<td>String</td>
+<td>String idenifier of Program image file</td>
+</tr>
+<tr class="row-odd"><td>docs</td>
+<td>String</td>
+<td>String identifier of Program docs array</td>
+</tr>
+<tr class="row-even"><td>nags_before</td>
+<td>StringList</td>
+<td>Defines frequency of reminders before a task is due</td>
+</tr>
+<tr class="row-odd"><td>nags_after</td>
+<td>StringList</td>
+<td>Defines frequency of reminders after a task is due</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="semester">
+<h2>Semester<a class="headerlink" href="#semester" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The Semester class holds infomation about a time period when courses are taught throughout the school year. A given University&#8217;s school year model is defined as a list of Semester objects. (SHOULD WE RENAME THIS???)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="10%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to the University associated with the Semester (EXPLAIN THESE TWO)</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to the Program associated with the Semester</td>
+</tr>
+<tr class="row-even"><td>begin_date</td>
+<td>DateTime</td>
+<td>Date and time representing the start of a Semester</td>
+</tr>
+<tr class="row-odd"><td>end_date</td>
+<td>DateTime</td>
+<td>Date and time representing the end of a Semester</td>
+</tr>
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>Name of Semester</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="schedule-log">
+<h2>Schedule Log<a class="headerlink" href="#schedule-log" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The ScheduleLog class holds/logs information about scheduling events.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="16%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to associated University</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to associated Program</td>
+</tr>
+<tr class="row-even"><td>task</td>
+<td>Reference</td>
+<td>Pointer to associated Task</td>
+</tr>
+<tr class="row-odd"><td>user</td>
+<td>Reference</td>
+<td>Pointer to associated User</td>
+</tr>
+<tr class="row-even"><td>email</td>
+<td>Email</td>
+<td>Email address of associated User</td>
+</tr>
+<tr class="row-odd"><td>timestamp</td>
+<td>DateTime</td>
+<td>Date and time of scheduling event</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="task">
+<h2>Task<a class="headerlink" href="#task" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The Task class inherits from Version and holds information about a task object. Tasks represent actions that must be carried out to in order to evaluate the achievement of program outcomes. They can be assigned to a list of delegates by a User of the system, or they can be scheduled automatically.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="11%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>Name of the task</td>
+</tr>
+<tr class="row-odd"><td>begin_date</td>
+<td>Date</td>
+<td>Date the task begins</td>
+</tr>
+<tr class="row-even"><td>end_date</td>
+<td>Date</td>
+<td>Date the task ends</td>
+</tr>
+<tr class="row-odd"><td>delegates</td>
+<td>List</td>
+<td>List of keys identifying Users that have been assigned the given task</td>
+</tr>
+<tr class="row-even"><td>fulfilled</td>
+<td>Int</td>
+<td>Indicates if a task has been fulfilled or not (0=false,1=true)</td>
+</tr>
+<tr class="row-odd"><td>attachment_names</td>
+<td>StringList</td>
+<td>A list of file names parired with the blobs below</td>
+</tr>
+<tr class="row-even"><td>attachment_blobs</td>
+<td>StringList</td>
+<td>A list of blob ids to retrive the file from the Google Blob Store</td>
+</tr>
+<tr class="row-odd"><td>response</td>
+<td>String</td>
+<td>Form response</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="todotask">
+<h2>TodoTask<a class="headerlink" href="#todotask" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The TodoTask is a subclass of Task; it represents a singleton Task that is not rescheduled. (IS THAT RIGHT???)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="16%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>description</td>
+<td>Text</td>
+<td>Task description</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="university">
+<h2>University<a class="headerlink" href="#university" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The University class inherits from Version and holds metadata about a given University.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="14%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>University name</td>
+</tr>
+<tr class="row-odd"><td>domain</td>
+<td>String</td>
+<td>Domain name of University</td>
+</tr>
+<tr class="row-even"><td>semesters</td>
+<td>String</td>
+<td>School year model for University</td>
+</tr>
+<tr class="row-odd"><td>login_path</td>
+<td>String</td>
+<td>Path on our sytem used for Users to login</td>
+</tr>
+<tr class="row-even"><td>programs</td>
+<td>String</td>
+<td>List of Programs associated with the University</td>
+</tr>
+<tr class="row-odd"><td>thumbnail</td>
+<td>String</td>
+<td>String identifier of University image file</td>
+</tr>
+<tr class="row-even"><td>web_page</td>
+<td>String</td>
+<td>Url of University website</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="user">
+<h2>User<a class="headerlink" href="#user" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>The User class holds information about a system user.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="12%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>university</td>
+<td>Reference</td>
+<td>Pointer to the University that the User is associated with</td>
+</tr>
+<tr class="row-odd"><td>program</td>
+<td>Reference</td>
+<td>Pointer to the Program that the User is associated with</td>
+</tr>
+<tr class="row-even"><td>full_name</td>
+<td>String</td>
+<td>Full name of User</td>
+</tr>
+<tr class="row-odd"><td>display_name</td>
+<td>String</td>
+<td>Name of User to be displayed by the system</td>
+</tr>
+<tr class="row-even"><td>email</td>
+<td>Email</td>
+<td>Email address of the User</td>
+</tr>
+<tr class="row-odd"><td>employee_id</td>
+<td>String</td>
+<td>Employee identification string (not end-user editable)</td>
+</tr>
+<tr class="row-even"><td>phone_office</td>
+<td>String</td>
+<td>Office phone number of User</td>
+</tr>
+<tr class="row-odd"><td>phone_personal</td>
+<td>String</td>
+<td>Personal phone numbrer of User</td>
+</tr>
+<tr class="row-even"><td>office</td>
+<td>String</td>
+<td>User&#8217;s office identification string</td>
+</tr>
+<tr class="row-odd"><td>join_date</td>
+<td>Date</td>
+<td>Date that User joined the University/Program</td>
+</tr>
+<tr class="row-even"><td>depart_date</td>
+<td>Date</td>
+<td>Date that the User left the University/Program</td>
+</tr>
+<tr class="row-odd"><td>thumbnail</td>
+<td>String</td>
+<td>Identification string of User image</td>
+</tr>
+<tr class="row-even"><td>webpage</td>
+<td>String</td>
+<td>Url of User&#8217;s website</td>
+</tr>
+<tr class="row-odd"><td>tasks</td>
+<td>List</td>
+<td>Key list of User&#8217;s tasks</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="version">
+<h2>Version<a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h2>
+<p><strong>Description</strong></p>
+<p>Version is the parent class of  all visioned objects in the system.  The version parent is also a set that contains the union of all child-classes.   Therefore, this set can be queried by any value such as a user id to obtain a list of all changes made by a specific user.   A version contains a reference to the user that made the modification and  reference to the program that this data-element belongs to and the user that made the change.  These two references are for the purpose of audits because a simple query can list every modification made to a program over  a date range, or every modification made by a user over a date range.   The commit_comment element is the User&#8217;s rationale for making their changes.</p>
+<p><strong>Field Summary</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="13%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>commit_user</td>
+<td>Reference</td>
+<td>Pointer to the User type who executed version commit</td>
+</tr>
+<tr class="row-odd"><td>commit_program</td>
+<td>Reference</td>
+<td>Pointer to the program associated with the version commit</td>
+</tr>
+<tr class="row-even"><td>commit_object</td>
+<td>Reference</td>
+<td>Pointer to the actual commit Object type</td>
+</tr>
+<tr class="row-odd"><td>commit_minor</td>
+<td>Int</td>
+<td>Minor version number</td>
+</tr>
+<tr class="row-even"><td>commit_timestamp</td>
+<td>DateTime</td>
+<td>Date and time of version commit</td>
+</tr>
+<tr class="row-odd"><td>commit_comment</td>
+<td>String</td>
+<td>Description/rationale for version commit</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Specification</a><ul>
+<li><a class="reference internal" href="#assessmenttask">AssessmentTask</a></li>
+<li><a class="reference internal" href="#authenticationmethod">AuthenticationMethod</a></li>
+<li><a class="reference internal" href="#authenticationrecord">AuthenticationRecord</a></li>
+<li><a class="reference internal" href="#course">Course</a></li>
+<li><a class="reference internal" href="#courseoffering">CourseOffering</a></li>
+<li><a class="reference internal" href="#coursetask">CourseTask</a></li>
+<li><a class="reference internal" href="#form">Form</a></li>
+<li><a class="reference internal" href="#instrument">Instrument</a></li>
+<li><a class="reference internal" href="#minutes">Minutes</a></li>
+<li><a class="reference internal" href="#object">Object</a></li>
+<li><a class="reference internal" href="#objective">Objective</a></li>
+<li><a class="reference internal" href="#outcome">Outcome</a></li>
+<li><a class="reference internal" href="#outcomesupport">OutcomeSupport</a></li>
+<li><a class="reference internal" href="#program">Program</a></li>
+<li><a class="reference internal" href="#semester">Semester</a></li>
+<li><a class="reference internal" href="#schedule-log">Schedule Log</a></li>
+<li><a class="reference internal" href="#task">Task</a></li>
+<li><a class="reference internal" href="#todotask">TodoTask</a></li>
+<li><a class="reference internal" href="#university">University</a></li>
+<li><a class="reference internal" href="#user">User</a></li>
+<li><a class="reference internal" href="#version">Version</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Problem Description</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="scheduling_lang.html"
+                        title="next chapter">Zabeta Scheduling</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/documentation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="scheduling_lang.html" title="Zabeta Scheduling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Problem Description"
+             >previous</a> |</li>
+        <li><a href="index.html">Zabeta 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Owain Moss.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

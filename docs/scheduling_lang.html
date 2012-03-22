@@ -1,0 +1,168 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Zabeta Scheduling &mdash; Zabeta 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Zabeta 1.0 documentation" href="index.html" />
+    <link rel="prev" title="API Specification" href="documentation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="documentation.html" title="API Specification"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Zabeta 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="zabeta-scheduling">
+<h1>Zabeta Scheduling<a class="headerlink" href="#zabeta-scheduling" title="Permalink to this headline">¶</a></h1>
+<p>A major requirement for the Zabeta system is its ability to to provide an effective task management and scheduling system. Users must be able to create tasks and associate them with outcomes; these types of tasks include assessment tasks and course tasks. In addition, users must be able to create simple one-time &#8220;todo&#8221; tasks. All of the aforementioned tasks must be coordinated according to start and end times. The Zabeta scheduling system must ensure that assessment tasks and course tasks get rescheduled periodically according to a user-defined cycle. In order to maintain flexibility in the Zabeta system, users must be allowed to define a cycle for constraining the rescheduling of tasks based on their specific school year model. In order to allow this, Team Zabeta has defined a set of rules that allow the large amount of possibilites that manifest through this requirement to be implemented. We have expressed this language in Extented Backas-Naur Form and as a Grammar.</p>
+<div class="section" id="ebnf">
+<h2>EBNF<a class="headerlink" href="#ebnf" title="Permalink to this headline">¶</a></h2>
+<p>The following is the syntax of the Zabeta scheduling language expressed in Extended Backus-Naur Form:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>&lt;cycle-string&gt;</td>
+<td>::= &lt;operator&gt;(&lt;scalar&gt;&lt;term&gt;)|&lt;term&gt;)</td>
+</tr>
+<tr class="row-even"><td>&lt;operator&gt;</td>
+<td>::= &#8216;start of&#8217; | &#8216;end of&#8217;</td>
+</tr>
+<tr class="row-odd"><td>&lt;scalar&gt;</td>
+<td>::= 1 | 2 | ... | Infinity</td>
+</tr>
+<tr class="row-even"><td>&lt;term&gt;</td>
+<td>::= t1 | t2 | ... | tn</td>
+</tr>
+</tbody>
+</table>
+<p>Note that the terms (t1,t2,...,tn) in the &lt;term&gt; rule represent a given school year model for an arbitrary institution.</p>
+</div>
+<div class="section" id="formal-grammar">
+<h2>Formal Grammar<a class="headerlink" href="#formal-grammar" title="Permalink to this headline">¶</a></h2>
+<p>The following is the Zabeta scheduling language expressed as a grammar:</p>
+<div class="line-block">
+<div class="line">Let d be the string &#8216;end&#8217;</div>
+<div class="line">Let e be the string &#8216;every&#8217;</div>
+<div class="line">Let t be a term that exists in an arbitrary university&#8217;s school year model</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="14%" />
+<col width="82%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>S</td>
+<td>&#8211;&gt;</td>
+<td>eX | eY | dX  | dY</td>
+</tr>
+<tr class="row-even"><td>X</td>
+<td>&#8211;&gt;</td>
+<td>t1 | t2 | ... | tn</td>
+</tr>
+<tr class="row-odd"><td>Y</td>
+<td>&#8211;&gt;</td>
+<td>2X | 3X | ... | nX</td>
+</tr>
+</tbody>
+</table>
+<p>Note that the terms (t1,t2,...,tn) in the &lt;term&gt; rule represent a given school year model for an arbitrary institution.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Zabeta Scheduling</a><ul>
+<li><a class="reference internal" href="#ebnf">EBNF</a></li>
+<li><a class="reference internal" href="#formal-grammar">Formal Grammar</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="documentation.html"
+                        title="previous chapter">API Specification</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/scheduling_lang.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="documentation.html" title="API Specification"
+             >previous</a> |</li>
+        <li><a href="index.html">Zabeta 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Owain Moss.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
