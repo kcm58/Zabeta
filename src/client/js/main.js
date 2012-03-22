@@ -161,16 +161,15 @@ function loadProgramChooser(){
 					if($.jStorage.get('program') == null){
 						var program = $('#program-chooser-select option:selected').val();
 						$.jStorage.set('program', program);
-						updateProgramToolbar(program);
 						$.cookie('program', program, { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
+						updateProgramToolbar(program);
 					}else{
 						$('#program-chooser-select').val($.jStorage.get('program'));
 					}
 					$('#program-chooser-select').change(function(){
 						var program = $('#program-chooser-select option:selected').val();
 						$.jStorage.set('program', program);
-						updateProgramToolbar(program);
 						$.cookie('program', program, { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
 						updateProgramToolbar(program);
@@ -186,10 +185,9 @@ function loadProgramChooser(){
 	}else{
 		var program = userdata['user']['programs'][0];
 		$.jStorage.set('program', program);
-		updateProgramToolbar(program);
 		$.cookie('program', program, { expires: 7});
 		$.jStorage.setTTL('program', 604800000);
-		console.log($.jStorage.get('program'));
+		updateProgramToolbar(program);
 		loadMenu();
 	}
 }
@@ -272,11 +270,22 @@ function loadAllTasksPage(element) {
 
 function loadAccredationPage(element){
 	collapsePanes();
-	$.getJSON('/api/list/Objective', function(json){
-		console.log(json);
-		T.render('objective_list', function(t){
-			$(element).html(t(json));
-		});
+	$.getJSON('/api/list/Objective', function(objectivesJSON){
+		var outputJSON = objectivesJSON;
+		for(var key in objectivesJSON['Objective']){
+			$.ajax({
+				url: 'api/list/Batch',
+				dataType: 'json',
+				data:JSON.stringify(objectivesJSON['Objective'][key]['outcomes']),
+				type: "POST",
+				success: function(outcomesJSON){
+					$.extend(outputJSON['Objective'][key], outcomesJSON);
+					T.render('objective_list', function(t){
+						$(element).html(t(outputJSON));
+					});
+				}
+			});
+		}
 	});
 }
 
@@ -357,7 +366,6 @@ function loadUsers(element){
 
 function loadSemesters(element){
 	$.getJSON('api/list/Semester', function(semesterJSON){
-		console.log(semesterJSON);
 		T.render('semester_list', function(t){
 			$(element).html(t(semesterJSON));
 		});

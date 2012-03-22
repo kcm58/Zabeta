@@ -168,9 +168,9 @@ class populate(webapp.RequestHandler):
                                            privileges=[1,2,1])
             ar.put()
         
-        o1_1=datamodel.Outcome(name="Outcome 1.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
+        o1_1=datamodel.Outcome(name="Outcome 1.1: Possess professional skills and knowledge of the software design process",
                             index=1,
-                            description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
+                            description="The distinguishing skill between a gifted programmer and a software engineer is that, in addition to strong program implementation skills, the software engineer has a strong background in design (i.e., the creative process of analyzing end-user problems and arriving at a robust conceptual solution) and extensive knowledge of formal design and build process (i.e., modern software engineering tools and techniques aimed at reliably transforming a design into a finished product).  This outcome seeks to evaluate the extent to which graduates achieve this distinction as true software engineers.",
                             rationale="Empty",
                             assessments=[ct_key_list[0]],
                             last_evaluation=datetime.datetime(2011,6,10),
@@ -181,9 +181,9 @@ class populate(webapp.RequestHandler):
                             where_from=wiki_form)
         o1_1.put()
         
-        o1_2=datamodel.Outcome(name="Outcome 1.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
+        o1_2=datamodel.Outcome(name="Outcome 1.2: Ability to function effectively in both co-located and distributed software development teams.",
                             index=2,
-                            description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
+                            description="This outcome reflects the fact that modern software engineering is rarely a solo effort; most software development efforts involve highly-coordinated collaboration between multiple software engineers. The organizational and communication skills required to efficiently participate in a development team are critical and distinct from basic disciplinary (i.e., programming) skills. ",
                             assessments=[ct_key_list[1]],
                             last_evaluation=datetime.datetime(2011,6,10),
                             evaluation_next=365,

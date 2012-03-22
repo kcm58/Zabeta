@@ -177,6 +177,9 @@ body {
 	border-top:1px solid black;
 }
 
+.outcome {
+	padding-left:90px;	
+}
 .submenu ul{
 	margin-top:8px;
 }
