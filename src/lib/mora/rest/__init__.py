@@ -253,11 +253,7 @@ class RestDispatcher(session.session):
             if str(model.key()) != self.university_id:
                 raise DispatchError(403, "ResourceNotAllowed")
         elif model_name == "Program":
-            program_key=str(model.key())
-            university_key=str(model.university.key())
-            if str(model.key()) != self.program_id:  
-                raise DispatchError(403, "ResourceNotAllowed")
-            if str(model.university.key()) != self.university_id:
+            if str(model.key()) != self.program_id or str(model.university.key()) != self.university_id:
                 raise DispatchError(403, "ResourceNotAllowed")
         else:
             if (str(model.program.key()) != self.program_id or str(model.university.key()) != self.university_id):
