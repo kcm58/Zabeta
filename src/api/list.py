@@ -25,7 +25,7 @@ class list(api.api):
     
     #takes in a collection and makes sure to only pull out records the user has access to.
     def filter(self,collection):
-        return collection.gql("")#where university=key(:1) and program=key(:2)",self.university_id,self.program_id)
+        return collection.gql("where university=key(:1) and program=key(:2)",self.university_id,self.program_id)
 
     def University(self):
         #"where university=:1",self.university
