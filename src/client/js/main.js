@@ -3,10 +3,59 @@
  *
  */
 
+//This is used to display a message to the user if something goes wrong while loading the page
+var loadingTimeout;
+
 $(document).ready(function(){
+	clearTimeout(loadingTimeout);
+	loadingTimeout = setTimeout("showLoadingHelp()", 5000);
+	$('#loading').show();
 	initRouter();
 	initPage();
+	/*
+	 * Hides the loading pane when all AJAX requests are done
+	 * ajaxStop receives a callback whenever an AJAX request finishes
+	 * and there are no active AJAX requests left
+	 *
+	 * It also will SHOW the loading screen whenever any AJAX requests occur.
+	 * We can tone down what it looks like if it's too intrusive, popping up too much
+	 */
+	$('body').ajaxStop(function(){
+		clearTimeout(loadingTimeout);
+		$('#loading').hide();
+
+	});
+	$('body').ajaxStart(function(){
+		clearTimeout(loadingTimeout);
+		$('#loading-text').html('<h1>Loading...</h1><img src="img/ajax-loader.gif" />');
+		loadingTimeout = setTimeout("showLoadingHelp()", 5000);
+		$('#loading').show();
+	});
+	
+	/*
+	 * Handle all AJAX errors by assuming the user isn't logged in. Bad, but for now, good.
+	 */
+	$('body').ajaxError(function(e, jqxhr, settings, exception){
+		clearPanes();
+		$('#menu').html('');
+		$('#toolbar').html('');
+		$('#top').html('<img src="img/google-signin.png" alt="Sign in with Google" /><h3>Debug: See JavaScript Console for more info');
+		console.log('---Start AJAX Error Details---');
+		console.log('Event:');
+		console.log(e);
+		console.log('jqXHR:');
+		console.log(jqxhr);
+		console.log('AJAX Settings:');
+		console.log(settings);
+		console.log('AJAX Exception:');
+		console.log(exception);
+		console.log('----End AJAX Error Details----');
+	});
 });
+
+function showLoadingHelp(){
+	$('#loading-text').html('<h1>Loading...</h1><img src="img/ajax-loader.gif" /><h3>This is taking longer than usual...soemthing may have gone wrong.</h3>')
+}
 
 function initRouter(){
 	var Router = Backbone.Router.extend({
@@ -112,19 +161,21 @@ function loadProgramChooser(){
 					if($.jStorage.get('program') == null){
 						var program = $('#program-chooser-select option:selected').val();
 						$.jStorage.set('program', program);
-						updateProgramToolbar(program);
 						$.cookie('program', program, { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
+						updateProgramToolbar(program);
 					}else{
 						$('#program-chooser-select').val($.jStorage.get('program'));
 					}
 					$('#program-chooser-select').change(function(){
 						var program = $('#program-chooser-select option:selected').val();
 						$.jStorage.set('program', program);
-						updateProgramToolbar(program);
 						$.cookie('program', program, { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
 						updateProgramToolbar(program);
+						var curHash = window.location.hash;
+						window.location.hash="";
+						window.location.hash = curHash;
 						loadMenu();
 					});
 					loadMenu();
@@ -134,10 +185,9 @@ function loadProgramChooser(){
 	}else{
 		var program = userdata['user']['programs'][0];
 		$.jStorage.set('program', program);
-		updateProgramToolbar(program);
 		$.cookie('program', program, { expires: 7});
 		$.jStorage.setTTL('program', 604800000);
-		console.log($.jStorage.get('program'));
+		updateProgramToolbar(program);
 		loadMenu();
 	}
 }
@@ -151,7 +201,7 @@ function loadMenu(){
 	var menuJson = {
 			"items":
 				[{
-					"hash":	"overview",
+					"hash":	"",
 					"name":	"Overview"
 				},
 				{
@@ -167,7 +217,7 @@ function loadMenu(){
 		menuJson = {
 				"items":
 					[{
-						"hash":	"overview",
+						"hash":	"",
 						"name":	"Overview"
 					},
 					{
@@ -220,11 +270,22 @@ function loadAllTasksPage(element) {
 
 function loadAccredationPage(element){
 	collapsePanes();
-	$.getJSON('/api/list/Objective', function(json){
-		console.log(json);
-		T.render('objective_list', function(t){
-			$(element).html(t(json));
-		});
+	$.getJSON('/api/list/Objective', function(objectivesJSON){
+		var outputJSON = objectivesJSON;
+		for(var key in objectivesJSON['Objective']){
+			$.ajax({
+				url: 'api/list/Batch',
+				dataType: 'json',
+				data:JSON.stringify(objectivesJSON['Objective'][key]['outcomes']),
+				type: "POST",
+				success: function(outcomesJSON){
+					$.extend(outputJSON['Objective'][key], outcomesJSON);
+					T.render('objective_list', function(t){
+						$(element).html(t(outputJSON));
+					});
+				}
+			});
+		}
 	});
 }
 
@@ -305,7 +366,6 @@ function loadUsers(element){
 
 function loadSemesters(element){
 	$.getJSON('api/list/Semester', function(semesterJSON){
-		console.log(semesterJSON);
 		T.render('semester_list', function(t){
 			$(element).html(t(semesterJSON));
 		});
@@ -483,5 +543,27 @@ function embolden(element){
 function updateProgramToolbar(program){
 	$.getJSON('/api/crud/'+program, function(json){
 		$('#program').html('&nbsp;-&nbsp;'+json['description']);
+	});
+}
+
+function loadTOS(){
+	$.get('legal/tos.html', function(tos){
+		$('#dialog').html(tos);
+		$('#dialog').dialog({
+			title: 'Terms of Service',
+			minWidth: 580,
+			minHeight: 560
+		});
+	});
+}
+
+function loadPriv(){
+	$.get('legal/privacy.html', function(privacy){
+		$('#dialog').html(privacy);
+		$('#dialog').dialog({
+			title: 'Privacy Policy',
+			minWidth: 580,
+			minHeight: 560
+		});
 	});
 }
