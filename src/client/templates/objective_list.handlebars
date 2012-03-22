@@ -16,14 +16,17 @@
   <tbody>
     {{#Objective}}
     <tr>
-    	<td>{{name}}</td>
+    	<td><a onclick="togglehidden('{{id}}')">{{name}}</a></td>
       <td>{{description}}</td>
       <td><a onclick="edit('{{id}}', 'edit_notmpl')" style="cursor:pointer">Edit</a>
     </tr>
+    <tr class="noborder">
+    <td class="outcome" colspan="2">
+    <div id="{{id}}_outcomes" style="display:none" >
     {{#Batch}}
-    <tr class="{{../id}}" style="display:none"><td class="outcome" colspan="2">{{name}}</td></tr>
+    <p style="margin:5px">{{name}}</p>
     {{/Batch}}
-    </span>
+    </div></td></tr>
     {{/Objective}}
   </tbody>
 </table>

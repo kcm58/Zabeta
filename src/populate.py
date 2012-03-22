@@ -193,7 +193,7 @@ class populate(webapp.RequestHandler):
                             where_from=wiki_form)
         o1_2.put()
 
-        ob=datamodel.Objective(university=u,program=p,name="Writing Requirement",description="Make sure student does writing good.",index=1,outcomes=[o1_1.key(),o1_2.key()])
+        ob=datamodel.Objective(university=u,program=p,name="Practice-Oriented Skills Requirement",description="Make sure student does writing good.",index=1,outcomes=[o1_1.key(),o1_2.key()])
         ob.put()
 
         course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,

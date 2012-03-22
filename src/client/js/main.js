@@ -72,7 +72,6 @@ function initRouter(){
 		default: function(data){
 			clearPanes();
 			loadDashboard();
-			embolden('#overview');
 		},
 
 		course: function(course_id){
@@ -83,26 +82,22 @@ function initRouter(){
 		users: function(){
 			clearPanes();
 			loadUsers('#top');
-			embolden('#users');
 		},
 
 		programs: function(){
 			clearPanes();
 			loadProgramList();
-			embolden('#programs');
 		},
 
 		allTasks: function() {
 			clearPanes();
 			collapsePanes();
 			loadAllTasksPage('#top');
-			embolden('#allTasks')
 		},
 
 		accredidation: function(){
 			clearPanes();
 			loadAccredationPage('#top');
-			embolden('#accredidation');
 		},
 
 		uploadTest: function(){
@@ -209,9 +204,9 @@ function loadMenu(){
 					"name":	"Accredidation"
 				},
 				{
-					"hash": "uploadTest",
-					"name": "Test Upload"
-				}]
+					"hash": "minutes",
+					"name":	"Minutes"
+				},]
 	}
 	if(privilege == 2){
 		menuJson = {
@@ -229,6 +224,10 @@ function loadMenu(){
 						"name":	"Accredidation"
 					},
 					{
+						"hash": "minutes",
+						"name":	"Minutes"
+					},
+					{
 						"hash": "allTasks",
 						"name":	"All Tasks"
 					},
@@ -237,8 +236,8 @@ function loadMenu(){
 						"name":	"Users"
 					},
 					{
-						"hash": "uploadTest",
-						"name": "Test Upload"
+						"hash":	"schedulelog",
+						"name": "Schedule Log"
 					}]
 		}
 	}
@@ -533,13 +532,6 @@ function getRelativeDate(abs_date){
 	return $('#relativeTimeHandler').html();
 }
 
-function embolden(element){
-	$('.menu-item').each(function(){
-		$(this).css('font-weight', 'normal');
-	});
-	$(element).css('font-weight', 'bold');
-}
-
 function updateProgramToolbar(program){
 	$.getJSON('/api/crud/'+program, function(json){
 		$('#program').html('&nbsp;-&nbsp;'+json['description']);
@@ -566,4 +558,14 @@ function loadPriv(){
 			minHeight: 560
 		});
 	});
+}
+
+function togglehidden(selector){
+	var element = '#'+selector+'_outcomes';
+	var display = $(element).css('display');
+	if(display == 'none'){
+		$(element).show('blind');
+	}else{
+		$(element).hide('blind');
+	}
 }
