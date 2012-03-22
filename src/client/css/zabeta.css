@@ -1,0 +1,336 @@
+body {
+  background-color:white;
+  background-image:url('../img/background.png');
+  background-repeat:repeat;
+}
+
+#loading{
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background-color:gray;
+	opacity:0.9;
+	z-index:9001;
+	text-align:center;
+	display: table;
+}
+
+#loading-text{
+	display:table-cell;
+	vertical-align:middle;'
+}
+
+#toolbar-bg{
+	background-color: #ccc;
+	position:absolute;
+	width:100%;
+	top: 0;
+	left: 0;
+	height:100%;
+}
+
+#toolbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 48px;
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+  border-width: 0 0 4px 0;
+  -webkit-border-image: url("../img/border.png") 0 0 4 0 stretch stretch;
+}
+
+#title {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 60%;
+}
+#title img {
+  float: left;
+  margin:8px;
+}
+#title h1 {
+  font-size: 28px;
+  color: white;
+  display: table-cell;
+  vertical-align: middle;
+  height: 48px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+#title h1 span.logo-alt-color {
+  /* color: black; */
+}
+
+#account {
+  position: absolute;
+  display: table;
+  right: 12px;
+  height: 48px;
+  width: 350px;
+}
+#account #program-chooser{
+	display: table-cell;
+	vertical-align: middle;
+	margin-top: 8px;
+	margin-bottom: 0;
+}
+#account img.photo {
+  display: table-cell;
+  vertical-align: baseline;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border: 2px solid #666;
+}
+#account div.title {
+  display: table-cell;
+  vertical-align: middle;
+  color: #666;
+  font-weight: bold;
+  z-index: 3;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+#account div.divider {
+  margin-top: 6px;
+  margin-bottom: 12px;
+  margin-right: 8px;
+  height: 32px;
+  width: 1px;
+  background: #666;
+}
+#account div.signout {
+  display: table-cell;
+  vertical-align: middle;
+  color: #666;
+}
+.signout a {
+	text-decoration:none;
+	color:#666;
+}
+
+#container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2em;
+  background:white;
+  background-image:url('../img/background.png');
+  background-repeat:repeat;
+}
+
+#menu{
+  width: 15%;
+  border-right:1px solid gray;
+  float:left;
+  height: 100%;
+  margin-right:15px;
+}
+
+#content{
+  width: 85%;
+  height: 100%;
+  margin-left:15%;
+}
+
+#top{
+	min-height:50%;
+	min-width:100%;
+	margin-bottom:10px;
+	border-bottom:1px gray dashed;
+}
+
+#bottom-left, #bottom-right{
+  height:50%;
+}
+
+#bottom-left{
+	float:left;
+	margin-left:-1.4%;
+	border-right:1px gray solid;
+	padding-left:15px;
+	width:50%;
+}
+
+#bottom-left li{
+	margin:4px 0 4px 0;
+}
+
+#bottom-right{
+	float:left;
+	margin-left:1.4%;
+	left:50%;
+	width:45%;
+}
+
+#footer{
+	position:fixed;
+	bottom:0;
+	width:100%;
+	background-color:white;
+	border-top:1px solid black;
+}
+
+.submenu ul{
+	margin-top:8px;
+}
+
+h2 {
+  margin: 0 0 15px;
+  padding: 1em 0 0;
+  font-size: 21px;
+  line-height: 24px;
+  color: #666;
+}
+
+.label{
+	font-weight:bold;
+}
+
+table.list {
+  width: 90%;
+  height: auto;
+}
+table.list thead a {
+  color: black;
+  text-decoration: none;
+}
+table.list > thead > tr {
+border-bottom-width: 2px;
+}
+table.list th {
+  text-align: left;
+}
+table.list .text {
+  width: 45%;
+}
+table.list td {
+  height: auto;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+table.list th {
+  border-bottom-width: 2px;
+  font-weight: bold;
+  vertical-align: top;
+}
+table.list > tbody > tr {
+border-bottom-width: 1px;
+}
+table.list tr {
+  border-bottom-style: solid;
+  border-bottom-color: #DDD;
+  overflow: auto;
+}
+
+td.edit {
+	text-align: right;
+}
+a[onclick] {
+  cursor: pointer;
+}
+
+/* #dialog { */
+/* 	-webkit-border-radius: 4px; */
+/* 	-moz-border-radius: 4px; */
+/* 	border-radius: 4px; */
+/* 	border: 1px solid gray; */
+/* 	-webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, .50); */
+/* } */
+
+#dialog .header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 42px;
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+	border-bottom: 1px solid gray;
+}
+#dialog .header h1 {
+	margin-left: 12px;
+	color: #666;
+	font-weight: bold;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+}
+#dialog .actions {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 42px;
+	margin: 0;
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+	border-top: 1px solid gray;
+}
+#dialog .actions button {
+}
+#dialog .actions button.cancel {
+	position: absolute;
+	left: 12px;
+	bottom: 12px;
+}
+#dialog .actions button.update {
+	position: absolute;
+	right: 12px;
+	bottom: 12px;
+}
+
+#dialog .task {
+	position: absolute;
+	/* top: 42px; */
+  top: 0px;
+	bottom: 42px;
+	left: 0;
+	right: 0;
+	overflow-y: scroll;
+}
+
+#dialog form {
+}
+#dialog form ul {
+	list-style:none;
+	margin-left: 12px;
+	padding: 0;
+}
+#dialog form ul li {
+	/* display: -webkit-box; */
+	/* display: -moz-box; */
+	margin-top: 8px;
+	padding-bottom: 10px;
+}
+#dialog form ul li label {
+	float: left;
+	display: inline-block;
+	width: 150px;
+	text-align: left;
+	white-space: normal;
+	font-family: Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+}
+#dialog form ul li input {
+	/* -webkit-box-flex: 1; */
+}
+
+.task form input {
+  width: 400px;
+}
+
+.task form textarea {
+  width: 400px;
+  height: 150px;
+}
+
+.task form a[onclick] {
+  cursor: pointer;
+  color: #00E;
+  text-decoration: underline;
+}

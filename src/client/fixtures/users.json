@@ -1,0 +1,11 @@
+[
+  {
+    name:'Eddie Hillenbrand',
+    email:'eh88@nau.edu',
+    oauth_id: '123',
+    cas_id: '321',
+    programs: 'CS',
+    privileges: 0,
+    university: 'NAU'
+  }
+]

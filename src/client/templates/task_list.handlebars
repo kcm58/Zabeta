@@ -1,0 +1,25 @@
+<h2>Tasks Assigned</h2>
+<table class="list">
+  <thead>
+    <tr>
+      <th>
+        Title
+      </th>
+      <th>
+        Completion
+      </th>
+      <th>
+        Due
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#user}}
+    <tr>
+      <td><a onclick="view('{{id}}', 'task_view')">{{name}}</a></td>
+      <td>{{fulfilled}}%</td>
+      <td>{{relative_date}}</td>
+    </tr>
+    {{/user}}
+  </tbody>
+</table>

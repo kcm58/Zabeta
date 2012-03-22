@@ -1,1 +1,57 @@
-This project is currently under development.
+                               CS 486C
+                        Senior Capstone Design
+       Web 2.0 Accreditation and Departmental Management System
+
+                             Team Zabeta
+                             ===========
+                          Eddie Hillenbrand
+                             Jonah Hirsch
+                             Kyoko Makino
+                            Michael Brooks
+                              Owain Moss
+
+
+Meeting Times
+=============
+
+• Tu 11:30am-4pm
+• Th 11:30am-4pm
+• Fri 12:30am with Dr Doerry & Dr. Palmer
+
+
+GitHub Repo
+===========
+
+<https://github.com/MikeBrooks/Zabeta>
+<https://github.com/eddieh/Zabeta>
+
+
+Website
+=======
+
+Department: Electrical Engineering and Computer Science
+Site Name: Team Zabeta
+
+The site is setup on our linux file server.
+Please note this is project year 12. The path is:
+/www/sites/cefns/Research/D4P/EGR486/<DISCIPLINE>/<YEAR>-Projects/<GROUP-NAME>
+
+A help page is on our site: http://www.nau.edu/CEFNS/IT/
+In the menu on the left choose what computer type you are using and then
+expand the "Capstone" section.
+
+Project pages can be accessed via: http://nau.edu/cefns/Engineering/D4P/
+
+
+URL: <http://www.cefns.nau.edu/Research/D4P/EGR486/CS/12-Projects/Zabeta/>
+
+Remote login:
+$ ssh <user-id>@linux.cefns.nau.edu
+$ cd /www/sites/cefns/Research/D4P/EGR486/CS/12-Projects/Zabeta
+
+
+Links
+=====
+
+<http://shichuan.github.com/javascript-patterns/>
+<http://code.google.com/appengine/docs/python/datastore/datamodeling.html>

@@ -1,0 +1,28 @@
+<h2>All Tasks</h2>
+<div class="actions">
+  <button name="create_task">Create Task</button>
+</div>
+<table class="list">
+  <thead>
+    <tr>
+      <th>
+        Title
+      </th>
+      <th>
+        Completion
+      </th>
+      <th>
+        Due
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#Task}}
+    <tr>
+      <td style="cursor:pointer">{{name}}</td>
+      <td>{{fulfilled}}%</td>
+      <td>{{relative_date}}</td>
+    </tr>
+    {{/Task}}
+  </tbody>
+</table>

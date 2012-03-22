@@ -1,0 +1,222 @@
+
+html { height: 100%; }
+
+body {
+	height: 100%;
+	background-color: #75767a;
+	background-image: url("img/background_main.png");
+	background-position: top center;
+	font-family: Verdana, Tahoma, Arial, sans-serif;
+	font-size: 75%;
+	background-repeat: repeat-y;
+	margin: 0px;
+	color: #D4D4D4	
+}
+
+#mainContainer {
+	border: 1px solid #3d3d3d;
+	background-image: url("img/content_main.png");
+	background-repeat: repeat-y;
+	margin: 0 auto;
+	width: 1000px;
+	padding: 0;
+	text-align: left;
+	}
+
+.left { float: left; }
+.right { float: right; }
+
+/*===================================*/
+
+#header {
+	background-color: #333333;
+	background-image: url("img/banner_main.png");
+	height: 177px;
+	margin: 0;
+	padding: 0;
+	}
+
+#header .box { padding: 56px 16px; margin: 0; }
+
+#header h1 {
+    font-weight: normal;
+    font-size: 27;
+    color: light-grey;
+    margin: 0;
+    }
+    
+#header h2 { 
+	font-weight: normal;
+	font-size: 24px;
+	color: #929db5;
+	margin: 0;
+	}
+#header h3 {
+	font-weight: normal;
+	font-size: 18px;
+	color: #CCCCCC;
+	margin: 0;
+	}
+
+/*===================================*/
+
+#navigation {
+	background-color: #47526a;
+	background-image: url("img/navigation_main.png");
+	height: 32px;
+	margin: 0;
+	padding: 0;
+	}
+
+#topShadow {
+	background-image: url("img/content_shadow.png");
+	height: 29px;
+	margin: 0;
+	padding: 0;
+	}
+	
+div.navi {
+	float: left;
+	width: 128px; 
+	height: 32px;
+	margin: 0;
+	padding: 0;
+	background: url("img/nav_link.png");
+	background-position: 0 -32px;
+	border-right: 1px solid #2d333f;
+	}
+
+#navigation a {
+	display: block;
+	width: 100%;
+	height: 22px;
+	color: #a1adc5;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+	margin: 0;
+	padding-top: 8px;
+	background: url("img/nav_link.png");
+	background-position: 0 0;
+	}
+    
+#profilePic {
+    float: left;
+    }
+    
+#profileText {
+    float: right;
+    }
+	
+#navigation a:hover { background-image: none; }
+
+/*===================================*/
+
+#content {
+	line-height: 20px;
+	word-spacing: 2px;
+	text-align: justify;
+	width: 819px;
+	float: left;
+	position: relative;
+	margin-bottom: 32px;
+	}
+
+#content .box {	padding: 0 16px; margin-bottom: 16px; }
+
+#content .spacer {
+	background-image: url("img/content_spacer.png");
+	height: 29px;
+	margin: 0;
+	padding: 0;
+}
+
+
+#content h2 {
+	font-size: 16px;
+	font-weight: bold;
+	color: #929db5;
+	margin: 0 10px 0 0;
+	}
+
+#content h2 a { text-decoration: none; font-weight: bold; }
+	
+#content h3 {
+	font-size: 12px;
+	font-weight: bold;
+	color: #ffffff;
+	margin: 0 10px 0 0;
+	}
+
+#content a { color: #929db5; text-decoration: none; }
+#content a:hover { color: #b4bfd7; }
+#content img.border { padding: 1px; background-color: #6d6d6d; border: 1px solid #3e3e3e; margin-left: 8px; margin-right: 8px; }
+
+
+
+/*===================================*/
+	
+#sidebar {
+	width: 181px;
+	float: right;
+	position: relative;
+	}
+	
+#sidebar .box { padding: 0 10px; }
+
+#sidebar .spacer {
+	background-image: url("img/sidebar_spacer.png");
+	height: 29px;
+	margin: 0;
+	padding: 0;
+	}
+
+#sidebar h3 {
+	font-size: 13px;
+	font-weight: bold;
+	color: #838ea3;
+	margin: 0 0 16px 0;
+	}
+
+#sidebar p {
+	font-size: 11px;
+	line-height: 20px;
+	word-spacing: 1px;
+	color: #F0F0F0;
+	}
+
+#sidebar img { margin: 0; padding: 1px; background-color: #556076; border: 1px solid #394150; }
+#sidebar ul { padding: 0; margin: 0; }
+#sidebar li { list-style-type: none; padding-left: 16px; padding-top: 7px; }
+#sidebar a { color: #a1adc5; text-decoration: none; }
+#sidebar a:hover { text-decoration: underline; }
+
+/*===================================*/
+	
+#bottomShadow {
+	background-image: url("img/content_bShadow.png");
+	height: 29px;
+	margin: 0;
+	padding: 0;
+	clear: both;
+	position: relative;
+	}
+
+#footer {
+	background-image: url("img/footer_main.png");
+	height: 49px;
+	margin: 0;
+	padding: 0;
+	clear: both;
+	position: relative;
+	}
+
+#footer .box {
+	text-align: center;
+	margin: auto;
+	padding-top: 16px;
+	font-size: 9px;
+	font-style: italic;
+	}
+
+#footer a {	color: #a1adc5; }
