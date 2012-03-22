@@ -126,6 +126,10 @@ class session(webapp.RequestHandler):
         r=os.urandom(24)
         r=binascii.hexlify(r)
         return r
+    
+    def hasProgramAdmin(self):
+        if self.program_priv <= 2:
+            sys.exit("Not authenticated")
 
 class path_handler(webapp.RequestHandler):
 

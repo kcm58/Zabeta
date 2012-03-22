@@ -5,8 +5,8 @@ import json
 import urllib2
 
 class list(api.api):
-    public={"University":True,
-            "Program":True,
+    public={#"University":True,
+      #      "Program":True,
             "Task":True,
             "AssessmentTask":True,
             "CourseTask":True,
@@ -20,28 +20,18 @@ class list(api.api):
             "ScheduleLog":True,
             "User":True,
             "Batch":True,
-            "EmailLog":True,
             }
     
     #takes in a collection and makes sure to only pull out records the user has access to.
     def filter(self,collection):
         return collection.gql("where university=key(:1) and program=key(:2)",self.university_id,self.program_id)
 
-    def University(self):
+    #def University(self):
         #"where university=:1",self.university
-        return self.filter(datamodel.University)
+    #    return self.filter(datamodel.University)
 
-    def Program(self):      
-        return self.filter(datamodel.Program)
-
-    def CourseTask(self):
-        return self.filter(datamodel.CourseTask)
-
-    def Task(self):
-        return self.filter(datamodel.Task)
-
-    def AssessmentTask(self):
-        return self.filter(datamodel.AssessmentTask)
+    #def Program(self):
+    #    return self.filter(datamodel.Program)
 
     def Semester(self):
         return self.filter(datamodel.Semester)
@@ -69,13 +59,24 @@ class list(api.api):
         return self.filter(datamodel.Minutes)
 
     def ScheduleLog(self,program):
+        self.hasProgramAdmin()
         return self.filter(datamodel.ScheduleLog)
 
+    def CourseTask(self):
+        self.hasProgramAdmin()
+        return self.filter(datamodel.CourseTask)
+
+    def Task(self):
+        self.hasProgramAdmin()
+        return self.filter(datamodel.Task)
+
+    def AssessmentTask(self):
+        self.hasProgramAdmin()
+        return self.filter(datamodel.AssessmentTask)
+
     def User(self):
+        self.hasProgramAdmin()
         return self.filter(datamodel.User)
-    
-    def EmailLog(self):
-        return self.filter(datamodel.EmailLog)
     
     #Accepts a post body of json and returns the list of keys.
     def Batch(self):

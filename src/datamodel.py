@@ -29,16 +29,8 @@ class Form(Version):
     form_name = db.StringProperty()
     assessment_form = db.StringProperty() 
     require_attachments = db.StringListProperty()
-    description = db.StringProperty()
+    description = db.Text()
     instructions = db.StringProperty()
-    
-class ScheduleLog(db.MoraModel):
-    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
-    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
-    task = db.ReferenceProperty(None,indexed=True) #void pointer to a task
-    user = db.ReferenceProperty(None,indexed=True)
-    timestamp = db.DateTimeProperty()
-    email = db.EmailProperty()
     
 class User(db.MoraModel):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
@@ -72,7 +64,7 @@ class Program(Version):
     start_date = db.DateProperty() #null/blank for current?
     end_date = db.DateProperty() #null/blank for current?
     mission = db.StringProperty()
-    description = db.StringProperty()
+    description = db.Text()
     webpage = db.StringProperty() #url to website
     thumbnail = db.StringProperty() #identifier of image file
     docs = db.StringProperty() #identifier of docs array
@@ -90,14 +82,14 @@ class Task(Version):
     response = db.StringProperty() #Form response
 
 class TodoTask(Task):
-    description = db.StringProperty()
+    description = db.Text()
 
 class Course(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(Program,indexed=True)
     name = db.StringProperty()
-    description = db.StringProperty()
-    catalog_descr = db.StringProperty() #ask Dr D about this
+    description = db.Text()
+    catalog_descr = db.Text() #ask Dr D about this
     catalog = db.StringProperty()
     webpage = db.StringProperty()
     core_topics = db.StringProperty()
@@ -136,7 +128,7 @@ class Outcome(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     rationalize_instrument = db.ReferenceProperty(Instrument,indexed=True)
-    outcome_description = db.StringProperty()
+    #outcome_description = db.StringProperty()
     name = db.StringProperty()
     rationale = db.StringProperty()
     assessments = db.ListProperty(db.Key) #needs to be reverse reference
@@ -165,7 +157,7 @@ class AssessmentTask(Task):
 class Objective(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(Program,indexed=True)
-    description = db.StringProperty()
+    description = db.Text()
     index = db.IntegerProperty()
     outcomes = db.ListProperty(db.Key)
     name = db.StringProperty()
@@ -173,7 +165,7 @@ class Objective(Version):
 class Minutes(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(Program)
-    description = db.StringProperty()
+    description = db.Text()
     docs = db.StringProperty() #identifier of docs array
     date = db.DateTimeProperty()
     content = db.StringProperty()
@@ -196,12 +188,11 @@ class AuthenticationRecord(db.MoraModel):
     cas_id = db.StringProperty()
     programs = db.ListProperty(db.Key)#Progam refernce
     privileges = db.ListProperty(int)
-    
-class EmailLog(db.MoraModel):
+
+class ScheduleLog(db.MoraModel):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     task = db.ReferenceProperty(None,indexed=True) #void pointer to a task
-    user = db.ReferenceProperty(None,indexed=True) #void pointer to a user
-    email = db.StringProperty()
-    
-    
+    user = db.ReferenceProperty(None,indexed=True)
+    timestamp = db.DateTimeProperty()
+    email = db.EmailProperty()
