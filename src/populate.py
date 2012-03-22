@@ -38,19 +38,19 @@ class populate(webapp.RequestHandler):
         nag_before_dict=["six months before","one month before","one week before","one day before"]
         nag_after_dict=["six months after","one month after","one week after","one day after"]
                 
-        p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
+        p=datamodel.Program(university=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Computer Science")
         p.put()
         p.program=p.key()
         p.save()
         
-        p2=datamodel.Program(University=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
+        p2=datamodel.Program(university=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Electrical Engineering")
         p2.put()
         p2.program=p2.key()
         p2.save()
         
-        p3=datamodel.Program(University=u,name="ME",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing mechanical engineers",
+        p3=datamodel.Program(university=u,name="ME",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing mechanical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Mechanical Engineering")
         p3.put()
         p3.program=p3.key()

@@ -5,7 +5,7 @@ import json
 import urllib2
 
 class list(api.api):
-    public={"University":True,
+    public={#"University":True,
             "Program":True,
             "Task":True,
             "AssessmentTask":True,
@@ -27,11 +27,11 @@ class list(api.api):
     def filter(self,collection):
         return collection.gql("where university=key(:1) and program=key(:2)",self.university_id,self.program_id)
 
-    def University(self):
+    #def University(self):
         #"where university=:1",self.university
-        return self.filter(datamodel.University)
+    #    return self.filter(datamodel.University)
 
-    def Program(self):      
+    def Program(self):
         return self.filter(datamodel.Program)
 
     def CourseTask(self):

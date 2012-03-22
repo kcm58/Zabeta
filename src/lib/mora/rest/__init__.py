@@ -246,12 +246,23 @@ class RestDispatcher(session.session):
         #User Access Control DO NOT REMOVE!
         #University is except,  anyone can access this collection
         #Check to make sure the program and university match what the user has access to.
-        #try:
-        if model_name != "University" and model_name != "Program":
+
+        if model_name == "University":
+            #Check to make sure the user uses this university
+            #This is a special case
+            if str(model.key()) != self.university_id:
+                raise DispatchError(403, "ResourceNotAllowed")
+        elif model_name == "Program":
+            program_key=str(model.key())
+            university_key=str(model.university.key())
+            if str(model.key()) != self.program_id:  
+                raise DispatchError(403, "ResourceNotAllowed")
+            if str(model.university.key()) != self.university_id:
+                raise DispatchError(403, "ResourceNotAllowed")
+        else:
             if (str(model.program.key()) != self.program_id or str(model.university.key()) != self.university_id):
                 raise DispatchError(403, "ResourceNotAllowed")
-        #except:
-        #    pass
+
         # We then can use the model to create an appropriate handler.
         if model_name in self.rest_handlers:
             rest_handler = self.rest_handlers[model_name](model, self.request, self.response)
