@@ -40,7 +40,7 @@ class UploadFrame(session.session):
             self.response.out.write("""<input type="file" name="file"><input type="submit" name="submit" value="Submit"></form></body></html>""")
 
 class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
-
+  
     def post(self):
         sess=session.session(self.request,self.response)
         id=self.request.path.split("/")[-1]
@@ -48,25 +48,24 @@ class UploadFile(blobstore_handlers.BlobstoreUploadHandler):
         collection=model.class_name()
         upload_files = self.get_uploads('file')
         blob_info = upload_files[0]
-        key=str(blob_info._BlobInfo__key)          
-        if collection == "University":
+        key=str(blob_info._BlobInfo__key)   
+        filename=blob_info.filename       
+        if collection == "University" or collection == "Program":
             model.thumbnail=key
-            model.save()
-        elif collection == "Program":
-            model.thumbnail=key
-            model.save()
-        elif collection == "CourseOffering":
-            model.syllabus=key
-            model.save()
-        elif collection == "Minutes":
-            model.attachment.append(key)
             model.save()
         elif collection == "User":
             model.thumbnail=key
             model.save()
             sess.user['thumbnail']=key
-            sess.save_session()
-                      
+            sess.save_session()            
+        elif collection == "CourseOffering":
+            model.syllabus=key
+            model.save()
+        elif collection == "Minutes" or  collection == "TodoTask" or  collection == "CourseTask" or  collection == "AssessmentTask":
+            model.attachment_names.append(filename)
+            model.attachment_blob_ids.append(key)
+            model.save()
+
         #todo remove,  debug only
         self.redirect("http://localhost:9999/#uploadTest")
 

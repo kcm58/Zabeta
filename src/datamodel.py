@@ -22,8 +22,6 @@ class Version(db.MoraPolyModel):
     commit_timestamp = db.DateTimeProperty()
     commit_object = db.ReferenceProperty(Object) 
     commit_commment = db.StringProperty()
-    #This must be in all collections for access control.
-    #university = db.ReferenceProperty(None,indexed=True)
     
 class Form(Version):
     form_name = db.StringProperty()
@@ -128,14 +126,11 @@ class Outcome(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     rationalize_instrument = db.ReferenceProperty(Instrument,indexed=True)
-    #outcome_description = db.StringProperty()
     name = db.StringProperty()
     rationale = db.StringProperty()
     assessments = db.ListProperty(db.Key) #needs to be reverse reference
     scheduling_cycle = db.StringProperty()
     last_evaluation = db.DateTimeProperty()
-    #evaluation_next = db.IntegerProperty() #needs to be intDays
-    #evaluation_duration  = db.IntegerProperty() #needs to be intDays
     evaluation_start = db.DateTimeProperty() #needs to be intDays
     evaluation_end = db.DateTimeProperty() #needs to be intDays
     rationalize_course = db.ListProperty(db.Key)
