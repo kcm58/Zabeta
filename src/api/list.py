@@ -58,7 +58,7 @@ class list(api.api):
     def Minutes(self,program):
         return self.filter(datamodel.Minutes)
 
-    def ScheduleLog(self,program):
+    def ScheduleLog(self):
         self.hasProgramAdmin()
         return self.filter(datamodel.ScheduleLog)
 

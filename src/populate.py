@@ -224,6 +224,11 @@ class populate(webapp.RequestHandler):
         for ct,id in course_tasks:
             ct.delegates=usr_key_list
             ct.put()
-                       
+        
+        sl=datamodel.ScheduleLog(university=u,program=p2,task=ct_key_list[0],timestamp=datetime.datetime(2012,8,15),user=usr_key_list[0],email='rmb237@nau.edu')
+        sl.save()
+        sl1=datamodel.ScheduleLog(university=u,program=p2,task=ct_key_list[1],timestamp=datetime.datetime(2012,8,15),user=usr_key_list[1],email='jwh83@nau.edu')
+        sl1.save()
+               
         #c.put()
         self.response.out.write("Ok!")

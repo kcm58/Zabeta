@@ -128,7 +128,7 @@ class session(webapp.RequestHandler):
         return r
     
     def hasProgramAdmin(self):
-        if self.program_priv <= 2:
+        if self.program_priv < 2:
             sys.exit("Not authenticated")
 
 class path_handler(webapp.RequestHandler):
