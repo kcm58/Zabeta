@@ -1,0 +1,36 @@
+Problem Description
+===================
+
+ABET is an accreditation organization founded in 1932 that creates standards which serves as a way to measure the experience and understanding of graduates of a certain institution. Northern Arizona University’s Computer Science program first received ABET’s accreditation on October 1996, and continues to be accredited. In order for an institution to receive ABET accreditation, the institution must create courses that meet ABET guidelines and goes through a long process of documenting all of their activities. The problem with this model hides in the process of documentation. The faculty members not only have to create the methods to assess the department’s overall performance, but also how to quantify their achievements. The objective of our project is to create a system which provides a skeleton of documentation that faculty members can fill out and use. The data from these skeletons will be able to auto-generate tools such as email notifications, schedules, reports, surveys, and/or rubrics that are easy to use to keep track of ABET accreditation procedures.
+
+Prior to the introduction of this project, the accreditation materials were produced solely by hand. In other words, there are no tools currently available for faculty members of any institution that could produce, keep track of, and submit materials to ABET. The complexity and extent of this task comes into play when extracting each element and considering what it is composed of. Take NAU’s Computer Science program for example. One of the documents that CS faculty needs to produce is titled “Outcomes Description and Assessment Procedure.” The purpose of this document is to provide detailed objectives of what the program should provide to students. Each objective is accompanied with an outcome goal and its detailed description, the list of courses that should meet the outcome, how these outcomes are assessed, and assessment goals to achieve. Assessments are categorized as direct and indirect: Direct assessments are measured by teaching rubrics. Each rubric has description of what it measures, where and when it is measured, and its measurement processes. Indirect assessments are measured by surveys. Surveys are given to current students, alumni members, instructors, and department chairs. Each survey has its rubric that is composed of description, where and when it is measured, and its measurement processes. Faculty members are not only required to construct these guidelines, but need to evaluate the objectives, assessments, and/or goals every so often. ABET accreditation evaluations occur in intervals of seven years, so collected data must be maintained and stored properly. 
+
+Solution
+========
+
+Our solution to this problem is a highly flexible, extensible ABET accreditation and departmental management system based on Web 2.0 technologies. In using our system, faculty will not only be provided with an effective mechanism for data collection and documentation, but, in addition, the Zabeta system will serve as a tool for considerably enhancing the internal management of all critical ABET data and tasks.
+
+For example, our system provides task management and scheduling mechanisms. The Zabeta system allows faculty and administrators to login to an interface and, through an intuitive access mechanism, check the status of individual tasks, tasks associated with specific courses, or a collection of all tasks associated with a given department. Our system also keeps track of the deadlines for all tasks, and sends out email reminders if tasks ever become overdue. The use of both of these tools ensures that everyone involved with the ABET accreditation process will be able to easily keep track of what they are supposed to do, and when they are supposed to do it.
+
+
+The Zabeta system provides a user interface to facilitate user interaction and system management. The interface allows users to interactively define and manage all data and tasks associated with the ABET accreditation process. The interface provides access to varying perspectives based on usage scenarios and user privileges. The different perspectives are: administrator, faculty, course, and class. Access to these various perspectives is managed through the OAuth and CAS authentication services. Administrators of the system are able to create and modify program objectives, outcomes, and assessment tools, and all of these integral components of the ABET accreditation process will be managed through an effective versioning system. The use of versioning ensures that the system can easily be modified while, at the same time, can keep track of changes and who made them; this is necessary because it is likely that users will make changes that need to be audited and possibly reversed.
+
+Our system employs a modular, service-oriented approach, which provides extensibility and the ability for the system to scale gracefully. This is a key characteristic of our system, as its intended use is the effective facilitation of the ABET accreditation process by any one of the thousands of ABET accredited institutions in the United States. In addition, the use of Google App engine and the incorporation of a cloud computing approach using web services supports abstract, scalable architectures that overcome the limitations imposed by typical previous models. 
+
+
+Languages and technologies
+==========================
+
+The core of our system is written in Python with the Google App Engine. The front end is implemented with Javascript.
+
+Project Sponsors
+================
+
+Dr. Eck Doerry
+Department of EE/CS, NAU
+eck.doerry@nau.edu
+
+Dr. James Palmer
+Department of EE/CS, NAU
+james.palmer@nau.edu
+

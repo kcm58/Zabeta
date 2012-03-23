@@ -3,10 +3,61 @@
  *
  */
 
+//This is used to display a message to the user if something goes wrong while loading the page
+var loadingTimeout;
+
 $(document).ready(function(){
+	clearTimeout(loadingTimeout);
+	loadingTimeout = setTimeout("showLoadingHelp()", 5000);
+	$('#loading').show();
 	initRouter();
 	initPage();
+	/*
+	 * Hides the loading pane when all AJAX requests are done
+	 * ajaxStop receives a callback whenever an AJAX request finishes
+	 * and there are no active AJAX requests left
+	 *
+	 * It also will SHOW the loading screen whenever any AJAX requests occur.
+	 * We can tone down what it looks like if it's too intrusive, popping up too much
+	 */
+	$('body').ajaxStop(function(){
+		clearTimeout(loadingTimeout);
+		$('#loading').hide();
+
+	});
+	$('body').ajaxStart(function(){
+		clearTimeout(loadingTimeout);
+		$('#loading-text').html('<h1>Loading...</h1><img src="img/ajax-loader.gif" />');
+		loadingTimeout = setTimeout("showLoadingHelp()", 5000);
+		$('#loading').show();
+	});
+	
+	/*
+	 * Handle all AJAX errors by assuming the user isn't logged in. Bad, but for now, good.
+	 */
+	$('body').ajaxError(function(e, jqxhr, settings, exception){
+		clearPanes();
+		$('#menu').html('');
+		$('#toolbar').html('');
+		$('#top').html('<img src="img/google-signin.png" alt="Sign in with Google" /><h3>Debug: See JavaScript Console for more info');
+		console.log('---Start AJAX Error Details---');
+		console.log('Event:');
+		console.log(e);
+		console.log('jqXHR:');
+		console.log(jqxhr);
+		console.log('AJAX Settings:');
+		console.log(settings);
+		console.log('AJAX Exception:');
+		console.log(exception);
+		console.log('----End AJAX Error Details----');
+		console.log();
+		console.log();
+	});
 });
+
+function showLoadingHelp(){
+	$('#loading-text').html('<h1>Loading...</h1><img src="img/ajax-loader.gif" /><h3>This is taking longer than usual...soemthing may have gone wrong.</h3>')
+}
 
 function initRouter(){
 	var Router = Backbone.Router.extend({
@@ -17,13 +68,14 @@ function initRouter(){
 			"allTasks":				"allTasks",
 			"accredidation":		"accredidation",
 			"uploadTest":			"uploadTest",
+			"minutes":				"minutes",
+			"schedulelog":			"schedulelog",
 			"*data": 				"default"
 		},
 
 		default: function(data){
 			clearPanes();
 			loadDashboard();
-			embolden('#overview');
 		},
 
 		course: function(course_id){
@@ -34,32 +86,31 @@ function initRouter(){
 		users: function(){
 			clearPanes();
 			loadUsers('#top');
-			embolden('#users');
 		},
 
 		programs: function(){
 			clearPanes();
 			loadProgramList();
-			embolden('#programs');
 		},
 
 		allTasks: function() {
 			clearPanes();
 			collapsePanes();
 			loadAllTasksPage('#top');
-			embolden('#allTasks')
 		},
 
 		accredidation: function(){
 			clearPanes();
 			loadAccredationPage('#top');
-			embolden('#accredidation');
 		},
-
-		uploadTest: function(){
+		
+		minutes: function(){
 			clearPanes();
-			loadUploadPage();
-			embolden('#uploadTest');
+		},
+		
+		schedulelog: function(){
+			clearPanes();
+			loadScheduleLog('#top');
 		}
 
 
@@ -107,24 +158,26 @@ function loadProgramChooser(){
 				T.render('program_chooser', function(t){
 					$('#program-chooser').html(t(programsStore));
 					///////// REMOVE ME IN FINAL RELEASE /////////
-					$.jStorage.deleteKey('program');
+					//$.jStorage.deleteKey('program');
 					///////// 			 THANKS		 	 ////////
 					if($.jStorage.get('program') == null){
 						var program = $('#program-chooser-select option:selected').val();
 						$.jStorage.set('program', program);
-						updateProgramToolbar(program);
 						$.cookie('program', program, { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
+						updateProgramToolbar(program);
 					}else{
 						$('#program-chooser-select').val($.jStorage.get('program'));
 					}
 					$('#program-chooser-select').change(function(){
 						var program = $('#program-chooser-select option:selected').val();
 						$.jStorage.set('program', program);
-						updateProgramToolbar(program);
 						$.cookie('program', program, { expires: 7});
 						$.jStorage.setTTL('program', 604800000);
 						updateProgramToolbar(program);
+						var curHash = window.location.hash;
+						window.location.hash="";
+						window.location.hash = curHash;
 						loadMenu();
 					});
 					loadMenu();
@@ -134,10 +187,9 @@ function loadProgramChooser(){
 	}else{
 		var program = userdata['user']['programs'][0];
 		$.jStorage.set('program', program);
-		updateProgramToolbar(program);
 		$.cookie('program', program, { expires: 7});
 		$.jStorage.setTTL('program', 604800000);
-		console.log($.jStorage.get('program'));
+		updateProgramToolbar(program);
 		loadMenu();
 	}
 }
@@ -151,7 +203,7 @@ function loadMenu(){
 	var menuJson = {
 			"items":
 				[{
-					"hash":	"overview",
+					"hash":	"",
 					"name":	"Overview"
 				},
 				{
@@ -159,15 +211,15 @@ function loadMenu(){
 					"name":	"Accredidation"
 				},
 				{
-					"hash": "uploadTest",
-					"name": "Test Upload"
-				}]
+					"hash": "minutes",
+					"name":	"Minutes"
+				},]
 	}
 	if(privilege == 2){
 		menuJson = {
 				"items":
 					[{
-						"hash":	"overview",
+						"hash":	"",
 						"name":	"Overview"
 					},
 					{
@@ -179,16 +231,20 @@ function loadMenu(){
 						"name":	"Accredidation"
 					},
 					{
+						"hash": "minutes",
+						"name":	"Minutes"
+					},
+					/*{
 						"hash": "allTasks",
 						"name":	"All Tasks"
-					},
+					},*/
 					{
 						"hash": "users",
 						"name":	"Users"
 					},
 					{
-						"hash": "uploadTest",
-						"name": "Test Upload"
+						"hash":	"schedulelog",
+						"name": "Schedule Log"
 					}]
 		}
 	}
@@ -219,12 +275,26 @@ function loadAllTasksPage(element) {
 }
 
 function loadAccredationPage(element){
-	collapsePanes();
-	$.getJSON('/api/list/Objective', function(json){
-		console.log(json);
-		T.render('objective_list', function(t){
-			$(element).html(t(json));
-		});
+	$.getJSON('/api/list/Objective', function(objectivesJSON){
+		var outputJSON = objectivesJSON;
+		for(var key in objectivesJSON['Objective']){
+			$.ajax({
+				url: 'api/list/Batch',
+				dataType: 'json',
+				data:JSON.stringify(objectivesJSON['Objective'][key]['outcomes']),
+				type: "POST",
+				ajaxKey: key,
+				success: function(outcomesJSON){
+					var ajaxKey = this.ajaxKey;
+					$.extend(outputJSON['Objective'][ajaxKey], outcomesJSON);
+					if(ajaxKey == objectivesJSON['Objective'].length-1){
+						T.render('objective_list', function(t){
+							$(element).html(t(outputJSON));
+						});
+					}
+				}
+			});
+		}
 	});
 }
 
@@ -243,26 +313,30 @@ function loadTasks(element){
 
 function loadTermCourses(element){
 	var outputJSON = {};
-	$.getJSON('/api/list/Semester', function(json){
-		$.extend(outputJSON, {'semester_name': json['Semester'][0]['name']});
-	});
-	$.getJSON('/api/user/getCurrentCourses', function(json){
-		//prepare a list of IDs
-		var courseIDs = [];
-		for(var key in json['user']){
-			courseIDs[key] = json['user'][key]['course'];
+	$.getJSON('api/list/Semester', function(json){
+		if(undefined == json['Semester'][0]){
+			$.extend(outputJSON, {semester_name: 'fall'});
+		}else{
+			$.extend(outputJSON, {'semester_name': json['Semester'][0]['name']});
 		}
-		$.ajax({
-			url: 'api/list/Batch',
-			dataType: 'json',
-			data: JSON.stringify(courseIDs),
-			type: "POST",
-			success: function(json){
-				$.extend(outputJSON, json);
-				T.render('term_class_list', function(t){
-					$(element).html(t(outputJSON));
-				});
+		$.getJSON('/api/user/getCurrentCourses', function(json){
+			//prepare a list of IDs
+			var courseIDs = [];
+			for(var key in json['user']){
+				courseIDs[key] = json['user'][key]['course'];
 			}
+			$.ajax({
+				url: 'api/list/Batch',
+				dataType: 'json',
+				data: JSON.stringify(courseIDs),
+				type: "POST",
+				success: function(json){
+					$.extend(outputJSON, json);
+					T.render('term_class_list', function(t){
+						$(element).html(t(outputJSON));
+					});
+				}
+			});
 		});
 	});
 }
@@ -305,7 +379,6 @@ function loadUsers(element){
 
 function loadSemesters(element){
 	$.getJSON('api/list/Semester', function(semesterJSON){
-		console.log(semesterJSON);
 		T.render('semester_list', function(t){
 			$(element).html(t(semesterJSON));
 		});
@@ -331,23 +404,6 @@ function loadDashboard() {
 	expandPanes();
 	loadTasks('#top');
 	loadTermCourses('#bottom-left');
-}
-
-function loadUploadPage(){
-	collapsePanes();
-	var json = {}
-	var userdata = $.jStorage.get('userdata');
-	var id = userdata['user']['id'];
-	$.extend(json, {'id': id});
-	T.render('upload_test', function(t){
-		$('#top').html(t(json));
-		$.getJSON('file/getAll', function(fileJSON){
-			for(var key in fileJSON){
-				$('#top').append('<a href="file/download/'+fileJSON[key]+'">Uploaded File #'+key+'</a><br />')
-			}
-		})
-		.error(function(jqXHR, textStatus, errorThrown){ alert(textStatus)});
-	});
 }
 
 Handlebars.registerHelper('taskResponse', function(response, options) {
@@ -473,15 +529,72 @@ function getRelativeDate(abs_date){
 	return $('#relativeTimeHandler').html();
 }
 
-function embolden(element){
-	$('.menu-item').each(function(){
-		$(this).css('font-weight', 'normal');
-	});
-	$(element).css('font-weight', 'bold');
-}
-
 function updateProgramToolbar(program){
 	$.getJSON('/api/crud/'+program, function(json){
 		$('#program').html('&nbsp;-&nbsp;'+json['description']);
+	});
+}
+
+function loadTOS(){
+	$.get('legal/tos.html', function(tos){
+		$('#dialog').html(tos);
+		$('#dialog').dialog({
+			title: 'Terms of Service',
+			minWidth: 580,
+			minHeight: 560
+		});
+	});
+}
+
+function loadPriv(){
+	$.get('legal/privacy.html', function(privacy){
+		$('#dialog').html(privacy);
+		$('#dialog').dialog({
+			title: 'Privacy Policy',
+			minWidth: 580,
+			minHeight: 560
+		});
+	});
+}
+
+function loadScheduleLog(element){
+	$.getJSON('/api/list/ScheduleLog', function(scheduleJSON){
+		var tasks = [];
+		var users = [];
+		for(var key in scheduleJSON['ScheduleLog']){
+			tasks[key] = scheduleJSON['ScheduleLog'][key]['task'];
+			users[key] = scheduleJSON['ScheduleLog'][key]['user'];
+		}
+		var tasks_human = [];
+		var users_human = [];
+		$.ajax({
+			url: 'api/list/Batch',
+			dataType: 'json',
+			data:JSON.stringify(tasks),
+			type: "POST",
+			success: function(tasksJSON){
+				for(var key in tasksJSON['Batch']){
+					tasks_human[key] = tasksJSON['Batch'][key];
+				}
+				$.ajax({
+					url: 'api/list/Batch',
+					dataType: 'json',
+					data:JSON.stringify(users),
+					type: "POST",
+					success: function(usersJSON){
+						for(var key in usersJSON['Batch']){
+							users_human[key] = usersJSON['Batch'][key];
+						}
+						for(var key in scheduleJSON['ScheduleLog']){
+							$.extend(scheduleJSON['ScheduleLog'][key], {task_human: tasks_human[key]});
+							$.extend(scheduleJSON['ScheduleLog'][key], {user_human: users_human[key]});
+						}
+						T.render('schedule_log_list', function(t) {
+							 $(element).html( t(scheduleJSON) );
+						});
+					}
+				});
+			}
+		});
 	});
 }

@@ -132,6 +132,15 @@ body {
   margin-right:15px;
 }
 
+#menu a {
+	font-size:15px;
+	text-decoration: none;
+}
+
+#menu a:hover{
+	text-decoration: underline;
+}
+
 #content{
   width: 85%;
   height: 100%;
@@ -172,8 +181,18 @@ body {
 	position:fixed;
 	bottom:0;
 	width:100%;
-	background-color:white;
-	border-top:1px solid black;
+	background: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5,rgba(0, 0, 0, 0.04)), to(rgba(0, 0, 0, 0.08)));
+	background-color: #ccc;
+  border-width: 2px 0 0 0;
+  -webkit-border-image: url("../img/border.png") 4 0 0 0 stretch stretch
+}
+
+.outcome {
+	padding: 0 0 0 90px !important;
+}
+
+.noborder {
+	border: none !important;
 }
 
 .submenu ul{
@@ -231,9 +250,24 @@ table.list tr {
 td.edit {
 	text-align: right;
 }
+
+a {
+	color: #4183C4;
+}
+
+a:visited {
+	color: #4183C4;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #4183C4 !important;
+}
+
 a[onclick] {
   cursor: pointer;
 }
+
 
 /* #dialog { */
 /* 	-webkit-border-radius: 4px; */

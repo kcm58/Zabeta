@@ -1,0 +1,402 @@
+API Specification
+*****************
+
+The Zabeta project is implemented in Python using Google App Engine. Our application creates entities, with all associated data stored as properties of these entities. These properties are named values of one of the data types supported by Google App Engine Datastore. App Engine Datastore provides a NoSQL schemaless object datastore, with a query engine and atomic transactions. A full listing of data types supported by Google App Engine Datastore can be found here: `Data Types <http://code.google.com/appengine/docs/python/datastore/entities.html#Properties_and_Value_Types/>`_. In the Python API, a model describes a kind of entity, including the types and configuration for its properties. An application defines a model using Python classes, with class attributes describing the properties. 
+
+The following is a listing of the models that the Zabeta project uses and the properties for each.
+
+AssessmentTask
+===============
+
+**Description**
+
+Assessment tasks are tasks that are not associated with a Course, but are associated insead with an outcome that needs to be evaulated on a cyclical basis.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Void pointer to the University associated with the Task
+program              Reference   Void pointer to the Program associated with the Task
+outcome              Reference   Pointer to the Outcome associated with the Task
+==================== =========== ====================================
+
+AuthenticationMethod
+====================
+
+**Description**
+
+An AuthenticationMethod is information for how a Univeristy authenticates its Users. It allows for the University to use OAuth or CAS and stores the associated information.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to the University associated with the AuthenticationMethod 
+program              Reference   Void pointer to the Program associated with the Minutes object
+oauth_url            String      The OAuth providers landing url for the User
+oauth_client_id      String      String representation of client id
+oauth_client_secret  String      String representation of client secret
+cas_url              String      Url to CAS Authentication method
+==================== =========== ====================================
+
+AuthenticationRecord
+====================
+
+**Description**
+
+An AuthenticationRecord essentially ties together an AuthenticationMethod with a User. It also keeps track of the priviliges a User has within the University's Programs.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to University associated with AuthenticationRecord
+program              Reference   Void pointer to the Program associated with the Minutes object
+user                 Reference   Pointer to the User associated with AuthenticationRecord
+oauth_id             String      String representation of OAuth id
+cas_id               String      String representation of CAS id
+programs             List        List of key identifiers for programs associated with AuthenticationRecord
+privileges           List        Integer list of privileges 
+==================== =========== ====================================
+
+Course
+======
+
+**Description**
+
+The Course class inherits from Version and holds metadata related to a given Course. Each Course belongs to a program.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to University associated with the given Course
+program              Reference   Pointer to Program associated with the given Course
+name                 String      Course name
+description          text        Course description
+catalog_descr        String      TODO!!!
+catalog              String      Program and Course number
+webpage              String      Url of Course webpage
+core_topics          String      Listing of the core topics covered in the given Course
+==================== =========== ====================================
+
+CourseOffering
+==============
+
+**Description**
+
+The CourseOffering class inherits from Version and holds information about a specific Course instance. When a course is offered a new CourseOffering instance is created.  This instance is associated with a `term` and a `year`,  such as “spring” “2012”.  This course is taught by an instructor so it has a reference to a User.   This object contains stats for how well the class performed.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Void pointer to the University associated with the CourseOffering
+program              Reference   Void pointer to the Program associated with the CourseOffering
+semester             Reference   Pointer to the Semester assocaited with the CourseOffering
+instructor           Reference   Pointer to the User who is teaching the CourseOffering
+course               Reference   Pointer to the Course object that a given CourseOffering is an instance of
+student_count        Integer     Number of students in the CourseOffering
+section              Integer     Section number of the CourseOffering
+final_grades         StringList  List of the students' grades at the end of the CourseOffering
+tasks                StringList  List of the tasks linked to a given CourseOffering
+syllabus             String      String identifier of the syllabus document
+website              String      Url of the Course website
+==================== =========== ====================================
+
+CourseTask
+==========
+
+**Description**
+
+The CourseTask class inherits from Task and represents a Task object that is carried out with respect to a given Course. CourseTask objects are rescheduled by the system.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to the University associated with the Task
+program              Reference   Pointer to the Program associated with the Task
+course               Reference   Pointer to the Course associated with the Task
+rubric               Reference   Pointer to the assessment Instrument associated with the Task
+==================== =========== ====================================
+
+Form
+====
+
+**Description**
+
+A form is the parent class that houses the WikiForm. THis is used to collect data from Users about measures.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+form_name            String      Name of the form
+assessment_form      String      The WikiForm in WikiForm syntax
+require_attachments  StringList  A list of the attachment names required to satisfy this form
+description          Text        Form description
+instructions         String      Form instructions
+==================== =========== ====================================
+
+Instrument
+==========
+
+**Description**
+
+The Instrument class inherits from Form and holds information about an assessment instrument. (IS THIS RIGHT???)
+
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to the University associated with the Instrument
+program              Reference   Pointer to the Program associated with the Instrument
+==================== =========== ====================================
+
+Minutes
+=======
+
+**Description**
+
+Minutes inherits from Version and is a revisioned notepad associated with a program.  Anyone within the program can modify this notepad.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Void pointer to the University associated with the Minutes object
+program              Reference   Pointer to the Program associated with the Minutes object
+description          Text        Description of the Minutes object
+docs                 String      String identifier of the docs array
+date                 Date        Date of the creation of the Minutes object
+content              String      Content of the Minutes object
+attachment_names     StringList  A list of file names parired with the blobs below
+attachment_blobs     StringList  A list of blob ids to retrive the file from the Google Blob Store
+==================== =========== ====================================
+
+Object
+======
+
+**Description**
+
+DESCRIPTION/RATIONALE GOES HERE!
+
+**Field Summary**
+
+========== =========== ==================================
+Field      Type        Description
+========== =========== ==================================
+university Reference   Pointer to a University
+program    Reference   Pointer to a Program
+uid        String      TODO!!
+========== =========== ==================================
+
+Objective
+=========
+
+**Description**
+
+The Objective class inherits from Version and holds all the information about a Objective. Defined by a program, objectives are descriptions of goals that the program intends to meet to maintain ABET accreditation.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Void pointer to the University associated with the Objective
+program              Reference   Pointer to the Program associated with the Objective (NEED TO EXPLAIN THIS!!)
+name                 String      Objective name
+description          Text        Objective description
+index                Integer     Index of the Objective
+outcomes             List        List of key identifiers of outcomes associated with Objective
+==================== =========== ====================================
+
+Outcome
+=======
+
+**Description**
+
+The Outcome class inherits from Form and holds information about a given Outcome that has been defined by a Program.
+
+====================== =========== ====================================
+Field                  Type        Description
+====================== =========== ====================================
+university             Reference   Void pointer to the University associated with the Outcome
+program                Reference   Void pointer to the Program associated with the Outcome
+rationalize_instrument Reference   Pointer to the Instrument 
+name                   String      Name of Outcome
+rationale              String      Reasoning behind Outcome
+assessments            KeyList     List of keys identifying the assessments associated with an Outcome
+last_evaluation        DateTime    Date and time of last evaluation of Outcome
+evaluation_start       DateTime    Start date and time of the next evaluation
+evaluation_end         DateTime    End date and time of the next evaluation
+rationalize_course     List        List of key identifiers of all Courses linked to Outcome
+index                  Integer     Index of Outcome 
+====================== =========== ====================================
+
+OutcomeSupport
+==============
+
+**Description**
+TODO!!
+
+================== =========== ====================================
+Field                Type        Description
+================== =========== ====================================
+university         Reference   Void pointer to the University associated with the Outcome
+program            Reference   Void pointer to the Program associated with the Outcome
+course             Reference   Pointer to the Course associated with the Outcome
+instrument         Reference   Pointer to the Instrument associated with the Outcome
+rationale          String      Reasoning behind Outcome
+goal               String      Goal of Outcome
+================== =========== ====================================
+
+Program
+=======
+
+**Description**
+
+The Program class inherits from Version and holds information about a department that belongs a University.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to University object associated with a given program 
+program              Reference   Pointer to Program (WHY DO WE HAVE THIS???)
+name                 String      Name of the Program
+start_date           Date        Date of Program installation at University
+end_date             Date        Date of Program termination at University
+mission              String      Statement of Program goals/objectives
+description          Text        Program description
+webpage              String      Url of Program website
+thumbnail            String      String idenifier of Program image file
+docs                 String      String identifier of Program docs array
+nags_before          StringList  Defines frequency of reminders before a task is due
+nags_after           StringList  Defines frequency of reminders after a task is due
+==================== =========== ====================================
+
+Semester
+========
+
+**Description**
+
+The Semester class holds infomation about a time period when courses are taught throughout the school year. A given University's school year model is defined as a list of Semester objects. (SHOULD WE RENAME THIS???)
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to the University associated with the Semester (EXPLAIN THESE TWO)
+program              Reference   Pointer to the Program associated with the Semester
+begin_date           DateTime    Date and time representing the start of a Semester
+end_date             DateTime    Date and time representing the end of a Semester
+name                 String      Name of Semester
+==================== =========== ====================================
+
+Schedule Log
+============
+
+**Description**
+
+The ScheduleLog class holds/logs information about scheduling events.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to associated University 
+program              Reference   Pointer to associated Program 
+task                 Reference   Pointer to associated Task
+user                 Reference   Pointer to associated User
+email                Email       Email address of associated User
+timestamp            DateTime    Date and time of scheduling event
+==================== =========== ====================================
+
+Task
+====
+
+**Description**
+
+The Task class inherits from Version and holds information about a task object. Tasks represent actions that must be carried out to in order to evaluate the achievement of program outcomes. They can be assigned to a list of delegates by a User of the system, or they can be scheduled automatically.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+name                 String      Name of the task
+begin_date           Date        Date the task begins
+end_date             Date        Date the task ends
+delegates            List        List of keys identifying Users that have been assigned the given task
+fulfilled            Int         Indicates if a task has been fulfilled or not (0=false,1=true)
+attachment_names     StringList  A list of file names parired with the blobs below
+attachment_blobs     StringList  A list of blob ids to retrive the file from the Google Blob Store
+response             String      Form response
+==================== =========== ====================================
+
+TodoTask
+========
+
+**Description**
+
+The TodoTask is a subclass of Task; it represents a singleton Task that is not rescheduled. (IS THAT RIGHT???)
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+description          Text        Task description
+==================== =========== ====================================
+
+University
+==========
+
+**Description**
+
+The University class inherits from Version and holds metadata about a given University.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+name                 String      University name
+domain               String      Domain name of University
+semesters            String      School year model for University
+login_path           String      Path on our sytem used for Users to login
+programs             String      List of Programs associated with the University
+thumbnail            String      String identifier of University image file
+web_page             String      Url of University website
+==================== =========== ====================================
+
+User
+====
+
+**Description**
+
+The User class holds information about a system user.
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+university           Reference   Pointer to the University that the User is associated with
+program              Reference   Pointer to the Program that the User is associated with
+full_name            String      Full name of User
+display_name         String      Name of User to be displayed by the system
+email                Email       Email address of the User
+employee_id          String      Employee identification string (not end-user editable)
+phone_office         String      Office phone number of User
+phone_personal       String      Personal phone numbrer of User
+office               String      User's office identification string 
+join_date            Date        Date that User joined the University/Program
+depart_date          Date        Date that the User left the University/Program
+thumbnail            String      Identification string of User image
+webpage              String      Url of User's website
+tasks                List        Key list of User's tasks
+==================== =========== ====================================
+
+Version
+=======
+
+**Description**
+
+Version is the parent class of  all visioned objects in the system.  The version parent is also a set that contains the union of all child-classes.   Therefore, this set can be queried by any value such as a user id to obtain a list of all changes made by a specific user.   A version contains a reference to the user that made the modification and  reference to the program that this data-element belongs to and the user that made the change.  These two references are for the purpose of audits because a simple query can list every modification made to a program over  a date range, or every modification made by a user over a date range.   The commit_comment element is the User's rationale for making their changes.
+
+**Field Summary**
+
+==================== =========== ====================================
+Field                Type        Description
+==================== =========== ====================================
+commit_user          Reference   Pointer to the User type who executed version commit
+commit_program       Reference   Pointer to the program associated with the version commit
+commit_object        Reference   Pointer to the actual commit Object type
+commit_minor         Int         Minor version number
+commit_timestamp     DateTime    Date and time of version commit
+commit_comment       String      Description/rationale for version commit
+==================== =========== ====================================
+

@@ -4,13 +4,13 @@ import datamodel
 
 class Outcome(RestHandler):
 
-      model = datamodel.Outcome
-      
-      def show(self):
-          self.response.out.write(self.model.to_json())
-          
-      def update(self):
-          self.model.from_json(self.params)
+    model = datamodel.Outcome
+    
+    def show(self):
+        self.response.out.write(self.model.to_json())
+        
+    def update(self):
+        self.model.from_json(self.params)
 
 class Task(RestHandler):
 

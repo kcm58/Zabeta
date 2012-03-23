@@ -38,19 +38,19 @@ class populate(webapp.RequestHandler):
         nag_before_dict=["six months before","one month before","one week before","one day before"]
         nag_after_dict=["six months after","one month after","one week after","one day after"]
                 
-        p=datamodel.Program(University=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
+        p=datamodel.Program(university=u,name="CS",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing computer scientists",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Computer Science")
         p.put()
         p.program=p.key()
         p.save()
         
-        p2=datamodel.Program(University=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
+        p2=datamodel.Program(university=u,name="EE",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing electrical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Electrical Engineering")
         p2.put()
         p2.program=p2.key()
         p2.save()
         
-        p3=datamodel.Program(University=u,name="ME",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing mechanical engineers",
+        p3=datamodel.Program(university=u,name="ME",start_date=datetime.date(1901,1,15),end_date=None,mission="To build an army of amazing mechanical engineers",
                             nag_before=nag_before_dict,nag_after=nag_after_dict,description="Mechanical Engineering")
         p3.put()
         p3.program=p3.key()
@@ -64,22 +64,25 @@ class populate(webapp.RequestHandler):
         for s in nau_semesters:
             s.put()
         
-        
         c1=datamodel.Course(program=p,name="Automata Theory",description="Finite and infinite models leading to an understanding of computability. ",
                             core_topics="fundamental principles of computability and different families of languages.",
-                            webpage="http://nau.edu/CEFNS/Engineering/Computer-Science/Welcome/",catalog="CS 315")
+                            webpage="http://nau.edu/CEFNS/Engineering/Computer-Science/Welcome/",catalog="CS 315",
+                            university=u.key())
         c1.put()
         c2=datamodel.Course(program=p,name="Principles of Languages",description="Abstract framework for understanding issues underlying all programming languages covering all four major paradigms.",
                             core_topics="functional programming and underlying linguistic principles, constructs, and mechanisms associated with diverse programming paradigms",
-                            webpage="http://nau.edu/CEFNS/Engineering/Computer-Science/Welcome/",catalog="CS 396")
+                            webpage="http://nau.edu/CEFNS/Engineering/Computer-Science/Welcome/",catalog="CS 396",
+                            university=u.key())
         c2.put()
         c3=datamodel.Course(program=p2,name="EE 101",description="EE 101 Descrip",
                             core_topics="EE 101 Topics",
-                            webpage="http://nau.edu/cefns/engineering/electrical/",catalog="EE 101")
+                            webpage="http://nau.edu/cefns/engineering/electrical/",catalog="EE 101",
+                            university=u.key())
         c3.put()
         c4=datamodel.Course(program=p3,name="ME 101",description="ME 101 Descrip",
                             core_topics="ME 101 Topics",
-                            webpage="http://nau.edu/cefns/engineering/mechanical/",catalog="ME 101")
+                            webpage="http://nau.edu/cefns/engineering/mechanical/",catalog="ME 101",
+                            university=u.key())
         c4.put()
       
         s=datamodel.Semester(name="FALL11",university=u.key())
@@ -110,27 +113,27 @@ class populate(webapp.RequestHandler):
         test_date_day_after=(datetime.datetime.now())-deltas['day']
         
         course_tasks=[(datamodel.CourseTask(name="CS 315 Evals",description="Collect student evals for CS 315",begin_date=datetime.datetime(2012,1,1),
-                                            end_date=datetime.datetime(2012,6,15),fulfilled=0,university=u),"315 Evals"),
+                                            end_date=datetime.datetime(2012,6,15),fulfilled=0,university=u.key()),"315 Evals"),
                       (datamodel.CourseTask(name="CS 396 Evals",description="Collect student evals for CS396",begin_date=datetime.datetime(2012,1,1),
-                                            end_date=datetime.datetime(2012,6,15),fulfilled=0,university=u),"396 Evals"),
+                                            end_date=datetime.datetime(2012,6,15),fulfilled=0,university=u.key()),"396 Evals"),
                       (datamodel.CourseTask(name="Test six months before",description="Running the six month before test for scheduling",begin_date=test_date_six_months_before,
-                                            end_date=test_date_six_months_before,fulfilled=0,university=u),"Six month before test"),
+                                            end_date=test_date_six_months_before,fulfilled=0,university=u.key()),"Six month before test"),
                       (datamodel.CourseTask(name="Test one month before",description="Running the one month before test for scheduling",begin_date=test_date_month_before,
-                                            end_date=test_date_month_before,fulfilled=0,university=u),"One month before test"),
+                                            end_date=test_date_month_before,fulfilled=0,university=u.key()),"One month before test"),
                       (datamodel.CourseTask(name="Test one week before",description="Running the one week before test for scheduling",begin_date=test_date_week_before,
-                                            end_date=test_date_week_before,fulfilled=0,university=u),"One week before test"),
+                                            end_date=test_date_week_before,fulfilled=0,university=u.key()),"One week before test"),
                       (datamodel.CourseTask(name="Test one day before",description="Running the one day before test for scheduling",begin_date=test_date_day_before,
-                                            end_date=test_date_day_before,fulfilled=0,university=u),"One day before test"),
+                                            end_date=test_date_day_before,fulfilled=0,university=u.key()),"One day before test"),
                       (datamodel.CourseTask(name="Test six months after",description="Running the six month after test for scheduling",begin_date=test_date_six_months_after,
-                                            end_date=test_date_six_months_after,fulfilled=0,university=u),"Six month after test"),
+                                            end_date=test_date_six_months_after,fulfilled=0,university=u.key()),"Six month after test"),
                       (datamodel.CourseTask(name="Test one month after",description="Running the one month after test for scheduling",begin_date=test_date_month_after,
-                                            end_date=test_date_month_after,fulfilled=0,university=u),"One month after test"),
+                                            end_date=test_date_month_after,fulfilled=0,university=u.key()),"One month after test"),
                       (datamodel.CourseTask(name="Test one week after",description="Running the one week after test for scheduling",begin_date=test_date_week_after,
-                                            end_date=test_date_week_after,fulfilled=0,university=u),"One week after test"),
+                                            end_date=test_date_week_after,fulfilled=0,university=u.key()),"One week after test"),
                       (datamodel.CourseTask(name="Test one day after",description="Running the one day after test for scheduling",begin_date=test_date_day_after,
-                                            end_date=test_date_day_after,fulfilled=0,university=u),"One day after test"),
+                                            end_date=test_date_day_after,fulfilled=0,university=u.key()),"One day after test"),
                       (datamodel.CourseTask(name="Test day of",begin_date=test_date_day_of,
-                                            end_date=test_date_day_of,fulfilled=0,university=u),"One day after test")]
+                                            end_date=test_date_day_of,fulfilled=0,university=u.key()),"One day after test")]
                        
         users = [(datamodel.User(full_name="Michael Brooks",email="rmb237@nau.edu",employee_id="rmb237",display_name="Mike",
                                  phone_office="(928)555-5555",phone_personal="(928)666-6666"),"rmb237"),
@@ -168,9 +171,10 @@ class populate(webapp.RequestHandler):
                                            privileges=[1,2,1])
             ar.put()
         
-        o1_1=datamodel.Outcome(name="Outcome 1.1: Ability to apply foundational theoretical concepts and skills related to algorithms and programs, including underlying knowledge of mathematics (including discrete math, linear algebra, and statistics)",
+        o1_1=datamodel.Outcome(name="Possess professional skills and knowledge of the software design process",
                             index=1,
-                            description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics",
+                            objective_index=1,
+                            description="The distinguishing skill between a gifted programmer and a software engineer is that, in addition to strong program implementation skills, the software engineer has a strong background in design (i.e., the creative process of analyzing end-user problems and arriving at a robust conceptual solution) and extensive knowledge of formal design and build process (i.e., modern software engineering tools and techniques aimed at reliably transforming a design into a finished product).  This outcome seeks to evaluate the extent to which graduates achieve this distinction as true software engineers.",
                             rationale="Empty",
                             assessments=[ct_key_list[0]],
                             last_evaluation=datetime.datetime(2011,6,10),
@@ -178,43 +182,80 @@ class populate(webapp.RequestHandler):
                             evaluation_duration=365,
                             rationalize_course=[c1.key()],
                             rationalize_instrument=ins,
-                            where_from=wiki_form)
+                            where_from=wiki_form,
+                            university=u.key())
         o1_1.put()
         
-        o1_2=datamodel.Outcome(name="Outcome 1.2: Familiarity with a broad range of programming languages and paradigms, with practical competence in at least two languages and paradigms",
+        o1_2=datamodel.Outcome(name="Ability to function effectively in both co-located and distributed software development teams.",
                             index=2,
-                            description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other",
+                            objective_index=1,
+                            description="This outcome reflects the fact that modern software engineering is rarely a solo effort; most software development efforts involve highly-coordinated collaboration between multiple software engineers. The organizational and communication skills required to efficiently participate in a development team are critical and distinct from basic disciplinary (i.e., programming) skills. ",
                             assessments=[ct_key_list[1]],
                             last_evaluation=datetime.datetime(2011,6,10),
                             evaluation_next=365,
                             evaluation_duration=365,
                             rationalize_course=[c2.key()],
                             rationalize_instrument=ins,
-                            where_from=wiki_form)
+                            where_from=wiki_form,
+                            university=u.key())
         o1_2.put()
 
-        ob=datamodel.Objective(university=u,program=p,name="Writing Requirement",description="Make sure student does writing good.",index=1,outcomes=[o1_1.key(),o1_2.key()])
-        ob.put()
+        o2_1=datamodel.Outcome(name="Theoretical Concepts",
+                            index=1,
+                            objective_index=2,
+                            description="True competence in computer science requires not only the ability to apply known algorithms and data structures to solve a problem, but to innovatively and continually develop novel algorithms and data structures. Creating and verifying the efficiency and correctness of such novel abstractions implies a solid understanding of theoretical foundations of computer science and mathematics. ",
+                            rationale="Empty",
+                            assessments=[ct_key_list[0]],
+                            last_evaluation=datetime.datetime(2011,6,10),
+                            evaluation_next=365,
+                            evaluation_duration=365,
+                            rationalize_course=[c1.key()],
+                            rationalize_instrument=ins,
+                            where_from=wiki_form,
+                            university=u.key())
+        o2_1.put()
+        
+        o2_2=datamodel.Outcome(name="Languages and Language Paradigms",
+                            index=2,
+                            objective_index=2,
+                            description="A competent computer scientist must not only possess practical competence in a number of specific computer languages, but must have a broad understanding of language paradigms, abstractions shared by all computer languages, and how computer languages related and compare to each other ",
+                            assessments=[ct_key_list[1]],
+                            last_evaluation=datetime.datetime(2011,6,10),
+                            evaluation_next=365,
+                            evaluation_duration=365,
+                            rationalize_course=[c2.key()],
+                            rationalize_instrument=ins,
+                            where_from=wiki_form,
+                            university=u.key())
+        o2_2.put()
 
-        course_offerings=[(datamodel.CourseOffering(semester=s,instructor=users[0][0].key(),student_count=35,section=1,
+        ob1=datamodel.Objective(university=u,program=p,name="Practice-Oriented Skills Requirement",description="The continual improvement of skills though practice.",index=1,outcomes=[o1_1.key(),o1_2.key()])
+        ob1.put()     
+        
+        ob2=datamodel.Objective(university=u,program=p,name="Fundamentals",description="Make sure student does writing good.",index=2,outcomes=[o2_1.key(),o2_2.key()])
+        ob2.put()   
+
+    
+
+        course_offerings=[(datamodel.CourseOffering(university=u.key(),semester=s,instructor=users[0][0].key(),student_count=35,section=1,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
                                                     course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[1][0].key(),student_count=35,section=1,
+                          (datamodel.CourseOffering(university=u.key(),semester=s,instructor=users[1][0].key(),student_count=35,section=1,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS396_WWW/syllabus.html",
                                                     course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[2][0].key(),student_count=35,section=2,
+                          (datamodel.CourseOffering(university=u.key(),semester=s,instructor=users[2][0].key(),student_count=35,section=2,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
                                                     course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[3][0].key(),student_count=35,section=2,
+                          (datamodel.CourseOffering(university=u.key(),semester=s,instructor=users[3][0].key(),student_count=35,section=2,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS396_WWW/syllabus.html",
                                                     course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[4][0].key(),student_count=35,section=3,
+                          (datamodel.CourseOffering(university=u.key(),semester=s,instructor=users[4][0].key(),student_count=35,section=3,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
                                                     course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[5][0].key(),student_count=35,section=3,
+                          (datamodel.CourseOffering(university=u.key(),semester=s,instructor=users[5][0].key(),student_count=35,section=3,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS396_WWW/syllabus.html",
                                                     course=c2,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status'])),
-                          (datamodel.CourseOffering(semester=s,instructor=users[6][0].key(),student_count=35,section=4,
+                          (datamodel.CourseOffering(university=u.key(),semester=s,instructor=users[6][0].key(),student_count=35,section=4,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",
                                                     course=c1,final_grades=['A','B','B','C','A'],tasks=['Collect Evals','Update status']))]
         
@@ -224,6 +265,11 @@ class populate(webapp.RequestHandler):
         for ct,id in course_tasks:
             ct.delegates=usr_key_list
             ct.put()
-                       
+        
+        sl=datamodel.ScheduleLog(university=u.key(),program=p2,task=ct_key_list[0],timestamp=datetime.datetime(2012,8,15),user=usr_key_list[0],email='rmb237@nau.edu')
+        sl.save()
+        sl1=datamodel.ScheduleLog(university=u.key(),program=p2,task=ct_key_list[1],timestamp=datetime.datetime(2012,8,15),user=usr_key_list[1],email='jwh83@nau.edu')
+        sl1.save()
+               
         #c.put()
         self.response.out.write("Ok!")
