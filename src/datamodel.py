@@ -135,6 +135,7 @@ class Outcome(Form):
     evaluation_end = db.DateTimeProperty() #needs to be intDays
     rationalize_course = db.ListProperty(db.Key)
     index = db.IntegerProperty()
+    objective_index=db.IntegerProperty()
     
 class OutcomeSupport(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university

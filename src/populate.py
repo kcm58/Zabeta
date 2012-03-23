@@ -173,6 +173,7 @@ class populate(webapp.RequestHandler):
         
         o1_1=datamodel.Outcome(name="Outcome 1.1: Possess professional skills and knowledge of the software design process",
                             index=1,
+                            objective_index=1,
                             description="The distinguishing skill between a gifted programmer and a software engineer is that, in addition to strong program implementation skills, the software engineer has a strong background in design (i.e., the creative process of analyzing end-user problems and arriving at a robust conceptual solution) and extensive knowledge of formal design and build process (i.e., modern software engineering tools and techniques aimed at reliably transforming a design into a finished product).  This outcome seeks to evaluate the extent to which graduates achieve this distinction as true software engineers.",
                             rationale="Empty",
                             assessments=[ct_key_list[0]],
@@ -187,6 +188,7 @@ class populate(webapp.RequestHandler):
         
         o1_2=datamodel.Outcome(name="Outcome 1.2: Ability to function effectively in both co-located and distributed software development teams.",
                             index=2,
+                            objective_index=1,
                             description="This outcome reflects the fact that modern software engineering is rarely a solo effort; most software development efforts involve highly-coordinated collaboration between multiple software engineers. The organizational and communication skills required to efficiently participate in a development team are critical and distinct from basic disciplinary (i.e., programming) skills. ",
                             assessments=[ct_key_list[1]],
                             last_evaluation=datetime.datetime(2011,6,10),
@@ -198,8 +200,42 @@ class populate(webapp.RequestHandler):
                             university=u.key())
         o1_2.put()
 
-        ob=datamodel.Objective(university=u,program=p,name="Practice-Oriented Skills Requirement",description="Make sure student does writing good.",index=1,outcomes=[o1_1.key(),o1_2.key()])
-        ob.put()
+        o2_1=datamodel.Outcome(name="Software Design Process",
+                            index=1,
+                            objective_index=2,
+                            description="The distinguishing skill between a gifted programmer and a software engineer is that, in addition to strong program implementation skills, the software engineer has a strong background in design (i.e., the creative process of analyzing end-user problems and arriving at a robust conceptual solution) and extensive knowledge of formal design and build process (i.e., modern software engineering tools and techniques aimed at reliably transforming a design into a finished product).  This outcome seeks to evaluate the extent to which graduates achieve this distinction as true software engineers.",
+                            rationale="Empty",
+                            assessments=[ct_key_list[0]],
+                            last_evaluation=datetime.datetime(2011,6,10),
+                            evaluation_next=365,
+                            evaluation_duration=365,
+                            rationalize_course=[c1.key()],
+                            rationalize_instrument=ins,
+                            where_from=wiki_form,
+                            university=u.key())
+        o2_1.put()
+        
+        o2_2=datamodel.Outcome(name="Team Building",
+                            index=2,
+                            objective_index=2,
+                            description="This outcome reflects the fact that modern software engineering is rarely a solo effort; most software development efforts involve highly-coordinated collaboration between multiple software engineers. The organizational and communication skills required to efficiently participate in a development team are critical and distinct from basic disciplinary (i.e., programming) skills. ",
+                            assessments=[ct_key_list[1]],
+                            last_evaluation=datetime.datetime(2011,6,10),
+                            evaluation_next=365,
+                            evaluation_duration=365,
+                            rationalize_course=[c2.key()],
+                            rationalize_instrument=ins,
+                            where_from=wiki_form,
+                            university=u.key())
+        o2_2.put()
+
+
+        ob1=datamodel.Objective(university=u,program=p,name="Practice-Oriented Skills Requirement",description="The continual improvement of skills though practice.",index=1,outcomes=[o1_1.key(),o1_2.key()])
+        ob1.put()        
+
+        ob2=datamodel.Objective(university=u,program=p,name="Writing Requirement",description="Make sure student does writing good.",index=2,outcomes=[o2_1.key(),o2_2.key()])
+        ob2.put()
+
 
         course_offerings=[(datamodel.CourseOffering(university=u.key(),semester=s,instructor=users[0][0].key(),student_count=35,section=1,
                                                     website="http://www.cefns.nau.edu/~edo/Classes/CS315_WWW/syllabus.html",

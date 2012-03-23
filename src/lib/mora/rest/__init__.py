@@ -247,14 +247,17 @@ class RestDispatcher(session.session):
         #University is except,  anyone can access this collection
         #Check to make sure the program and university match what the user has access to.
 
+        #University is a speical case,  it is the name of the Zone
         if model_name == "University":
             #Check to make sure the user uses this university
             #This is a special case
             if str(model.key()) != self.university_id:
                 raise DispatchError(403, "ResourceNotAllowed")
+        #Program is another special case,  this is the name of or Relm within the Zone.
         elif model_name == "Program":
             if str(model.key()) != self.program_id or str(model.university.key()) != self.university_id:
                 raise DispatchError(403, "ResourceNotAllowed")
+        #we assume that we have a "program" and "university" for every other collection.
         else:
             if (str(model.program.key()) != self.program_id or str(model.university.key()) != self.university_id):
                 raise DispatchError(403, "ResourceNotAllowed")

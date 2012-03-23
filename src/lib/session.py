@@ -3,7 +3,6 @@ import os
 import pycas
 import binascii
 import datamodel
-import sys
 import pickle
 
 from apiclient.discovery import build
@@ -23,6 +22,18 @@ OAUTH_CLIENT_SECRETS = """{
   }
 }"""
 OAUTH_PROVIDER = "https://www.googleapis.com/auth/plus.me"
+
+
+# * 400: InvalidHttpVerb
+# * 400: InvalidUri
+# * 404: ResourceNotFound
+# * 405: UnsupportedHttpVerb
+class DispatchError(Exception):
+
+    def __init__(self, code=None, message=None):
+        super(DispatchError, self).__init__()
+        self.code = code
+        self.message = message
 
 #This is a base class that insures the user is authenticated
 #before allowing them to access the rest of the class.
@@ -69,11 +80,11 @@ class session(webapp.RequestHandler):
                 else:
                     #session expired
                     self.destroy_session()
-                    sys.exit("Session expired")
+                    raise DispatchError(403, "SessionExpired")
                 #   self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
             else:
                 #Not allowed                  
-                sys.exit("Not authenticated")
+                raise DispatchError(403, "SessionExpired")
     #Create a new session id and link it to a user account using memcachd
     #this should only be called after a successful login to prevent session fixation.
     def new_session(self, auth):
@@ -129,15 +140,18 @@ class session(webapp.RequestHandler):
     
     def hasProgramAdmin(self):
         if self.program_priv < 2:
-            sys.exit("Not authenticated")
+            raise DispatchError(403, "InsufficientPrivileges")
 
 class path_handler(webapp.RequestHandler):
 
     def get(self):
         uni_path=self.request.path.split("/")[-1].lower()
         l=datamodel.University.gql("where login_path=:1 limit 1",uni_path)
-        uni_id=str(l.fetch(1)[0].key()) 
-        self.redirect("/authentication/"+uni_id)
+        if len(l.fetch(1)):
+            uni_id=str(l.fetch(1)[0].key()) 
+            self.redirect("/authentication/"+uni_id)
+        else:
+            raise DispatchError(404, "NotFound")
 
 class auth(session):
     #The user doesn't need a session to access this class
@@ -156,7 +170,7 @@ class auth(session):
         else:
             #Looks like we don't have this university
             self.redirect("/")
-            sys.exit()
+            raise DispatchError(404, "UniversityNotFound")
     #This is used to create a session.
     #First the user is authenticated using cas, 
     #then then they are mapped to a user
