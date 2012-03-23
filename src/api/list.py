@@ -20,6 +20,7 @@ class list(api.api):
             "ScheduleLog":True,
             "User":True,
             "Batch":True,
+            "Program":True
             }
     
     #takes in a collection and makes sure to only pull out records the user has access to.
@@ -30,8 +31,8 @@ class list(api.api):
         #"where university=:1",self.university
     #    return self.filter(datamodel.University)
 
-    #def Program(self):
-    #    return self.filter(datamodel.Program)
+    def Program(self):
+        return self.filter(datamodel.Program)
 
     def Semester(self):
         return self.filter(datamodel.Semester)

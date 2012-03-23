@@ -1,0 +1,26 @@
+<h2>Schedule Log</h2>
+<table class="list">
+  <thead>
+    <tr>
+    	<th>
+    		Task
+    	</th>
+      <th>
+        Completed By
+      </th>
+      <th>
+        Due On
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#ScheduleLog}}
+    <tr>
+    	<td><a onclick="view('{{task_human.id}}', 'task_view')">{{task_human.name}}</a></td>
+      <td><a onclick="view('{{user_human.id}}', 'user_view')">{{user_human.full_name}}</td>
+      <td>{{timestamp}}</td>
+    </tr>
+    {{/ScheduleLog}}
+  </tbody>
+</table>
+<a onclick="addNew('program')" style="cursor:pointer">Add</a>

@@ -1,0 +1,44 @@
+<!--
+<div class="header">
+  <h1>Edit Task</h1>
+</div>
+-->
+
+{{#user}}
+<div class="task">
+  <form><ul>
+    <li>
+      <label for="name">Name</label>
+      {{#if ../edit}}
+        <input type="text" id="name" name="name" value="{{name}}" />
+      {{else}}
+        <div>{{name}}</div>
+      {{/if}}
+    </li>
+
+    <li>
+      <label for="name">User ID</label>
+      {{#if ../edit}}
+        <input type="text" id="employee_id" name="employee_id" value="{{employee_id}}" />
+      {{else}}
+        <div>{{employee_id}}</div>
+      {{/if}}
+    </li>
+    
+    <li>
+      <label for="name">Office Phone</label>
+      {{#if ../edit}}
+        <input type="text" id="phone_office" name="phone_office" value="{{phone_office}}" />
+      {{else}}
+        <div>{{phone_office}}</div>
+      {{/if}}
+    </li>
+
+  </ul></form>
+</div>
+{{/user}}
+
+<div class="actions">
+  <button class="cancel" name="cancel">Cancel</button>
+  {{#unless view}}<button class="update" name="update">Update</button>{{/unless}}
+</div>

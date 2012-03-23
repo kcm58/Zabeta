@@ -6,9 +6,6 @@
     		Name
     	</th>
       <th>
-        Description
-      </th>
-      <th>
       	Edit
       </th>
     </tr>
@@ -16,8 +13,7 @@
   <tbody>
     {{#Objective}}
     <tr>
-   	  <td><a onclick="togglehidden('{{id}}')">{{index}}. {{name}}</a></td>
-      <td>{{description}}</td>
+   	  <td><a onclick="$('#{{id}}_outcomes').toggle('bind')">{{index}}. {{name}}</a></td>
       <td><a onclick="edit('{{id}}', 'edit_notmpl')" style="cursor:pointer">Edit</a>
     </tr>
     <tr class="noborder">
