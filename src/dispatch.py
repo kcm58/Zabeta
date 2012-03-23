@@ -85,7 +85,11 @@ class dispatch(session.session):
                     ref_ret=[]
                     for r in ret:
                         #User Access Control
-                        if r.program != self.program_id or r.university != self.university_id:
+                        if r.class_name() == "User":
+                            #Todo fix!  make fine grained. 
+                            self.hasProgramAdmin()
+                            ref_ret.append(self.getElement(r))  
+                        elif r.program != self.program_id or r.university != self.university_id:
                             ref_ret.append(self.getElement(r))
                     ret=ref_ret
                 if t is db.GqlQuery:

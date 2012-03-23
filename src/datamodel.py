@@ -31,8 +31,6 @@ class Form(Version):
     instructions = db.StringProperty()
     
 class User(db.MoraModel):
-    university = db.ReferenceProperty(None,indexed=True) #void pointer to university
-    program = db.ReferenceProperty(None,indexed=True) #void pointer to program
     full_name = db.StringProperty() #full name
     display_name = db.StringProperty()
     email = db.EmailProperty()
