@@ -63,7 +63,8 @@ class Program(Version):
     description = db.StringProperty()
     webpage = db.StringProperty() #url to website
     thumbnail = db.StringProperty() #identifier of image file
-    docs = db.StringProperty() #identifier of docs array
+    docs_names =  db.StringListProperty()#names of each doc. 
+    docs_blob_ids =  db.StringListProperty() #identifier of docs array
     nag_before = db.StringListProperty()
     nag_after = db.StringListProperty()
 
@@ -189,4 +190,5 @@ class ScheduleLog(db.MoraModel):
     task = db.ReferenceProperty(None,indexed=True) #void pointer to a task
     user = db.ReferenceProperty(None,indexed=True)
     timestamp = db.DateTimeProperty()
+    due_date = db.DateTimeProperty()
     email = db.EmailProperty()
