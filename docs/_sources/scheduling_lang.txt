@@ -1,0 +1,33 @@
+Zabeta Scheduling
+*****************
+A major requirement for the Zabeta system is its ability to to provide an effective task management and scheduling system. Users must be able to create tasks and associate them with outcomes; these types of tasks include assessment tasks and course tasks. In addition, users must be able to create simple one-time "todo" tasks. All of the aforementioned tasks must be coordinated according to start and end times. The Zabeta scheduling system must ensure that assessment tasks and course tasks get rescheduled periodically according to a user-defined cycle. In order to maintain flexibility in the Zabeta system, users must be allowed to define a cycle for constraining the rescheduling of tasks based on their specific school year model. In order to allow this, Team Zabeta has defined a set of rules that allow the large amount of possibilites that manifest through this requirement to be implemented. We have expressed this language in Extented Backas-Naur Form and as a Grammar.
+
+EBNF
+====
+The following is the syntax of the Zabeta scheduling language expressed in Extended Backus-Naur Form:
+
+================  =========================================== 
+ <cycle-string>   ::= <operator>(<scalar><term>)|<term>)
+ <operator>       ::= 'start of' | 'end of'
+ <scalar>         ::= 1 | 2 | ... | Infinity
+ <term>           ::= t1 | t2 | ... | tn
+================  ===========================================
+
+Note that the terms (t1,t2,...,tn) in the <term> rule represent a given school year model for an arbitrary institution.
+
+Formal Grammar
+==============
+
+The following is the Zabeta scheduling language expressed as a grammar:
+
+| Let d be the string 'end'
+| Let e be the string 'every'
+| Let t be a term that exists in an arbitrary university's school year model
+
+= === ==================
+S --> eX | eY | dX  | dY
+X --> t1 | t2 | ... | tn
+Y --> 2X | 3X | ... | nX
+= === ==================
+
+Note that the terms (t1,t2,...,tn) in the <term> rule represent a given school year model for an arbitrary institution.

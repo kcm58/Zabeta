@@ -1,4 +1,4 @@
-<h2>Programs</h2>
+<h2>Objectives</h2>
 <table class="list">
   <thead>
     <tr>
@@ -6,28 +6,24 @@
     		Name
     	</th>
       <th>
-        Description
-      </th>
-      <th style="cursor:pointer">
-        Outcomes
-      </th>
-      <th>
       	Edit
       </th>
     </tr>
   </thead>
   <tbody>
-    {{#Program}}
+    {{#Objective}}
     <tr>
-    	<td>{{name}}</td>
-      <td>{{description}}</td>
-      <td>{{mission}}</td>
-      <td>{{doc}}</td>
-      <td>{{start_date}}</td>
-      <td>{{end_date}}</td>
+   	  <td><a onclick="$('#{{id}}_outcomes').toggle('bind')">{{index}}. {{name}}</a></td>
       <td><a onclick="edit('{{id}}', 'edit_notmpl')" style="cursor:pointer">Edit</a>
     </tr>
-    {{/Program}}
+    <tr class="noborder">
+    <td class="outcome" colspan="2">
+    <div id="{{id}}_outcomes" style="display:none" >
+    {{#Batch}}
+    <p style="margin:5px"><a>{{objective_index}}.{{index}}. {{name}}</a></p>
+    {{/Batch}}
+    </div></td></tr>
+    {{/Objective}}
   </tbody>
 </table>
 <a onclick="addNew('program')" style="cursor:pointer">Add</a>

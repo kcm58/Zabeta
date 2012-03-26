@@ -19,6 +19,9 @@ handlers:
   
 - url: /templates
   static_dir: client/templates
+ 
+- url: /legal
+  static_dir: client/legal
 
 - url: /favicon\.ico
   static_files: client/img/favicon.ico

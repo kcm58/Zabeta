@@ -246,12 +246,35 @@ class RestDispatcher(session.session):
         #User Access Control DO NOT REMOVE!
         #University is except,  anyone can access this collection
         #Check to make sure the program and university match what the user has access to.
-        #try:
-        if model_name != "University" and model_name != "Program":
+
+        #University is a speical case,  it is the name of the Zone
+        if model_name == "University":
+            #Check to make sure the user uses this university
+            #This is a special case
+            if str(model.key()) != self.university_id:
+                raise DispatchError(403, "ResourceNotAllowed")
+        #Program is another special case,  this is the name of or Relm within the Zone.
+        elif model_name == "Program":
+            if str(model.key()) != self.program_id or str(model.university.key()) != self.university_id:
+                raise DispatchError(403, "ResourceNotAllowed")
+        elif model_name == "User":
+            #Grab this user's authentication record and see if they belong to this Program
+            ar=db.GqlQuery("select * from AuthenticationRecord where user=:1",model).fetch(1)
+            found_program=False
+            for p in ar.programs:
+                if p.key() in self.user.programs:
+                    found_program=True
+                    break
+            #If the user isn't modifying their own record 
+            #and the user accessing this api call isn't an administrator over the user
+            #Then the user can't access this "User" record
+            if str(model.key()) != str(self.user.key()) and not found_program:
+                raise DispatchError(403, "ResourceNotAllowed")
+        #we assume that we have a "program" and "university" for every other collection.
+        else:
             if (str(model.program.key()) != self.program_id or str(model.university.key()) != self.university_id):
                 raise DispatchError(403, "ResourceNotAllowed")
-        #except:
-        #    pass
+
         # We then can use the model to create an appropriate handler.
         if model_name in self.rest_handlers:
             rest_handler = self.rest_handlers[model_name](model, self.request, self.response)
