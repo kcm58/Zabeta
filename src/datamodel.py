@@ -164,6 +164,7 @@ class Objective(Version):
 class Minutes(Version):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
     program = db.ReferenceProperty(Program)
+    user = db.ReferenceProperty(User)
     description = db.Text()
     docs = db.StringProperty() #identifier of docs array
     date = db.DateTimeProperty()
@@ -185,7 +186,7 @@ class AuthenticationRecord(db.MoraModel):
     user = db.ReferenceProperty(User,indexed=True)
     oauth_id = db.StringProperty()
     cas_id = db.StringProperty()
-    programs = db.ListProperty(db.Key)#Progam refernce
+    programs = db.ListProperty(db.Key)#Program reference
     privileges = db.ListProperty(int)
 
 class ScheduleLog(db.MoraModel):
