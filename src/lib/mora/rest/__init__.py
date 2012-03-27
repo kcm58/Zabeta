@@ -312,11 +312,12 @@ class RestDispatcher(session.session):
 # The RestHandler is attached to the model, request, and response.
 # You can override the provided `show`, `update` and `delete` methods
 # or create new methods.
-class RestHandler(object):
+class RestHandler(session.session):
 
     _mora_verbs = {}
 
     def __init__(self, model, request, response):
+        super(session.session, self).__init__(request, response)
         self.model = model
         self.request = request
         self.response = response

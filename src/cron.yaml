@@ -1,1 +1,4 @@
 cron:
+- description: Run the scheduler.  Send email and create new CourseOfferings.
+  url: /schedule
+  schedule: every 24 hours

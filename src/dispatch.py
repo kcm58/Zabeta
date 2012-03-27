@@ -135,7 +135,7 @@ class index(webapp.RequestHandler):
         self.response.out.write(index)
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/api/crud', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User,crud.University,crud.Program])
+    RestDispatcher.setup('/api/crud', [crud.Objective, crud.Minutes, crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User,crud.University,crud.Program])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),

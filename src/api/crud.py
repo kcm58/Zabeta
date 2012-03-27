@@ -2,7 +2,6 @@ from mora.rest import RestHandler,rest_create
 from mora import db
 import datamodel
 import datetime
-import revision
 
 #A user is NOT revisioned,  and does not use version_interface
 class User(RestHandler):
@@ -46,6 +45,14 @@ class Outcome(RestHandler):
         
     def update(self):
         self.model.from_json(self.params)
+        #Override the base values. 
+        self.params['program']=self.program_id
+        self.params['university']=self.university_id
+        new_outcome=datamodel.Outcome()
+        new_outcome.from_json(self.params)
+        #Populate the response
+        self.model.outcomes.append(new_outcome)
+        self.version_save(self.model)        
 
 class Objective(RestHandler):
 
@@ -66,7 +73,7 @@ class Objective(RestHandler):
         new_outcome.from_json(self.params)
         #Populate the response
         self.model.outcomes.append(new_outcome)
-        self.model.save()
+        self.version_save(self.model)
 
 class Task(RestHandler):
 
@@ -133,8 +140,7 @@ class Semseter(RestHandler):
     def update(self):
         self.model.from_json(self.params)
 
-class University(RestHandler,revision):
-    __metaclass__ = RestHandler
+class University(RestHandler):
     
     model = datamodel.University
       
