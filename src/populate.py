@@ -28,6 +28,7 @@ class populate(webapp.RequestHandler):
         self.clear(datamodel.CourseTask)
         self.clear(datamodel.Instrument)
         self.clear(datamodel.Objective)
+        self.clear(datamodel.ScheduleLog)
         #debug, create a new user
         
         u=datamodel.University(name="NAU",domain="nau.edu",login_path="nau",webpage="http://nau.edu")
@@ -59,8 +60,8 @@ class populate(webapp.RequestHandler):
         nau_semesters=[(datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,8,15),end_date=datetime.datetime(2012,12,15),name="fall")),
                        (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,12,18),end_date=datetime.datetime(2013,1,12),name="winter")),
                        (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,1,15),end_date=datetime.datetime(2013,5,12),name="spring")),
-                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,5,15),end_date=datetime.datetime(2013,8,12),name="summer")),
-                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2012,8,15),end_date=datetime.datetime(2013,8,15),name="year"))]
+                       (datamodel.Semester(university=u,program=p,begin_date=datetime.datetime(2013,5,15),end_date=datetime.datetime(2013,8,12),name="summer"))]
+        
         for s in nau_semesters:
             s.put()
         

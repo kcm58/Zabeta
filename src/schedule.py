@@ -222,6 +222,7 @@ class schedule(webapp.RequestHandler):
                     self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
+                    self.create_schedule_log(dele,program,t)
                     self.debug("<br />")
 
                 
@@ -246,6 +247,7 @@ class schedule(webapp.RequestHandler):
                     self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
+                    self.create_schedule_log(dele,program,t)
                     self.debug("<br />")
                 
         if nag_before_dict['one week before']==1:
@@ -269,6 +271,7 @@ class schedule(webapp.RequestHandler):
                     self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
+                    self.create_schedule_log(dele,program,t)
                 
         if nag_before_dict['one day before']==1:
             start_window=(datetime.datetime.now().date())+deltas['day']
@@ -291,6 +294,7 @@ class schedule(webapp.RequestHandler):
                     self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
+                    self.create_schedule_log(dele,program,t)
                     self.debug("<br />")
                 
     def check_nags_after(self,nag_after_dict,program):
@@ -319,6 +323,7 @@ class schedule(webapp.RequestHandler):
                     self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
+                    self.create_schedule_log(dele,program,t)
                 
         if nag_after_dict['one month after']==1:
             start_window=(datetime.datetime.now().date())-deltas['month']
@@ -342,6 +347,7 @@ class schedule(webapp.RequestHandler):
                     self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
+                    self.create_schedule_log(dele,program,t)
                 
         if nag_after_dict['one week after']==1:
             start_window=(datetime.datetime.now().date())-deltas['week']
@@ -365,6 +371,7 @@ class schedule(webapp.RequestHandler):
                     self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
+                    self.create_schedule_log(dele,program,t)
                 
         if nag_after_dict['one day after']==1:
             start_window=(datetime.datetime.now().date())-deltas['day']
@@ -387,13 +394,24 @@ class schedule(webapp.RequestHandler):
                     self.debug(task_str)
                     dele=db.get(t.delegates)
                     self.send_emails(dele,t_key)
-                
+                    self.create_schedule_log(dele,program,t)
+                    
+    def create_schedule_log(self,delegates,program,task):
+        for d in delegates:
+            new_log=datamodel.ScheduleLog(university=program.university,
+                                          program=program,
+                                          task=task,
+                                          user=d,
+                                          timestamp=datetime.datetime.now(),
+                                          due_date=task.end_date,
+                                          email=d.email)
+            new_log.put() 
+                       
     def send_emails(self,delegates,t_key):
         self.debug("Sending emails to: ")
         for d in delegates:
             self.debug(d.email)
             self.response.write(" ")
-            d_full_name=d.full_name
             d.email=d.email
             mail.send_mail(sender="test@zabeta.com",
                             to="%s %s"%(d.full_name,d.email),
@@ -403,9 +421,8 @@ class schedule(webapp.RequestHandler):
                                     This is a test email.
 
                                     Please let me know if you got it.""" %(d.full_name,t_key))
+            
        
-    def interpret_delta(self,str):
-        print ""
         
         
         
