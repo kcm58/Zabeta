@@ -1,5 +1,5 @@
-import sys 
-#Consolidate library files. 
+import sys
+#Consolidate library files.
 sys.path.append("lib")
 
 import json
@@ -19,10 +19,14 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from mora.rest import RestDispatcher
 import webapp2 as webapp
 
+import os
+import glob
+from google.appengine.ext.webapp import template
+
 #Extend session so that we can enforce access control
 class dispatch(session.session):
 
-    def handle_exception(self,exception, debug_mode):   
+    def handle_exception(self,exception, debug_mode):
       resp=json_encode({"error":exception})
       self.response.out.write(resp)
       pass
@@ -58,7 +62,7 @@ class dispatch(session.session):
         try:
             #Check if any exceptions where thrown during init.
             self.check_error()
-        
+
             call_arg=False
             path=self.request.path.split("/")
             call_class=path[2]
@@ -86,7 +90,7 @@ class dispatch(session.session):
                         #k=Key(self.university_id)
                         #u=datamodel.University(key_name=self.university_id)
                         #ret=ret.filter("university=",self.university_id )#.filter("program=",Key(self.program_id))
-                        
+
                         #ret=ret.fetch(1024)
                         #t=type(ret)
                     if t is list:
@@ -96,9 +100,9 @@ class dispatch(session.session):
                         for r in ret:
                             #User Access Control
                             if r.class_name() == "User":
-                                #Todo fix!  make fine grained. 
+                                #Todo fix!  make fine grained.
                                 self.hasProgramAdmin()
-                                ref_ret.append(self.getElement(r))  
+                                ref_ret.append(self.getElement(r))
                             elif r.program != self.program_id or r.university != self.university_id:
                                 ref_ret.append(self.getElement(r))
                         ret=ref_ret
@@ -110,18 +114,18 @@ class dispatch(session.session):
                         for u in u_list:
                             #This User Access Control is redundant at the time of writing.
                             #if r.program != self.program_id or r.university != self.university_id:
-                            #    ref_ret.append(self.getElement(r))                      
+                            #    ref_ret.append(self.getElement(r))
                             element=self.getElement(u)
                             ret.append(element)
                 else:
                     ret={"error":"invalid method"}
             else:
                 ret={"error":"invalid class"}
-            #format output:    
+            #format output:
             #call_class is needed for namespace
-            if call_class=="list":     
+            if call_class=="list":
                 #A special case so that the list returns the proper namespace
-                #for the collection it is returning. 
+                #for the collection it is returning.
                 json_obj = json.dumps({call_method:ret})
             else:
                 json_obj = json.dumps({call_class:ret})
@@ -131,12 +135,21 @@ class dispatch(session.session):
             self.error(e.code)
             resp=json.dumps({'error':e.message})
             self.response.write(resp)
+
 #A static page doesn't need to extend session
 class index(webapp.RequestHandler):
 
-    def get(self):    
-        index=open("client/index.html").read()
-        self.response.out.write(index)
+    def get(self):
+        templates_path = os.path.join(os.path.dirname(__file__), 'templates')
+        template_values = {
+          'templates': map(lambda t: {
+              'name': os.path.splitext(os.path.basename(t))[0],
+              'body': open(t).read()
+              }, glob.glob(templates_path + '/*.handlebars'))
+        }
+
+        path = os.path.join(os.path.dirname(__file__), 'client/index.html')
+        self.response.out.write(template.render(path, template_values))
 
 if __name__ == "__main__":
     RestDispatcher.setup('/api/crud', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User,crud.University,crud.Program])
@@ -144,13 +157,13 @@ if __name__ == "__main__":
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),
                                          ('/authentication/.*', session.auth),
-                                         ('/a/.*', session.path_handler),  
+                                         ('/a/.*', session.path_handler),
                                          ('/file/upload/.*', file.UploadFile),
-                                         ('/file/UploadFrame/.*', file.UploadFrame),   
-                                         ('/file/download/([^/]+)?', file.DownloadFile),            
+                                         ('/file/UploadFrame/.*', file.UploadFrame),
+                                         ('/file/download/([^/]+)?', file.DownloadFile),
                                          #todo:  remove debug code!
                                          ('/file/test', file.test),
-                                         ('/file/getAll', file.getAll),                            
+                                         ('/file/getAll', file.getAll),
                                          ('/populate', populate.populate),
                                          ('/schedule', schedule.schedule),
                                          ('/task_util',task_util.task_util),

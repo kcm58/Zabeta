@@ -11,6 +11,14 @@ class user(api.api):
         pass
 
     def get(self):
+        # TODO: we should return all of the initial data in one request
+        #       (howerver that's done?)
+        # ret = {
+        #   "user": self.user,
+        #   "university":
+        #     datamodel.University.get_by_id(self.user['university'])
+        # }
+        # return ret
         return self.user
 
     def logout(self):
