@@ -11,7 +11,6 @@ Zabeta = function () {
 
 	/* Public */
 	return {
-		adminLayout: 'admin_layout',
 		dashboardLayout: 'dashboard_layout',
 		collectionLayout: 'collection_layout',
 
@@ -29,47 +28,53 @@ Zabeta = function () {
 			// TODO: the university should be loaded in conjunction with the
 			// user and any other initial data (see similar note in
 			// api/user.py).
-			$.getJSON('/api/crud/'+Zabeta.me.get('university'), function (uni_json) {
-				var uni_name = uni_json['name'];
-				var login_path = uni_json['login_path'];
-				Zabeta.me.set('uni_name', uni_name);
+			$.ajax('/api/crud/'+Zabeta.me.get('university'), {
+				type: 'GET',
+				async: false,
+				success: function (response) {
+					var uni_name = response['name'];
+					var login_path = response['login_path'];
+					Zabeta.me.set('uni_name', uni_name);
 
-				// render the toolbar template
-				T.render('toolbar', function (template) {
-					console.dir(Zabeta.me.toJSON());
-					console.dir(template(Zabeta.me.toJSON()));
-					$('#toolbar').html(template(Zabeta.me.toJSON()));
-				});
+					// render the toolbar template
+					T.render('toolbar', function (template) {
+						$('#toolbar').html(template(Zabeta.me.toJSON()));
+					});
 
-				// TODO: program chooser, but again this data should be loaded
-				// when all the initial data is loaded.
-
+					// TODO: program chooser, but again this data should be loaded
+					// when all the initial data is loaded.
+				}
 			});
 		},
 
 		/** Called when the document has loaded its DOM and is ready. */
 		applicationDidFinishLaunching: function () {
-			console.log('Zabeta.applicationDidFinishLaunching');
-
 			// get the user
-			$.getJSON('/api/user/get', function (response) {
-				if (!$.isEmptyObject(response.user)) {
-					Zabeta.me = new Zabeta.User(response.user);
-					Zabeta.displayToolbar();
-				} else {
-					// TODO: handle error
+			$.ajax('/api/user/get', {
+				type: 'GET',
+				async: false,
+				success: function (response) {
+					if (!$.isEmptyObject(response.user)) {
+						Zabeta.me = new Zabeta.User(response.user);
+						Zabeta.displayToolbar();
+					} else {
+						// TODO: handle error
+					}
 				}
 			});
 
-			// switch to this users default layout
+			// switch to this users default page
 			// TODO: check access level and load either the admin page or
 			// the dashboard
-			Zabeta.switchLayout(Zabeta.adminLayout);
+			Zabeta.adminPage.show();
 		}
 	};
 }();
 
 
+/**
+ * User
+ */
 Zabeta.User = Backbone.Model.extend({
 	defaults: function () {
 		return {
@@ -90,42 +95,119 @@ Zabeta.User = Backbone.Model.extend({
 	}
 });
 
-Zabeta.Users = Backbone.Collectioin.extend({
-	model: Zabeta.User
+Zabeta.UserList = Backbone.Collection.extend({
+	model: Zabeta.User,
+
+	url: function () {
+		return 'api/crud/' + Zabeta.me.get('university') + '/users';
+	}
+});
+
+Zabeta.UserListItemView = Backbone.View.extend({
+	tagName: 'tr',
+
+	render: function () {
+		var self = this;
+		T.render('user_list_item', function (template) {
+			$(self.el).html(template(self.model.toJSON()));
+		});
+		return this;
+	}
+});
+
+Zabeta.UserListView = Backbone.View.extend({
+	el: $('#user-list tbody'),
+
+	initialize: function () {
+		this.model.bind('reset', this.render, this);
+		var self = this;
+		this.model.bind('add', function (user) {
+			$(self.el).append(new Zabeta.UserListItemView({
+				model:user
+			}).render().el);
+		});
+	},
+
+	render: function () {
+		_.each(this.model.models, function (user) {
+			$('#user-list tbody').append(new Zabeta.UserListItemView({
+				model:user
+			}).render().el);
+		}, this);
+		return this;
+	}
 });
 
 
-Zabeta.Program =  Backbone.Model.extend({
+/**
+ * Program
+ */
+Zabeta.Program = Backbone.Model.extend({
 	defaults: function () {
 		return {
 		};
 	}
 });
 
-Zabeta.Programs = Backbone.Collectioin.extend({
-	model: Zabeta.Program
+Zabeta.ProgramList = Backbone.Collection.extend({
+	model: Zabeta.Program,
+
+	url: function () {
+		return 'api/crud/' + Zabeta.me.get('university') + '/programs';
+	}
 });
 
+Zabeta.ProgramListView = Backbone.View.extend({
+	el: $('#program-list tbody')
+});
 
-Zabeta.Semester =  Backbone.Model.extend({
+/**
+ * Semester
+ */
+Zabeta.Semester = Backbone.Model.extend({
 	defaults: function () {
 		return {
 		};
 	}
 });
 
-Zabeta.Semesters = Backbone.Collectioin.extend({
-	model: Zabeta.Semester
+Zabeta.SemesterList = Backbone.Collection.extend({
+	model: Zabeta.Semester,
+
+	url: function () {
+		return 'api/crud/' + Zabeta.me.get('university') + '/semesters';
+	}
 });
 
+Zabeta.SemesterListView = Backbone.View.extend({
+	el: $('#semester-list tbody')
+});
 
+/**
+ * Administrators page
+ */
 Zabeta.adminPage = function () {
 	/* Privates */
-	// ...
+	var layout = 'admin_layout';
 
 	/* Public */
 	return {
+		programs: null,
+		semesters: null,
+		users: null,
 
+		show: function () {
+			Zabeta.switchLayout(layout);
+			this.programs = new Zabeta.ProgramList;
+			this.programs.fetch();
+
+			this.semesters = new Zabeta.SemesterList;
+			this.semesters.fetch();
+
+			this.users = new Zabeta.UserList;
+			this.userListView = new Zabeta.UserListView({model:this.users});
+			this.users.fetch();
+		}
 	};
 }();
 
