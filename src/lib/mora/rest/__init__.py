@@ -40,7 +40,9 @@ import logging
 import sys
 import inspect
 from mora import db
+import google.appengine.ext
 import session
+import json
 
 # GAE supports a couple of versions of Python and the GAE environment.
 # We will try to use the latest modules and then use `ImportError`
@@ -207,12 +209,15 @@ class RestDispatcher(session.session):
         # The action method handles exceptions by recursively calling
         # itself such that we have one spot that we can catch
         # `DispatchError`s.
+        self.check_error()
         if not exceptions:
             try:
                 self.action(act, exceptions=True)
             except DispatchError as error:
                 self.response.set_status(error.code)
-                self.response.out.write("Error " + str(error.code))
+                self.response.headers['Content-Type'] = 'application/json'
+                resp=json.dumps({"error":error.message})
+                self.response.out.write(resp)
             return
 
         # We also support a special `_method` argument to change the
@@ -259,16 +264,16 @@ class RestDispatcher(session.session):
                 raise DispatchError(403, "ResourceNotAllowed")
         elif model_name == "User":
             #Grab this user's authentication record and see if they belong to this Program
-            ar=db.GqlQuery("select * from AuthenticationRecord where user=:1",model).fetch(1)
+            ar=google.appengine.ext.db.GqlQuery("select * from AuthenticationRecord where user=:1",model).fetch(1)[0]
             found_program=False
             for p in ar.programs:
-                if p.key() in self.user.programs:
+                if p in self.user['programs']:
                     found_program=True
                     break
             #If the user isn't modifying their own record 
             #and the user accessing this api call isn't an administrator over the user
             #Then the user can't access this "User" record
-            if str(model.key()) != str(self.user.key()) and not found_program:
+            if str(model.key()) != self.user['id'] and not found_program:
                 raise DispatchError(403, "ResourceNotAllowed")
         #we assume that we have a "program" and "university" for every other collection.
         else:

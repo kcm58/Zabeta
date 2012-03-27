@@ -86,21 +86,18 @@ class session(webapp.RequestHandler):
             else:
                 #Not allowed                  
                 self.error_msg(403, "SessionExpired")
-    
+
     def check_error(self):
         if self.exception:
            raise self.exception
 
     def error_msg(self,code,str):
-        #self.error(code)
         self.exception=DispatchError(code,str)
-        #self.response.out.write(str)
-        #self.error(code)
         
-    def handle_exception(self, exception, debug_mode):    
+    #def handle_exception(self, exception, debug_mode):    
         #resp=json_encode({"error":exception})
         #self.response.out.write(resp)
-        pass
+        #pass
     #Create a new session id and link it to a user account using memcachd
     #this should only be called after a successful login to prevent session fixation.
     def new_session(self, auth):
