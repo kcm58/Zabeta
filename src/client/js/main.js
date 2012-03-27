@@ -36,22 +36,23 @@ $(document).ready(function(){
 	 * Handle all AJAX errors by assuming the user isn't logged in. Bad, but for now, good.
 	 */
 	$('body').ajaxError(function(e, jqxhr, settings, exception){
-		clearPanes();
-		$('#menu').html('');
-		$('#toolbar').html('');
-		$('#top').html('<img src="img/google-signin.png" alt="Sign in with Google" /><h3>Debug: See JavaScript Console for more info');
-		console.log('---Start AJAX Error Details---');
-		console.log('Event:');
-		console.log(e);
-		console.log('jqXHR:');
-		console.log(jqxhr);
-		console.log('AJAX Settings:');
-		console.log(settings);
-		console.log('AJAX Exception:');
-		console.log(exception);
-		console.log('----End AJAX Error Details----');
-		console.log();
-		console.log();
+		var responseText = $.parseJSON(jqxhr.responseText).error;
+		var message = '';
+		if(responseText == 'SessionExpired'){
+			clearPanes();
+			$('#menu').html('');
+			$('#toolbar').html('');
+			message = '<h2>You are not logged in</h2><h3>Please re-visit your login URL or <img style="vertical-align:bottom" src="img/google-signin.png" alt="Sign in with Google" /></h3>';
+			window.location.hash = "";
+			$('#top').html(message);
+		}else{
+			message = '<p>Oops! Something went wrong.</p><p>You can tell someone this: '+responseText+'</p>';
+			$('#dialog').html(message);
+			$('#dialog').dialog({
+				title: 'Error',
+			});
+		}
+		
 	});
 });
 
@@ -176,8 +177,7 @@ function loadProgramChooser(){
 						$.jStorage.setTTL('program', 604800000);
 						updateProgramToolbar(program);
 						var curHash = window.location.hash;
-						window.location.hash="";
-						window.location.hash = curHash;
+						window.location.hash = "";
 						loadMenu();
 					});
 					loadMenu();

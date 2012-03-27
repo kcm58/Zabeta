@@ -22,6 +22,9 @@ handlers:
  
 - url: /legal
   static_dir: client/legal
+  
+- url: /play
+  static_dir: client/play
 
 - url: /favicon\.ico
   static_files: client/img/favicon.ico

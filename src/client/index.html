@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="css/zabeta.css" />
   <link rel="stylesheet" href="css/wikiforms.css" />
   <link rel="stylesheet" href="css/smoothness/jquery-ui-1.8.18.custom.css" />
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/bootstrap-responsive.css" />
 
 </head>
 
@@ -26,8 +28,8 @@
 	 </div>
   </div>
 
+  <div id="container" class="content rounded">
 
-  <div id="container">
   	<div id="menu">
   		<h2></h2>
   		<div id="menu-content"></div>
@@ -37,19 +39,15 @@
  			<div id="bottom-left"></div>
  			<div id="bottom-right"><h2></h2></div>
   	</div>
+
   </div>
 
-  <div id="footer">&copy; 2012 Northern Arizona University | Flagstaff, Arizona | <a onclick="loadTOS()">Terms of Service</a> | <a onclick="loadPriv()">Privacy Policy</a></div>
-
-  <div id="loading">
-  	<div id="loading-text">
-	  	<h1>Loading...</h1>
-	  	<img src="img/ajax-loader.gif" />
-	  </div>
-	 </div>
-
-	<div id="dialog"></div>
-  <div id="edit-response"></div>
+  <div id="footer">
+    &copy; 2012 Northern Arizona University |
+    Flagstaff, Arizona |
+    <a onclick="loadTOS()">Terms of Service</a> |
+    <a onclick="loadPriv()">Privacy Policy</a>
+  </div>
 
   <script src="lib/jquery-1.7.1.min.js"></script>
   <script src="lib/jquery-ui-1.8.18.custom.min.js"></script>
@@ -61,7 +59,16 @@
   <script src="lib/jstorage.js"></script>
   <script src="lib/jquery.cookie.js"></script>
   <script src="lib/wikiforms.js"></script>
+  <script src="lib/bootstrap.js"></script>
   <script src="js/main.js"></script>
+
+  {% for template in templates %}
+    <script id="{{template.name}}-template" type="text/x-handlebars-template">
+      {% autoescape off %}
+        {{template.body}}
+      {% endautoescape %}
+    </script>
+  {% endfor %}
 
   <!--[if lt IE 7 ]>
     <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>

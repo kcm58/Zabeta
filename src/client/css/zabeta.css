@@ -69,7 +69,7 @@ body {
   display: table;
   right: 12px;
   height: 48px;
-  width: 350px;
+  width: 500px;
 }
 #account #program-chooser{
 	display: table-cell;
@@ -117,11 +117,33 @@ body {
   top: 50px;
   left: 0;
   right: 0;
-  bottom: 0;
-  padding: 2em;
-  background:white;
-  background-image:url('../img/background.png');
-  background-repeat:repeat;
+  bottom: 32px;
+  margin: 12px;
+  padding: 20px;
+}
+
+.content {
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+}
+.content, .rounded {
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -o-border-radius: 4px;
+  -khtml-border-radius: 4px;
+}
+.content {
+  background: white;
+  border: 1px solid;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+  border-color: #E5E5E5 #DBDBDB #D2D2D2;
 }
 
 #menu{
