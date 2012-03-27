@@ -42,6 +42,7 @@ class session(webapp.RequestHandler):
     #Does this instance need authentication?
     always_allowed=False
     session_id=None
+    exception=False
     
     def __init__(self, request, response):
         super(session, self).__init__(request, response)
@@ -80,11 +81,26 @@ class session(webapp.RequestHandler):
                 else:
                     #session expired
                     self.destroy_session()
-                    raise DispatchError(403, "SessionExpired")
+                    self.error_msg(403, "SessionExpired")
                 #   self.response.out.write("Doesn't work:"+str(self.request.cookies["cid"]))
             else:
                 #Not allowed                  
-                raise DispatchError(403, "SessionExpired")
+                self.error_msg(403, "SessionExpired")
+    
+    def check_error(self):
+        if self.exception:
+           raise self.exception
+
+    def error_msg(self,code,str):
+        #self.error(code)
+        self.exception=DispatchError(code,str)
+        #self.response.out.write(str)
+        #self.error(code)
+        
+    def handle_exception(self, exception, debug_mode):    
+        #resp=json_encode({"error":exception})
+        #self.response.out.write(resp)
+        pass
     #Create a new session id and link it to a user account using memcachd
     #this should only be called after a successful login to prevent session fixation.
     def new_session(self, auth):
@@ -140,7 +156,7 @@ class session(webapp.RequestHandler):
     
     def hasProgramAdmin(self):
         if self.program_priv < 2:
-            raise DispatchError(403, "InsufficientPrivileges")
+            self.error_msg(403, "InsufficientPrivileges")
 
 class path_handler(webapp.RequestHandler):
 

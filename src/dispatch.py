@@ -11,6 +11,7 @@ import task_util
 import datamodel
 import file
 
+from session import DispatchError
 from api import crud
 from google.appengine.ext import  db
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -20,6 +21,11 @@ import webapp2 as webapp
 
 #Extend session so that we can enforce access control
 class dispatch(session.session):
+
+    def handle_exception(self,exception, debug_mode):   
+      resp=json_encode({"error":exception})
+      self.response.out.write(resp)
+      pass
 
     def get(self):
         self.dispatch()
@@ -49,75 +55,82 @@ class dispatch(session.session):
         return element
 
     def dispatch(self):
-        call_arg=False
-        path=self.request.path.split("/")
-        call_class=path[2]
-        call_method=path[3]
-        if len(path)>4:
-          call_arg=path[4]
-        api = __import__("api.api")
-        #Make sure the class in this API call is public:
-        if api.LIBS.get(call_class):
-            #pull up the class out of ./lib
-            libs=api.LIBS.keys()
-            mod = __import__('api.'+call_class,fromlist=libs)
-            api_call=getattr(mod,call_class)
-            instance = api_call(self.request,self.response)
-            if instance.getPublic().get(call_method):
-                #invoke the proper method based on the path
-                if call_arg:
-                    ret=getattr(instance,call_method)(call_arg)
-                else:
-                    ret=getattr(instance,call_method)()
-                #We allow the user to return a GQL query and we'll convert it to json for them.
-                t=type(ret)
-                #if t is db.Query:
-                    #User Access Control
-                    #k=Key(self.university_id)
-                    #u=datamodel.University(key_name=self.university_id)
-                    #ret=ret.filter("university=",self.university_id )#.filter("program=",Key(self.program_id))
-                    
-                    #ret=ret.fetch(1024)
-                    #t=type(ret)
-                if t is list:
-                    t=type(ret[0])
-                    #if type(ret[0]) is PolymorphicClass:
-                    ref_ret=[]
-                    for r in ret:
+        try:
+            #Check if any exceptions where thrown during init.
+            self.check_error()
+        
+            call_arg=False
+            path=self.request.path.split("/")
+            call_class=path[2]
+            call_method=path[3]
+            if len(path)>4:
+              call_arg=path[4]
+            api = __import__("api.api")
+            #Make sure the class in this API call is public:
+            if api.LIBS.get(call_class):
+                #pull up the class out of ./lib
+                libs=api.LIBS.keys()
+                mod = __import__('api.'+call_class,fromlist=libs)
+                api_call=getattr(mod,call_class)
+                instance = api_call(self.request,self.response)
+                if instance.getPublic().get(call_method):
+                    #invoke the proper method based on the path
+                    if call_arg:
+                        ret=getattr(instance,call_method)(call_arg)
+                    else:
+                        ret=getattr(instance,call_method)()
+                    #We allow the user to return a GQL query and we'll convert it to json for them.
+                    t=type(ret)
+                    #if t is db.Query:
                         #User Access Control
-                        if r.class_name() == "User":
-                            #Todo fix!  make fine grained. 
-                            self.hasProgramAdmin()
-                            ref_ret.append(self.getElement(r))  
-                        elif r.program != self.program_id or r.university != self.university_id:
-                            ref_ret.append(self.getElement(r))
-                    ret=ref_ret
-                if t is db.GqlQuery:
-                    #1024 is always the max return size
-                    u_list=ret.fetch(1024)
-                    ret=[]
-                    #iterate over each element returned by the select.
-                    for u in u_list:
-                        #This User Access Control is redundant at the time of writing.
-                        #if r.program != self.program_id or r.university != self.university_id:
-                        #    ref_ret.append(self.getElement(r))                      
-                        element=self.getElement(u)
-                        ret.append(element)
+                        #k=Key(self.university_id)
+                        #u=datamodel.University(key_name=self.university_id)
+                        #ret=ret.filter("university=",self.university_id )#.filter("program=",Key(self.program_id))
+                        
+                        #ret=ret.fetch(1024)
+                        #t=type(ret)
+                    if t is list:
+                        t=type(ret[0])
+                        #if type(ret[0]) is PolymorphicClass:
+                        ref_ret=[]
+                        for r in ret:
+                            #User Access Control
+                            if r.class_name() == "User":
+                                #Todo fix!  make fine grained. 
+                                self.hasProgramAdmin()
+                                ref_ret.append(self.getElement(r))  
+                            elif r.program != self.program_id or r.university != self.university_id:
+                                ref_ret.append(self.getElement(r))
+                        ret=ref_ret
+                    if t is db.GqlQuery:
+                        #1024 is always the max return size
+                        u_list=ret.fetch(1024)
+                        ret=[]
+                        #iterate over each element returned by the select.
+                        for u in u_list:
+                            #This User Access Control is redundant at the time of writing.
+                            #if r.program != self.program_id or r.university != self.university_id:
+                            #    ref_ret.append(self.getElement(r))                      
+                            element=self.getElement(u)
+                            ret.append(element)
+                else:
+                    ret={"error":"invalid method"}
             else:
-                ret={"error":"invalid method"}
-        else:
-            ret={"error":"invalid class"}
-        #format output:    
-        #call_class is needed for namespace
-        if call_class=="list":     
-            #A special case so that the list returns the proper namespace
-            #for the collection it is returning. 
-            json_obj = json.dumps({call_method:ret})
-        else:
-            json_obj = json.dumps({call_class:ret})
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json_obj)
-
+                ret={"error":"invalid class"}
+            #format output:    
+            #call_class is needed for namespace
+            if call_class=="list":     
+                #A special case so that the list returns the proper namespace
+                #for the collection it is returning. 
+                json_obj = json.dumps({call_method:ret})
+            else:
+                json_obj = json.dumps({call_class:ret})
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json_obj)
+        except DispatchError as e:
+            self.error(e.code)
+            resp=json.dumps({'error':e.message})
+            self.response.write(resp)
 #A static page doesn't need to extend session
 class index(webapp.RequestHandler):
 
@@ -126,7 +139,6 @@ class index(webapp.RequestHandler):
         self.response.out.write(index)
 
 if __name__ == "__main__":
-    #try:
     RestDispatcher.setup('/api/crud', [crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User,crud.University,crud.Program])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
@@ -145,5 +157,3 @@ if __name__ == "__main__":
                                          ('/api/.*', dispatch),
                                          ],
                                         debug=True))
-    #except SystemExit:
-    #  pass

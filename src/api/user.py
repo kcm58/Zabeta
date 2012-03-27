@@ -7,6 +7,9 @@ class user(api.api):
             "getTasks":True,
             "getCurrentCourses":True,}
 
+    def handle_exception(self,exception, debug_mode):   
+        pass
+
     def get(self):
         return self.user
 
