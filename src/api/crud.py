@@ -8,7 +8,7 @@ class Outcome(RestHandler):
     model = datamodel.Outcome
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
 
     def update(self):
@@ -19,7 +19,7 @@ class Task(RestHandler):
     model = datamodel.Task
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
 
     def update(self):
@@ -36,7 +36,7 @@ class AssessmentTask(Task):
     model = datamodel.AssessmentTask
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
 
     def update(self):
@@ -53,7 +53,7 @@ class CourseTask(RestHandler):
     model = datamodel.CourseTask
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
 
     def update(self):
@@ -70,7 +70,7 @@ class Course(RestHandler):
     model = datamodel.Course
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
 
     def update(self):
@@ -81,7 +81,7 @@ class CourseOffering(RestHandler):
     model = datamodel.CourseOffering
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
 
     def update(self):
@@ -92,7 +92,7 @@ class User(RestHandler):
     model = datamodel.User
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
 
     def update(self):
@@ -103,7 +103,7 @@ class University(RestHandler):
     model = datamodel.University
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
 
     @rest_index("programs")
@@ -118,7 +118,7 @@ class University(RestHandler):
       semesters = []
       for prog in datamodel.Semester.all().fetch(1000):
         semesters.append(prog.as_json())
-      self.response.headers['Content-Type'] =  'application/json'
+      self.response.headers['Content-Type'] = 'application/json'
       self.response.out.write(json.dumps(semesters))
 
     @rest_index("users")
@@ -126,7 +126,7 @@ class University(RestHandler):
       users = []
       for prog in datamodel.User.all().fetch(1000):
         users.append(prog.as_json())
-      self.response.headers['Content-Type'] =  'application/json'
+      self.response.headers['Content-Type'] = 'application/json'
       self.response.out.write(json.dumps(users))
 
 class Program(RestHandler):
@@ -134,5 +134,5 @@ class Program(RestHandler):
     model = datamodel.Program
 
     def show(self):
-        self.response.headers['Content-Type'] =  'application/json'
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())

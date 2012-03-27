@@ -2,6 +2,12 @@
  * js/zabeta.js
  * ========================================================== */
 
+T.renderLocal = function(name, callback) {
+	var source   = $('#'+ name + '-template').html();
+	var template = Handlebars.compile(source);
+	callback(template);
+};
+
 /*
  * Create a Zabeta namespace
  */
@@ -15,7 +21,7 @@ Zabeta = function () {
 		collectionLayout: 'collection_layout',
 
 		switchLayout: function (layout) {
-			T.render(layout, function (template) {
+			T.renderLocal(layout, function (template) {
 				$('#container').html(template());
 			});
 		},
@@ -37,7 +43,7 @@ Zabeta = function () {
 					Zabeta.me.set('uni_name', uni_name);
 
 					// render the toolbar template
-					T.render('toolbar', function (template) {
+					T.renderLocal('toolbar', function (template) {
 						$('#toolbar').html(template(Zabeta.me.toJSON()));
 					});
 
@@ -108,7 +114,7 @@ Zabeta.UserListItemView = Backbone.View.extend({
 
 	render: function () {
 		var self = this;
-		T.render('user_list_item', function (template) {
+		T.renderLocal('user_list_item', function (template) {
 			$(self.el).html(template(self.model.toJSON()));
 		});
 		return this;
@@ -116,24 +122,27 @@ Zabeta.UserListItemView = Backbone.View.extend({
 });
 
 Zabeta.UserListView = Backbone.View.extend({
-	el: $('#user-list tbody'),
+	el: '#user-list tbody',
 
 	initialize: function () {
 		this.model.bind('reset', this.render, this);
+
 		var self = this;
 		this.model.bind('add', function (user) {
-			$(self.el).append(new Zabeta.UserListItemView({
+			self.$el.append(new Zabeta.UserListItemView({
 				model:user
 			}).render().el);
 		});
+
 	},
 
 	render: function () {
 		_.each(this.model.models, function (user) {
-			$('#user-list tbody').append(new Zabeta.UserListItemView({
+			this.$el.append(new Zabeta.UserListItemView({
 				model:user
 			}).render().el);
 		}, this);
+
 		return this;
 	}
 });
@@ -158,8 +167,9 @@ Zabeta.ProgramList = Backbone.Collection.extend({
 });
 
 Zabeta.ProgramListView = Backbone.View.extend({
-	el: $('#program-list tbody')
+	el: '#program-list tbody'
 });
+
 
 /**
  * Semester
@@ -180,8 +190,9 @@ Zabeta.SemesterList = Backbone.Collection.extend({
 });
 
 Zabeta.SemesterListView = Backbone.View.extend({
-	el: $('#semester-list tbody')
+	el: '#semester-list tbody'
 });
+
 
 /**
  * Administrators page
@@ -198,6 +209,7 @@ Zabeta.adminPage = function () {
 
 		show: function () {
 			Zabeta.switchLayout(layout);
+
 			this.programs = new Zabeta.ProgramList;
 			this.programs.fetch();
 
@@ -205,7 +217,9 @@ Zabeta.adminPage = function () {
 			this.semesters.fetch();
 
 			this.users = new Zabeta.UserList;
-			this.userListView = new Zabeta.UserListView({model:this.users});
+			this.userListView = new Zabeta.UserListView({
+				model:this.users
+			});
 			this.users.fetch();
 		}
 	};
