@@ -27,7 +27,7 @@ class task_util(webapp.RequestHandler):
         r_delta=relativedelta(months=+12) #This will be user specified
         
         term_dict=self.get_school_year_model(cs_prog)
-        self.interpret("every fall;every spring;every winter;every 3 years;every year",r_delta,term_dict)
+        self.interpret("every fall",r_delta,term_dict)
         
     def get_school_year_model(self,prog):
         
@@ -45,8 +45,95 @@ class task_util(webapp.RequestHandler):
             
         return terms_dict
     
+    #Iterates over the school's term dates to determine the beginning of the school year
+    def get_earliest_date(self,term_dict):
+        
+        year_delta=relativedelta(months=+12)
+        earliest_date=datetime.datetime.now()+(2*year_delta)
+        
+        for t in term_dict:
+            if t.begin_date<earliest_date:
+                earliest_date=t.begin_date
+                
+        return earliest_date
+    
+    #Iterates over the school's term dates to determine the end of the school year
+    def get_latest_date(self,term_dict):
+        
+        year_delta=relativedelta(months=+12)
+        latest_date=datetime.datetime.now()-(2*year_delta)
+        
+        for t in term_dict:
+            if t.end_date>latest_date:
+                latest_date=t.end_date
+                
+        return latest_date
+        
     #NOTE: delta represents when to start the task
     def interpret(self,st,delta,term_dict):
+        
+        year_delta=relativedelta(months=+12)
+        curr_date=datetime.datetime.now().date()
+
+        #Split each statement into words
+        s_els=st.split(" ")
+            
+        if s_els[0]=="every" and self.is_number(s_els[1]==True): #E.G. "every 3 years"
+            school_begin_date=self.get_earliest_date(term_dict) #Beginning of the school year
+            school_end_date=self.get_latest_date(term_dict) #End of the school year
+            self.debug("Beginning of school year: ")
+            self.debug(school_begin_date)
+            self.debug("End of school year: ")
+            self.debug(school_end_date)
+            scalar=s_els[1]
+            new_begin_date=school_begin_date+(scalar*year_delta)
+            new_end_date=school_end_date+(scalar*year_delta)
+                      
+        elif s_els[0]=="end" and self.is_number(s_els[2])==True: #E.G. "end of 3 years" 
+            school_begin_date=self.get_earliest_date(term_dict) #Beginning of the school year
+            school_end_date=self.get_latest_date(term_dict) #End of the school year
+            self.debug("Beginning of school year: ")
+            self.debug(school_begin_date)
+            self.debug("End of school year: ")
+            self.debug(school_end_date)
+            scalar=s_els[2]
+            new_begin_date=school_begin_date+(scalar*year_delta)
+            new_end_date=school_end_date+(scalar*year_delta)
+          
+        elif (s_els[0]=="every" and self.is_number(s_els[1]!=True)) or (s_els[0]=="end" and self.is_number(s_els[2])!=True): #E.G. "every fall" or "end of fall"
+            term_name=s_els[1]
+            term_dates=term_dict[term_name]
+            self.debug("Term dates: ")
+            self.debug(term_dates)
+            if curr_date > term_dates[0]: #We have already passed the date
+                new_begin_date=term_dates[0]+year_delta+delta
+                new_end_date=term_dates[1]+year_delta+delta
+                self.debug("New begin date: ")
+                self.debug(new_begin_date)
+                self.debug("New end date: ")
+                self.debug(new_end_date)
+                
+                #Return the new begin/end dates
+                new_dates={}
+                new_dates['begin_date']=new_begin_date
+                new_dates['end_date']=new_end_date
+                return new_dates
+            else:
+                new_begin_date=term_dates[0]+delta
+                new_end_date=term_dates[1]+delta
+                self.debug("New begin date: ")
+                self.debug(new_begin_date)
+                self.debug("New end date: ")
+                self.debug(new_end_date)
+                
+        #Return the new begin/end dates
+        new_dates={}
+        new_dates['begin_date']=new_begin_date
+        new_dates['end_date']=new_end_date
+        return new_dates
+                  
+    #NOTE: delta represents when to start the task
+    def interpret_old(self,st,delta,term_dict):
         
         year_delta=relativedelta(months=+12)
         #Split on each statement

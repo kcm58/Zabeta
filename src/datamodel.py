@@ -90,6 +90,10 @@ class Course(Version):
     catalog = db.StringProperty()
     webpage = db.StringProperty()
     core_topics = db.StringProperty()
+            
+class NewCourseOfferingTask(Task): #Add to populate when we implement and debug this
+    user=db.ReferenceProperty(User,indexed=True)
+    course=db.ReferenceProperty(Course,indexed=True)
  
 class Instrument(Form):
     university = db.ReferenceProperty(None,indexed=True) #void pointer to university
