@@ -1,0 +1,281 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> 
+<html class="no-js" lang="en" style="height:100%"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Zabeta: ABET accreditation management software for Universities</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/wikiforms.css" />
+  <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.8.18.custom.css" />
+
+	<style type="text/css">
+	
+		#menu{
+			position:relative;
+			width: 20%;
+			border: 2px solid #a9a9a9;
+			height: 90%;	/* For demo - will inherit when live */
+			margin: 15px auto 0 auto; /* For demo */
+			font-family: Verdana, Arial, sans-serif;
+			overflow: hidden;
+			
+		}
+		#menu ul{
+			list-style-type: none;
+			margin: 0;
+			padding :0;
+		}
+		
+		#menu #item-list{
+			overflow-x: hidden;
+			overflow-y: auto;
+			height:91%; /* 100% if user only has one program */
+		}
+		
+		#menu li, #menu #controls{
+			/* I HATE CSS GRADIENTS RAWR */
+			background: #ffffff; /* Old browsers */
+			background: -moz-linear-gradient(top,  #ffffff 1%, #e0e0e2 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#ffffff), color-stop(100%,#e0e0e2)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top,  #ffffff 1%,#e0e0e2 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top,  #ffffff 1%,#e0e0e2 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top,  #ffffff 1%,#e0e0e2 100%); /* IE10+ */
+			background: linear-gradient(top,  #ffffff 1%,#e0e0e2 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e0e0e2',GradientType=0 ); /* IE6-9 */
+			
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
+		
+		#menu li, #menu #controls li{
+			cursor: pointer;
+		}
+		
+		#menu li.item, #menu li.program{
+			height: 7%;
+			min-height:60px;
+			border: 0 solid #a9a9a9;
+			border-width: 2px 2px 2px 0;
+			margin: -2px -2px -2px 0;
+		}
+		
+		#menu .label{
+			margin-left: 15px;
+			font-size: 18px;
+			font-weight: 700;
+		}
+		
+		#menu li.selected{
+			color: #575757;
+			background: #72d3ff; /* Old browsers */
+			background: -moz-linear-gradient(top,  #72d3ff 1%, #0097ff 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#72d3ff), color-stop(100%,#0097ff)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top,  #72d3ff 1%,#0097ff 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top,  #72d3ff 1%,#0097ff 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top,  #72d3ff 1%,#0097ff 100%); /* IE10+ */
+			background: linear-gradient(top,  #72d3ff 1%,#0097ff 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#72d3ff', endColorstr='#0097ff',GradientType=0 ); /* IE6-9 */
+		}
+		
+		#menu li.hover{
+			background: #99e0ff; /* Old browsers */
+			background: -moz-linear-gradient(top, #99e0ff 0%, #8bbee5 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#99e0ff), color-stop(100%,#8bbee5)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top, #99e0ff 0%,#8bbee5 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top, #99e0ff 0%,#8bbee5 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top, #99e0ff 0%,#8bbee5 100%); /* IE10+ */
+			background: linear-gradient(top, #99e0ff 0%,#8bbee5 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#99e0ff', endColorstr='#8bbee5',GradientType=0 ); /* IE6-9 */
+}
+		
+		#menu #controls{
+			position:absolute;
+			bottom:0;
+			border: 0 solid #a9a9a9;
+			border-width: 2px 0 0 0;
+			width:100%;
+			height: 4%;
+			margin: 0;
+			padding: 0;
+			list-style-type: none;
+		}
+		
+		#menu #controls #add, #remove{
+			width: 13.5%;
+			height: 100%;
+			font-size: 25px;
+			border: 0 solid #a9a9a9;
+			border-width: 0 2px 0 0;
+			float:left;
+			text-align:center;
+		}
+		
+		#menu #controls #add a, #remove a{
+			color: #424242;
+		}
+		
+		#menu #program-chooser{
+			text-align:center;
+			background: rgb(188,188,188); /* Old browsers */
+			background: -moz-linear-gradient(top,  rgba(188,188,188,1) 0%, rgba(102,102,102,1) 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(188,188,188,1)), color-stop(100%,rgba(102,102,102,1))); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top,  rgba(188,188,188,1) 0%,rgba(102,102,102,1) 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top,  rgba(188,188,188,1) 0%,rgba(102,102,102,1) 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top,  rgba(188,188,188,1) 0%,rgba(102,102,102,1) 100%); /* IE10+ */
+			background: linear-gradient(top,  rgba(188,188,188,1) 0%,rgba(102,102,102,1) 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bcbcbc', endColorstr='#666666',GradientType=0 ); /* IE6-9 */
+			border: 0 solid #a9a9a9;
+			border-width: 0 0 4px 0;
+			cursor: pointer;
+		}
+		
+		#menu #program-chooser ul{
+			display: none;
+		}
+		
+		#menu #program-chooser #program-chooser-header{
+			margin: 0;
+			margin-bottom: 2px;
+			padding: 5px;
+			color: #d6d6d6;
+			font-size: 22px;
+			font-weight: bold;
+			border: 2px solid #2e4469;
+		}
+		
+		#menu #program-chooser li{
+			min-height:30px;
+		}
+		
+		#menu #program-chooser li p.label{
+			margin-left: 0;
+			font-size: 12px;
+		}
+		
+	</style>
+
+</head>
+
+<body style="height:100%">
+
+
+  <div id="menu">
+  	<div id="program-chooser" onclick="$('#menu #program-chooser ul').toggle('blind');">
+  		<p id="program-chooser-header">
+  			Programs
+  		</p>
+  		<ul class="items">
+  			<li class="program selected">
+  				<p class="label">CS</p>
+  			</li>
+  			<li class="program">
+  				<p class="label">EE</p>
+  			</li>
+  			<li class="program">
+  				<p class="label">ME</p>
+  			</li>
+  		</ul>
+  	</div>
+  	<div id="item-list">
+	  	<ul class="items">
+		  	<li class="item">
+		  		<p class="label">Item 1</p>
+		  	</li>
+		  	<li class="item">
+		  		<p class="label">Item 2</p>
+		  	</li>
+		  	<li class="item">
+		  		<p class="label">Item 3</p>
+		  	</li>
+		  	<li class="item">
+		  		<p class="label">Item 4</p>
+		  	</li>  
+	  	</ul>	
+	  </div>
+  	<ul id="controls" class="noselection">
+  		<li id="add" onclick="add()"">
+  			<a>+</a>
+  		</li>
+  		<li id="remove" onclick="remove()">
+  			<a>-</a>
+  		</li>
+  	</ul>
+  </div>
+	
+  <script src="../lib/jquery-1.7.1.min.js"></script>
+  <script src="../lib/jquery-ui-1.8.18.custom.min.js"></script>
+  <script src="../lib/underscore-min.js"></script>
+  <script src="../lib/backbone-min.js"></script>
+  <script src="../lib/handlebars-1.0.0.beta.6.js"></script>
+  <script src="../lib/handlebars.external.js"></script>
+  <script src="../lib/jquery-relative.js"></script>
+  <script src="../lib/jstorage.js"></script>
+  <script src="../lib/jquery.cookie.js"></script>
+  <script src="../lib/wikiforms.js"></script>
+  
+  <script>
+		$('#menu .items').on('click', 'li', function(){
+			$(this).removeClass('hover');
+			$('li').each(function(){ $(this).removeClass('selected');});
+			$(this).addClass('selected');
+		});
+			
+		$('#menu .items, #menu #controls').on('mouseup', 'li', function(){
+			$(this).removeClass('selected');
+			if($(this).is(':hover')){
+				$(this).addClass('hover');			
+			}
+		});
+		
+		$('#menu .items, #menu #controls').on('mouseleave', 'li', function(){
+			$(this).removeClass('hover');
+		});
+		
+		$('#menu .items, #menu #controls').on('mouseenter', 'li', function(){
+			$(this).addClass('hover');
+		});
+		
+		$('#menu #controls').on('mousedown', 'li', function(){
+			$(this).removeClass('hover');
+			$(this).addClass('selected');
+		});
+		
+		
+		function add(){
+			$('#menu #item-list ul.items').append('<li class="item">\n\t<p class="label">Item</p>\n</li>');
+		}
+		
+		function remove(){
+			$('#menu #item-list .selected').remove();
+		}
+
+		
+		
+		
+		function changeControlColor(element){
+			console.log(element);
+			$(element).parent().attr('class', 'selected');
+		}
+	</script>
+
+  <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+  <![endif]-->
+
+</body>
+</html>
