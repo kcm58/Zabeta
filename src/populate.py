@@ -2,7 +2,6 @@ import session
 import datamodel
 import datetime
 from google.appengine.ext import db,webapp
-import datetime
 import dateutil
 from dateutil.relativedelta import relativedelta
 
@@ -183,7 +182,8 @@ class populate(webapp.RequestHandler):
                             rationalize_course=[c1.key()],
                             rationalize_instrument=ins,
                             where_from=wiki_form,
-                            university=u.key())
+                            university=u.key(),
+                            program=p2.key())
         o1_1.put()
         
         o1_2=datamodel.Outcome(name="Ability to function effectively in both co-located and distributed software development teams.",
@@ -197,7 +197,8 @@ class populate(webapp.RequestHandler):
                             rationalize_course=[c2.key()],
                             rationalize_instrument=ins,
                             where_from=wiki_form,
-                            university=u.key())
+                            university=u.key(),
+                            program=p2.key())
         o1_2.put()
 
         o2_1=datamodel.Outcome(name="Theoretical Concepts",
@@ -212,7 +213,8 @@ class populate(webapp.RequestHandler):
                             rationalize_course=[c1.key()],
                             rationalize_instrument=ins,
                             where_from=wiki_form,
-                            university=u.key())
+                            university=u.key(),
+                            program=p2.key())
         o2_1.put()
         
         o2_2=datamodel.Outcome(name="Languages and Language Paradigms",
@@ -226,13 +228,14 @@ class populate(webapp.RequestHandler):
                             rationalize_course=[c2.key()],
                             rationalize_instrument=ins,
                             where_from=wiki_form,
-                            university=u.key())
+                            university=u.key(),
+                            program=p2.key())
         o2_2.put()
 
-        ob1=datamodel.Objective(university=u,program=p,name="Practice-Oriented Skills Requirement",description="The continual improvement of skills though practice.",index=1,outcomes=[o1_1.key(),o1_2.key()])
+        ob1=datamodel.Objective(university=u,program=p2,name="Practice-Oriented Skills Requirement",description="The continual improvement of skills though practice.",index=1,outcomes=[o1_1.key(),o1_2.key()])
         ob1.put()     
         
-        ob2=datamodel.Objective(university=u,program=p,name="Fundamentals",description="Make sure student does writing good.",index=2,outcomes=[o2_1.key(),o2_2.key()])
+        ob2=datamodel.Objective(university=u,program=p2,name="Fundamentals",description="Make sure student does writing good.",index=2,outcomes=[o2_1.key(),o2_2.key()])
         ob2.put()   
 
     

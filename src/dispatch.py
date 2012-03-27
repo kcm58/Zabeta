@@ -22,11 +22,6 @@ import webapp2 as webapp
 #Extend session so that we can enforce access control
 class dispatch(session.session):
 
-    def handle_exception(self,exception, debug_mode):   
-      resp=json_encode({"error":exception})
-      self.response.out.write(resp)
-      pass
-
     def get(self):
         self.dispatch()
 
@@ -128,6 +123,7 @@ class dispatch(session.session):
             self.response.headers['Content-Type'] = 'application/json'
             self.response.out.write(json_obj)
         except DispatchError as e:
+            self.response.headers['Content-Type'] = 'application/json'
             self.error(e.code)
             resp=json.dumps({'error':e.message})
             self.response.write(resp)

@@ -209,9 +209,9 @@ class RestDispatcher(session.session):
         # The action method handles exceptions by recursively calling
         # itself such that we have one spot that we can catch
         # `DispatchError`s.
-        self.check_error()
         if not exceptions:
             try:
+                self.check_error()
                 self.action(act, exceptions=True)
             except DispatchError as error:
                 self.response.set_status(error.code)
