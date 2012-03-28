@@ -11,12 +11,11 @@ import task_util
 import datamodel
 import file
 
-from session import DispatchError
 from api import crud
 from google.appengine.ext import  db
 from google.appengine.ext.webapp.util import run_wsgi_app
 #from google.appengine.api.datastore_types import Key
-from mora.rest import RestDispatcher
+from mora.rest import RestDispatcher,DispatchError
 import webapp2 as webapp
 
 import os
@@ -26,14 +25,6 @@ from google.appengine.ext.webapp import template
 #Extend session so that we can enforce access control
 class dispatch(session.session):
 
-<<<<<<< HEAD
-=======
-    def handle_exception(self,exception, debug_mode):
-      resp=json_encode({"error":exception})
-      self.response.out.write(resp)
-      pass
-
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
     def get(self):
         self.dispatch()
 
@@ -65,7 +56,6 @@ class dispatch(session.session):
         try:
             #Check if any exceptions where thrown during init.
             self.check_error()
-
             call_arg=False
             path=self.request.path.split("/")
             call_class=path[2]
@@ -156,7 +146,15 @@ class index(webapp.RequestHandler):
         self.response.out.write(template.render(path, template_values))
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/api/crud', [crud.Objective, crud.Minutes, crud.Course,crud.CourseOffering,crud.CourseTask,crud.Outcome,crud.User,crud.University,crud.Program])
+    RestDispatcher.setup('/api/crud', [crud.Objective, 
+                                       crud.Minutes,
+                                       crud.Course,
+                                       crud.CourseOffering,
+                                       crud.CourseTask,
+                                       crud.Outcome,
+                                       crud.User,
+                                       crud.University,
+                                       crud.Program])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),

@@ -1,14 +1,92 @@
-from mora.rest import RestHandler,rest_create,rest_index
-from mora import db
+from mora.rest import RestHandler,rest_create,rest_index,DispatchError
+#from mora import db
+from google.appengine.ext import db
 import datamodel
-<<<<<<< HEAD
 import datetime
-=======
 import json
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
+import session
+import google.appengine.ext
+
+class CrudSession(RestHandler,session.session):
+  
+    def __init__(self, model, request, response):
+        RestHandler.__init__(self,model,request,response)
+        session.session.__init__(self,request,response)
+        self.key=str(model.key())
+        
+    def setup(self):
+        #Check if an exception was thrown.
+        self.check_error()
+        
+        model=self.model
+        model_name=self.model.class_name()
+        #User Access Control DO NOT REMOVE!
+        #University is except,  anyone can access this collection
+        #Check to make sure the program and university match what the user has access to.
+
+        #University is a speical case,  it is the name of the Zone
+        if model_name == "University":
+            #Check to make sure the user uses this university
+            #This is a special case
+            if str(model.key()) != self.university_id:
+                raise DispatchError(403, "ResourceNotAllowed")
+        #Program is another special case,  this is the name of or Relm within the Zone.
+        elif model_name == "Program":
+            if str(model.key()) != self.program_id or str(model.university.key()) != self.university_id:
+                raise DispatchError(403, "ResourceNotAllowed")
+        elif model_name == "User":
+            #the self.key value is the model.key(),  but model.key() doesn't work...
+            #Grab this user's authentication record and see if they belong to this Program
+            ar=datamodel.AuthenticationRecord.gql("where user=key(:1)",self.key).fetch(1)[0]
+            found_program=False
+            for p in ar.programs:
+                if p in self.user['programs']:
+                    found_program=True
+                    break
+            #If the user isn't modifying their own record 
+            #and the user accessing this api call isn't an administrator over the user
+            #Then the user can't access this "User" record
+            if str(self.key) != self.user['id'] and not found_program:
+                raise DispatchError(403, "ResourceNotAllowed")
+        #we assume that we have a "program" and "university" for every other collection.
+        else:
+            if (str(model.program.key()) != self.program_id or str(model.university.key()) != self.university_id):
+                raise DispatchError(403, "ResourceNotAllowed")
+
+class CrudRevision(CrudSession):
+    def duplicate(self,src,dest):
+        #iterate over each parameter specified in the select
+        for key in src._all_properties:
+            if key!="id":
+                val=getattr(src,"_"+key)
+                setattr(dest,key,val)    
+#            t=type(var)
+#            if t is list:
+#                if len(var) and type(var[0]) is db.Key:
+#                    ids=[]
+#                    for v in var:
+#                        ids.append(str(v))
+#                    element[key]=ids
+#            else:
+#                element[key]=str(var)
+#        return element
+
+    def version_save(self,new_ver):
+        name=new_ver.class_name()
+        collection=getattr(datamodel,name) 
+        
+        v=collection()
+        self.duplicate(new_ver,v)
+        v.commit_user=self.user['id']
+        v.commit_program=self.program_id
+        v.commit_university=self.university_id
+        #This is a new minor revision
+        v.commit_minor+=1
+        v.commit_timestamp=datetime.datetime.now()
+        v.save()              
 
 #A user is NOT revisioned,  and does not use version_interface
-class User(RestHandler):
+class User(CrudSession):
       
     model = datamodel.User
       
@@ -18,16 +96,13 @@ class User(RestHandler):
     def update(self):
         self.model.from_json(self.params)
 
-<<<<<<< HEAD
 #Authentication methods and and records are also not versioned        
-class AuthenticationMethod(RestHandler):
+class AuthenticationMethod(CrudSession):
 
     model = datamodel.AuthenticationMethod
     
-=======
     model = datamodel.Outcome
 
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
     def show(self):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
@@ -35,45 +110,30 @@ class AuthenticationMethod(RestHandler):
     def update(self):
         self.model.from_json(self.params)
 
-class AuthenticationRecord(RestHandler):
+class AuthenticationRecord(CrudSession):
 
-<<<<<<< HEAD
     model = datamodel.AuthenticationRecord
     
-=======
     model = datamodel.Task
 
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
     def show(self):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
-<<<<<<< HEAD
         
-=======
 
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
     def update(self):
         self.model.from_json(self.params)
 
 
-<<<<<<< HEAD
-class Outcome(RestHandler):
+class Outcome(CrudRevision):
 
     model = datamodel.Outcome
-    
-=======
-class AssessmentTask(Task):
 
-    model = datamodel.AssessmentTask
-
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
     def show(self):
-        self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
-<<<<<<< HEAD
         
+
     def update(self):
-        self.model.from_json(self.params)
         #Override the base values. 
         self.params['program']=self.program_id
         self.params['university']=self.university_id
@@ -81,18 +141,17 @@ class AssessmentTask(Task):
         new_outcome.from_json(self.params)
         #Populate the response
         self.model.outcomes.append(new_outcome)
-        self.version_save(self.model)        
+        self.version_save(self.model)
+     
 
-class Objective(RestHandler):
+class Objective(CrudRevision):
 
     model = datamodel.Objective
     
     def show(self):
         self.response.out.write(self.model.to_json())
         
-=======
 
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
     def update(self):
         self.model.from_json(self.params)
 
@@ -104,23 +163,13 @@ class Objective(RestHandler):
         new_outcome=datamodel.Outcome()
         new_outcome.from_json(self.params)
         #Populate the response
-<<<<<<< HEAD
         self.model.outcomes.append(new_outcome)
         self.version_save(self.model)
 
-class Task(RestHandler):
+class Task(CrudRevision):
 
     model = datamodel.Task
     
-=======
-        self.model.response=str(self.params)
-        self.model.save()
-
-class CourseTask(RestHandler):
-
-    model = datamodel.CourseTask
-
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
     def show(self):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
@@ -133,7 +182,6 @@ class CourseTask(RestHandler):
         #Populate the response
         self.model.response=str(self.params)
         self.model.save()
-<<<<<<< HEAD
 
 class AssessmentTask(Task):
   
@@ -142,10 +190,8 @@ class AssessmentTask(Task):
 class CourseTask(Task):
   
     model = datamodel.CourseTask 
-=======
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
 
-class Course(RestHandler):
+class Course(CrudRevision):
 
     model = datamodel.Course
 
@@ -156,7 +202,7 @@ class Course(RestHandler):
     def update(self):
         self.model.from_json(self.params)
 
-class CourseOffering(RestHandler):
+class CourseOffering(CrudRevision):
 
     model = datamodel.CourseOffering
 
@@ -167,26 +213,13 @@ class CourseOffering(RestHandler):
     def update(self):
         self.model.from_json(self.params)
         
-class OutcomeSupport(RestHandler):
+class OutcomeSupport(CrudRevision):
 
     model = datamodel.OutcomeSupport
 
-<<<<<<< HEAD
-=======
-class User(RestHandler):
-
-    model = datamodel.User
-
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
-    def show(self):
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(self.model.to_json())
-
-    def update(self):
-        self.model.from_json(self.params)        
         
 #A user is NOT revisioned,  and does not use version_interface
-class Semseter(RestHandler):
+class Semseter(CrudRevision):
 
     model = datamodel.Semester
 
@@ -196,12 +229,8 @@ class Semseter(RestHandler):
     def update(self):
         self.model.from_json(self.params)
 
-class University(RestHandler):
-<<<<<<< HEAD
-    
-=======
+class University(CrudRevision):
 
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f
     model = datamodel.University
 
     def show(self):
@@ -231,15 +260,14 @@ class University(RestHandler):
       self.response.headers['Content-Type'] = 'application/json'
       self.response.out.write(json.dumps(users))
 
-class Program(RestHandler):
+class Program(CrudRevision):
 
     model = datamodel.Program
 
     def show(self):
-<<<<<<< HEAD
         self.response.out.write(self.model.to_json())
         
-class Minutes(RestHandler):
+class Minutes(CrudRevision):
 
     model = datamodel.Minutes
     
@@ -248,7 +276,5 @@ class Minutes(RestHandler):
         
     def update(self):
         self.model.from_json(self.params)
-=======
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(self.model.to_json())
->>>>>>> 8f3579e407d23c5dac0037841f5d6f4f2282996f

@@ -151,10 +151,7 @@ class IntegerProperty(db.IntegerProperty):
   def as_json(self, model_instance, value=None):
     if value is None:
       value = self.get_value_for_datastore(model_instance)
-    try:
-      return long(value)
-    except:
-      return None
+    return long(value)
 
 
 class FloatProperty(db.FloatProperty):
@@ -223,27 +220,11 @@ class TimeProperty(db.TimeProperty):
     return value.isoformat("T") + "+00:00"
 
 
-class ListProperty(db.ListProperty):
-
-  def as_json(self, model_instance, value=None):
-    if value is None:
-      value = self.get_value_for_datastore(model_instance)
-   
-    if type(value[0]) is Key:
-        ret=[]
-        for v in value:
-            ret.append(str(v))
-        value=ret
-    # TODO: Flatten each item inside the list
-    return value
-
-
 class StringListProperty(db.StringListProperty):
 
   def as_json(self, model_instance, value=None):
     if value is None:
       value = self.get_value_for_datastore(model_instance)
-    # TODO: Flatten each item inside the list
     return value
 
 
@@ -420,6 +401,64 @@ class computed_property(object):
   def __call__(self, f, *args):
     return ComputedProperty(f, *args, kind=self.kind, name=f.func_name, indexed=self.indexed)
 
+
+class ListProperty(db.ListProperty):
+
+  def as_json(self, model_instance, value=None):
+      result = []
+
+      if value is None:
+          value = self.get_value_for_datastore(model_instance)
+
+      if self.item_type in (int, long):
+          item_type = (int, long)
+      else:
+          item_type = self.item_type
+
+      property_type = False
+      if item_type in set([basestring, str, unicode]):
+          property_type = StringProperty
+      elif item_type is bool:
+          property_type = BooleanProperty
+      elif item_type in set([int, long]):
+          property_type = IntegerProperty
+      elif item_type is float:
+          property_type = FloatProperty
+      elif item_type is Key:
+          property_type = ReferenceProperty
+      elif item_type is datetime.datetime:
+          property_type = DateTimeProperty
+      elif item_type is datetime.date:
+          property_type = DateProperty
+      elif item_type is datetime.time:
+          property_type = TimeProperty
+      elif item_type is Text:
+          property_type = TextProperty
+      elif item_type is ByteString:
+          property_type = ByteStringProperty
+      elif item_type is user.User:
+          property_type = UserProperty
+      elif item_type is Email:
+          property_type = EmailProperty
+      # TODO: Blob
+      # TODO: BlobKey
+      # TODO: Category
+      # TODO: Link
+      # TODO: GeoPt
+      # TODO: IM
+      # TODO: PhoneNumber
+      # TODO: PostalAddress
+      # TODO: Rating
+      # TODO: BlobKey
+
+      property_type = property_type()
+
+      for i in value:
+          result.append(property_type.as_json(False, i))
+
+      return result
+
+
 ### Models
 
 # Ideally I'd like Models to be drop in replacement in the same way
@@ -461,10 +500,9 @@ class ModelMixin(object):
                 continue
             if p in available_properties:
                 p_kind = self.properties()[p]
-                
                 try:
                     result[p] = p_kind.as_json(self)
-                except:
+                except (AttributeError,TypeError) :
                     result[p] = None
         return result
 

@@ -40,8 +40,6 @@ import logging
 import sys
 import inspect
 from mora import db
-import google.appengine.ext
-import session
 import json
 
 # GAE supports a couple of versions of Python and the GAE environment.
@@ -133,8 +131,7 @@ class DispatchError(Exception):
 
 # The `RestDispatcher` is a request handler that gets passed to
 # webapp.  We then spawn our custom RestHandlers from here.
-#Michael Brooks - RestDispatcher impalments sesison instead of a RequestHandler
-class RestDispatcher(session.session):
+class RestDispatcher(webapp.RequestHandler):
 
     base_path = ""
     rest_handlers = {}
@@ -211,7 +208,6 @@ class RestDispatcher(session.session):
         # `DispatchError`s.
         if not exceptions:
             try:
-                self.check_error()
                 self.action(act, exceptions=True)
             except DispatchError as error:
                 self.response.set_status(error.code)
@@ -238,47 +234,15 @@ class RestDispatcher(session.session):
         path.reverse()
 
         # The key is now the first element in the path.
-        key = path.pop()
+        self.key = path.pop()
 
         # We obtain the model instance from the key.
         try:
-            model = db.get(key)
+            model = db.get(self.key)
         except db.BadKeyError:
             raise DispatchError(404, "ResourceNotFound")
-        
-        model_name = model.class_name()
-        
-        #User Access Control DO NOT REMOVE!
-        #University is except,  anyone can access this collection
-        #Check to make sure the program and university match what the user has access to.
 
-        #University is a speical case,  it is the name of the Zone
-        if model_name == "University":
-            #Check to make sure the user uses this university
-            #This is a special case
-            if str(model.key()) != self.university_id:
-                raise DispatchError(403, "ResourceNotAllowed")
-        #Program is another special case,  this is the name of or Relm within the Zone.
-        elif model_name == "Program":
-            if str(model.key()) != self.program_id or str(model.university.key()) != self.university_id:
-                raise DispatchError(403, "ResourceNotAllowed")
-        elif model_name == "User":
-            #Grab this user's authentication record and see if they belong to this Program
-            ar=google.appengine.ext.db.GqlQuery("select * from AuthenticationRecord where user=:1",model).fetch(1)[0]
-            found_program=False
-            for p in ar.programs:
-                if p in self.user['programs']:
-                    found_program=True
-                    break
-            #If the user isn't modifying their own record 
-            #and the user accessing this api call isn't an administrator over the user
-            #Then the user can't access this "User" record
-            if str(model.key()) != self.user['id'] and not found_program:
-                raise DispatchError(403, "ResourceNotAllowed")
-        #we assume that we have a "program" and "university" for every other collection.
-        else:
-            if (str(model.program.key()) != self.program_id or str(model.university.key()) != self.university_id):
-                raise DispatchError(403, "ResourceNotAllowed")
+        model_name = model.class_name()
 
         # We then can use the model to create an appropriate handler.
         if model_name in self.rest_handlers:
@@ -312,12 +276,11 @@ class RestDispatcher(session.session):
 # The RestHandler is attached to the model, request, and response.
 # You can override the provided `show`, `update` and `delete` methods
 # or create new methods.
-class RestHandler(session.session):
+class RestHandler(object):
 
     _mora_verbs = {}
 
     def __init__(self, model, request, response):
-        super(session.session, self).__init__(request, response)
         self.model = model
         self.request = request
         self.response = response

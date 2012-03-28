@@ -5,6 +5,7 @@ import binascii
 import datamodel
 import pickle
 
+from mora.rest import DispatchError
 from apiclient.discovery import build
 from oauth2client.appengine import oauth2decorator_from_clientsecrets
 from oauth2client.client import AccessTokenRefreshError
@@ -23,17 +24,6 @@ OAUTH_CLIENT_SECRETS = """{
 }"""
 OAUTH_PROVIDER = "https://www.googleapis.com/auth/plus.me"
 
-
-# * 400: InvalidHttpVerb
-# * 400: InvalidUri
-# * 404: ResourceNotFound
-# * 405: UnsupportedHttpVerb
-class DispatchError(Exception):
-
-    def __init__(self, code=None, message=None):
-        super(DispatchError, self).__init__()
-        self.code = code
-        self.message = message
 
 #This is a base class that insures the user is authenticated
 #before allowing them to access the rest of the class.
@@ -89,7 +79,7 @@ class session(webapp.RequestHandler):
 
     def check_error(self):
         if self.exception:
-           raise self.exception
+            raise self.exception
 
     def error_msg(self,code,str):
         self.exception=DispatchError(code,str)
@@ -155,36 +145,6 @@ class session(webapp.RequestHandler):
         if self.program_priv < 2:
             self.error_msg(403, "InsufficientPrivileges")
 
-    def duplicate(self,src,dest):
-        #iterate over each parameter specified in the select
-        for key in src._all_properties:
-            if key!="id":
-                val=getattr(src,"_"+key)
-                setattr(dest,key,val)    
-#            t=type(var)
-#            if t is list:
-#                if len(var) and type(var[0]) is db.Key:
-#                    ids=[]
-#                    for v in var:
-#                        ids.append(str(v))
-#                    element[key]=ids
-#            else:
-#                element[key]=str(var)
-#        return element
-
-    def version_save(self,new_ver):
-        name=new_ver.class_name()
-        collection=getattr(datamodel,name) 
-        
-        v=collection()
-        self.duplicate(new_ver,v)
-        v.commit_user=self.user['id']
-        v.commit_program=self.program_id
-        v.commit_university=self.university_id
-        #This is a new minor revision
-        v.commit_minor+=1
-        v.commit_timestamp=datetime.datetime.now()
-        v.save()
 
 class path_handler(webapp.RequestHandler):
 
