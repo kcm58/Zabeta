@@ -4,6 +4,7 @@ import pycas
 import binascii
 import datamodel
 import pickle
+import http_header
 
 from mora.rest import DispatchError
 from apiclient.discovery import build
@@ -36,6 +37,7 @@ class session(webapp.RequestHandler):
     
     def __init__(self, request, response):
         super(session, self).__init__(request, response)
+        http_header.setDefaults(response) 
         #Check if this instance of session had disabled authentication
         if not self.always_allowed:
             if "cid" in self.request.cookies and self.request.cookies["cid"] != "":
@@ -77,7 +79,8 @@ class session(webapp.RequestHandler):
                 #Not allowed                  
                 self.error_msg(403, "SessionExpired")
 
-    def check_error(self):
+    #If the user isn't authenticated then there is an exception waiting after __init__
+    def isAuthenticated(self):
         if self.exception:
             raise self.exception
 

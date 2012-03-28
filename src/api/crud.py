@@ -6,6 +6,7 @@ import datetime
 import json
 import session
 import google.appengine.ext
+import http_header
 
 class CrudSession(RestHandler,session.session):
   
@@ -16,7 +17,7 @@ class CrudSession(RestHandler,session.session):
         
     def setup(self):
         #Check if an exception was thrown.
-        self.check_error()
+        self.isAuthenticated()
         
         model=self.model
         model_name=self.model.class_name()

@@ -10,6 +10,7 @@ import schedule
 import task_util
 import datamodel
 import file
+import http_header
 
 from api import crud
 from google.appengine.ext import  db
@@ -54,8 +55,8 @@ class dispatch(session.session):
 
     def dispatch(self):
         try:
-            #Check if any exceptions where thrown during init.
-            self.check_error()
+            #Check to make sure the user is allowed access to this API.
+            self.isAuthenticated()
             call_arg=False
             path=self.request.path.split("/")
             call_class=path[2]
@@ -134,6 +135,8 @@ class dispatch(session.session):
 class index(webapp.RequestHandler):
 
     def get(self):
+        #Populate the HTTP headers.
+        http_header.setDefaults(self.response)
         templates_path = os.path.join(os.path.dirname(__file__), 'templates')
         template_values = {
           'templates': map(lambda t: {
