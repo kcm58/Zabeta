@@ -50,6 +50,16 @@ $ ssh <user-id>@linux.cefns.nau.edu
 $ cd /www/sites/cefns/Research/D4P/EGR486/CS/12-Projects/Zabeta
 
 
+Emacs
+=====
+
+To get the *.handlbars templates to syntax highlight in Emacs add the
+following to your Emacs init file:
+
+    ;; Handlebars Templates
+    (add-to-list 'auto-mode-alist '("\\.handlebars$" . html-mode))
+
+
 Links
 =====
 
