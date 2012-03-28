@@ -10,8 +10,6 @@ $(document).ready(function(){
 	clearTimeout(loadingTimeout);
 	loadingTimeout = setTimeout("showLoadingHelp()", 5000);
 	$('#loading').show();
-	initRouter();
-	initPage();
 	/*
 	 * Hides the loading pane when all AJAX requests are done
 	 * ajaxStop receives a callback whenever an AJAX request finishes
@@ -52,8 +50,9 @@ $(document).ready(function(){
 				title: 'Error',
 			});
 		}
-		
 	});
+	initRouter();
+	initPage();
 });
 
 function showLoadingHelp(){
@@ -159,17 +158,19 @@ function loadProgramChooser(){
 				T.render('program_chooser', function(t){
 					$('#program-chooser').html(t(programsStore));
 					///////// REMOVE ME IN FINAL RELEASE /////////
-					//$.jStorage.deleteKey('program');
+					$.jStorage.deleteKey('program');
 					///////// 			 THANKS		 	 ////////
-					if($.jStorage.get('program') == null){
-						var program = $('#program-chooser-select option:selected').val();
-						$.jStorage.set('program', program);
-						$.cookie('program', program, { expires: 7});
-						$.jStorage.setTTL('program', 604800000);
-						updateProgramToolbar(program);
+					var program
+					if($.jStorage.get('program') == undefined){
+						program = $('#program-chooser-select option:selected').val();
 					}else{
-						$('#program-chooser-select').val($.jStorage.get('program'));
+						program = $.jStorage.get('program', program);
 					}
+					$.jStorage.set('program', program);
+					$.cookie('program', program, { expires: 7});
+					$.jStorage.setTTL('program', 604800000);
+					$('#program-chooser-select').val($.jStorage.get('program'));
+					updateProgramToolbar(program);
 					$('#program-chooser-select').change(function(){
 						var program = $('#program-chooser-select option:selected').val();
 						$.jStorage.set('program', program);
