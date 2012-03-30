@@ -1,0 +1,14 @@
+application: simpleapp
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+
+builtins:
+- remote_api: on
+
+
+handlers:
+- url: /.*
+  script: simpleapp.app
