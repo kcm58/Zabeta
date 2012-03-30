@@ -63,5 +63,15 @@ following to your Emacs init file:
 Links
 =====
 
+JavaScript:
 <http://shichuan.github.com/javascript-patterns/>
+
+App Engine Datastore:
+<https://developers.google.com/appengine/articles/datastore/overview>
 <http://code.google.com/appengine/docs/python/datastore/datamodeling.html>
+
+Mora:
+<https://bitbucket.org/jdpalmer/mora>
+<http://jdpalmer.bitbucket.org/mora/>
+<http://jdpalmer.bitbucket.org/mora/mora.db.html>
+<http://jdpalmer.bitbucket.org/mora/mora.rest.html>
