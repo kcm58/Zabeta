@@ -149,15 +149,16 @@ class index(webapp.RequestHandler):
         self.response.out.write(template.render(path, template_values))
 
 if __name__ == "__main__":
-    RestDispatcher.setup('/api/crud', [crud.Objective, 
-                                       crud.Minutes,
-                                       crud.Course,
-                                       crud.CourseOffering,
-                                       crud.CourseTask,
-                                       crud.Outcome,
-                                       crud.User,
-                                       crud.University,
-                                       crud.Program])
+    RestDispatcher.setup('/api/crud', [crud.ObjectiveHandler, 
+                                       crud.MinutesHandler,
+                                       crud.CourseHandler,
+                                       crud.CourseOfferingHandler,
+                                       crud.CourseTaskHandler,
+                                       crud.AssessmentTaskHandler,
+                                       crud.OutcomeHandler,
+                                       crud.UserHandler,
+                                       crud.UniversityHandler,
+                                       crud.ProgramHandler])
 
     run_wsgi_app(webapp.WSGIApplication([RestDispatcher.route(),
                                          ('/', index),

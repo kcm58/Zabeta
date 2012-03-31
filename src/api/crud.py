@@ -87,7 +87,7 @@ class CrudRevision(CrudSession):
         v.save()              
 
 #A user is NOT revisioned,  and does not use version_interface
-class User(CrudSession):
+class UserHandler(CrudSession):
       
     model = datamodel.User
       
@@ -98,7 +98,7 @@ class User(CrudSession):
         self.model.from_json(self.params)
 
 #Authentication methods and and records are also not versioned        
-class AuthenticationMethod(CrudSession):
+class AuthenticationMethodHandler(CrudSession):
 
     model = datamodel.AuthenticationMethod
     
@@ -111,7 +111,7 @@ class AuthenticationMethod(CrudSession):
     def update(self):
         self.model.from_json(self.params)
 
-class AuthenticationRecord(CrudSession):
+class AuthenticationRecordHandler(CrudSession):
 
     model = datamodel.AuthenticationRecord
     
@@ -126,7 +126,7 @@ class AuthenticationRecord(CrudSession):
         self.model.from_json(self.params)
 
 
-class Outcome(CrudRevision):
+class OutcomeHandler(CrudRevision):
 
     model = datamodel.Outcome
 
@@ -145,7 +145,7 @@ class Outcome(CrudRevision):
         self.version_save(self.model)
      
 
-class Objective(CrudRevision):
+class ObjectiveHandler(CrudRevision):
 
     model = datamodel.Objective
     
@@ -167,7 +167,7 @@ class Objective(CrudRevision):
         self.model.outcomes.append(new_outcome)
         self.version_save(self.model)
 
-class Task(CrudRevision):
+class TaskHandler(CrudRevision):
 
     model = datamodel.Task
     
@@ -184,15 +184,15 @@ class Task(CrudRevision):
         self.model.response=str(self.params)
         self.model.save()
 
-class AssessmentTask(Task):
+class AssessmentTaskHandler(TaskHandler):
   
     model = datamodel.AssessmentTask
 
-class CourseTask(Task):
+class CourseTaskHandler(TaskHandler):
   
     model = datamodel.CourseTask 
 
-class Course(CrudRevision):
+class CourseHandler(CrudRevision):
 
     model = datamodel.Course
 
@@ -203,7 +203,7 @@ class Course(CrudRevision):
     def update(self):
         self.model.from_json(self.params)
 
-class CourseOffering(CrudRevision):
+class CourseOfferingHandler(CrudRevision):
 
     model = datamodel.CourseOffering
 
@@ -214,13 +214,13 @@ class CourseOffering(CrudRevision):
     def update(self):
         self.model.from_json(self.params)
         
-class OutcomeSupport(CrudRevision):
+class OutcomeSupportHandler(CrudRevision):
 
     model = datamodel.OutcomeSupport
 
         
 #A user is NOT revisioned,  and does not use version_interface
-class Semseter(CrudRevision):
+class SemseterHandler(CrudRevision):
 
     model = datamodel.Semester
 
@@ -230,7 +230,7 @@ class Semseter(CrudRevision):
     def update(self):
         self.model.from_json(self.params)
 
-class University(CrudRevision):
+class UniversityHandler(CrudRevision):
 
     model = datamodel.University
 
@@ -261,14 +261,14 @@ class University(CrudRevision):
       self.response.headers['Content-Type'] = 'application/json'
       self.response.out.write(json.dumps(users))
 
-class Program(CrudRevision):
+class ProgramHandler(CrudRevision):
 
     model = datamodel.Program
 
     def show(self):
         self.response.out.write(self.model.to_json())
         
-class Minutes(CrudRevision):
+class MinutesHandler(CrudRevision):
 
     model = datamodel.Minutes
     
